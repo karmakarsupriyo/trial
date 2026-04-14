@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentlify — Learn Without Limits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg0:#07071A;--bg1:#0B0B22;--bg2:#10102E;--bg3:#151538;
+  --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --t1:#EEE8FF;--t2:#9494C0;--t3:#55557A;
+  --blue:#5C9CFF;--purple:#8B5CF6;--pink:#EC4899;
+  --teal:#2DD4BF;--gold:#F59E0B;--green:#10B981;--red:#F43F5E;
+  --gp:linear-gradient(135deg,#5C9CFF,#8B5CF6);
+  --gw:linear-gradient(135deg,#F59E0B,#EF4444);
+  --gc:linear-gradient(135deg,#2DD4BF,#5C9CFF);
+  --gk:linear-gradient(135deg,#EC4899,#8B5CF6);
+  --sw:260px;--hh:64px;
+  --r1:8px;--r2:14px;--r3:22px;--rf:9999px;
+  --tx:0.22s cubic-bezier(.4,0,.2,1);
+  --sh:0 8px 32px rgba(0,0,0,.45);
+  --glow:0 0 40px rgba(92,156,255,.18);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;line-height:1.6}
+h1,h2,h3,h4,h5{font-family:'Urbanist',sans-serif;line-height:1.25}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,select,textarea{font-family:inherit;outline:none}
+img{max-width:100%}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg1)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── UTILITIES ── */
+.hidden{display:none!important}
+.flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-1{gap:8px}.gap-2{gap:16px}.gap-3{gap:24px}.gap-4{gap:32px}.flex-1{flex:1}.flex-wrap{flex-wrap:wrap}
+.grid{display:grid}
+.w-full{width:100%}.h-full{height:100%}
+.rounded-full{border-radius:var(--rf)}
+.text-sm{font-size:13px}.text-xs{font-size:11px}.text-lg{font-size:18px}.text-xl{font-size:22px}.text-2xl{font-size:28px}.text-3xl{font-size:36px}.text-4xl{font-size:48px}
+.fw-700{font-weight:700}.fw-800{font-weight:800}
+.t2{color:var(--t2)}.t3{color:var(--t3)}
+.blue{color:var(--blue)}.purple{color:var(--purple)}.green{color:var(--green)}.gold{color:var(--gold)}.red{color:var(--red)}
+.mb-1{margin-bottom:8px}.mb-2{margin-bottom:16px}.mb-3{margin-bottom:24px}.mb-4{margin-bottom:32px}.mt-auto{margin-top:auto}
+.p-1{padding:8px}.p-2{padding:16px}.p-3{padding:24px}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grad-text{background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--rf);font-weight:700;font-size:14px;transition:var(--tx);cursor:pointer}
+.btn-primary{background:var(--gp);color:#fff;box-shadow:0 4px 20px rgba(92,156,255,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(92,156,255,.45)}
+.btn-secondary{background:var(--glass2);border:1px solid var(--border2);color:var(--t1)}
+.btn-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25)}
+.btn-ghost{background:transparent;color:var(--t2);padding:8px 12px}
+.btn-ghost:hover{color:var(--t1);background:var(--glass)}
+.btn-sm{padding:7px 14px;font-size:13px}
+.btn-lg{padding:14px 28px;font-size:16px}
+.btn-danger{background:linear-gradient(135deg,#F43F5E,#EF4444);color:#fff}
+.btn-success{background:linear-gradient(135deg,#10B981,#059669);color:#fff}
+.btn-gold{background:var(--gw);color:#fff}
+
+/* ── CARDS ── */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.card-hover{transition:var(--tx)}
+.card-hover:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:var(--sh)}
+.card-glow:hover{box-shadow:var(--glow)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--rf);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.badge-blue{background:rgba(92,156,255,.15);color:var(--blue)}
+.badge-purple{background:rgba(139,92,246,.15);color:var(--purple)}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green)}
+.badge-gold{background:rgba(245,158,11,.15);color:var(--gold)}
+.badge-pink{background:rgba(236,72,153,.15);color:var(--pink)}
+.badge-red{background:rgba(244,63,94,.15);color:var(--red)}
+
+/* ── TAGS ── */
+.tag{padding:4px 12px;border-radius:var(--rf);font-size:12px;font-weight:600;background:var(--glass2);border:1px solid var(--border)}
+.tag:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ── STARS ── */
+.stars{color:var(--gold);font-size:12px;letter-spacing:1px}
+
+/* ── PROGRESS ── */
+.progress-bar{height:6px;border-radius:3px;background:var(--border2);overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:var(--gp);transition:width .6s ease}
+
+/* ── AVATAR ── */
+.avatar{border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+
+/* ───────────────────────────────────────
+   HEADER
+─────────────────────────────────────── */
+#header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--hh);
+  background:rgba(7,7,26,.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:20px
+}
+.header-logo{display:flex;align-items:center;gap:10px;font-family:'Urbanist',sans-serif;font-weight:800;font-size:22px;white-space:nowrap}
+.header-logo img{height:36px;width:auto}
+.logo-m{background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-search{flex:1;max-width:480px;position:relative;margin:0 16px}
+.header-search input{width:100%;background:var(--glass2);border:1px solid var(--border);border-radius:var(--rf);padding:9px 16px 9px 42px;color:var(--t1);font-size:14px;transition:var(--tx)}
+.header-search input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(92,156,255,.12)}
+.header-search input::placeholder{color:var(--t3)}
+.header-search .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px}
+.header-nav{display:flex;align-items:center;gap:4px;margin-left:8px}
+.header-nav a{padding:7px 14px;border-radius:var(--rf);font-size:14px;font-weight:600;color:var(--t2);transition:var(--tx)}
+.header-nav a:hover,.header-nav a.active{color:var(--t1);background:var(--glass2)}
+.header-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+.notif-btn{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--glass2);border:1px solid var(--border);color:var(--t2);transition:var(--tx);cursor:pointer}
+.notif-btn:hover{color:var(--t1);border-color:var(--border2)}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg0)}
+.user-avatar-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--blue);overflow:hidden;cursor:pointer;transition:var(--tx)}
+.user-avatar-btn:hover{border-color:var(--purple);box-shadow:0 0 0 3px rgba(92,156,255,.2)}
+.user-avatar-btn img{width:100%;height:100%;object-fit:cover}
+.menu-toggle{display:none;width:38px;height:38px;align-items:center;justify-content:center;border-radius:var(--r1);background:var(--glass2);border:1px solid var(--border);color:var(--t1);cursor:pointer}
+
+/* ───────────────────────────────────────
+   LAYOUT WITH SIDEBAR
+─────────────────────────────────────── */
+#app{display:flex;min-height:100vh;padding-top:var(--hh)}
+#sidebar{
+  width:var(--sw);min-width:var(--sw);
+  background:var(--bg1);
+  border-right:1px solid var(--border);
+  position:fixed;top:var(--hh);left:0;bottom:0;
+  overflow-y:auto;z-index:90;
+  display:flex;flex-direction:column;
+  transform:translateX(0);transition:transform var(--tx);
+  padding-bottom:80px
+}
+#sidebar.collapsed{transform:translateX(-100%)}
+#main-content{flex:1;margin-left:var(--sw);min-height:calc(100vh - var(--hh));transition:margin var(--tx)}
+#main-content.no-sidebar{margin-left:0}
+
+/* Sidebar nav */
+.sidebar-section{padding:12px 12px 0}
+.sidebar-section-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:4px 12px 8px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--r1);color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;transition:var(--tx);margin-bottom:2px;white-space:nowrap}
+.sidebar-item:hover{background:var(--glass2);color:var(--t1)}
+.sidebar-item.active{background:rgba(92,156,255,.12);color:var(--blue);border-left:3px solid var(--blue);padding-left:11px}
+.sidebar-item i{width:18px;text-align:center;font-size:15px}
+.sidebar-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:var(--rf)}
+.sidebar-role-card{margin:12px;padding:12px;border-radius:var(--r2);background:rgba(92,156,255,.08);border:1px solid rgba(92,156,255,.15)}
+.sidebar-role-card .role-name{font-family:'Urbanist',sans-serif;font-size:14px;font-weight:700;color:var(--blue)}
+.sidebar-role-card .role-sub{font-size:11px;color:var(--t3);margin-top:2px}
+.sidebar-divider{height:1px;background:var(--border);margin:8px 12px}
+
+/* ───────────────────────────────────────
+   PAGES WRAPPER
+─────────────────────────────────────── */
+.page{display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ───────────────────────────────────────
+   HOME PAGE
+─────────────────────────────────────── */
+#page-home{padding:0}
+
+/* Hero */
+.hero{
+  position:relative;min-height:580px;display:flex;align-items:center;
+  padding:60px 48px;overflow:hidden
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(92,156,255,.14) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 50% at 20% 80%,rgba(139,92,246,.12) 0%,transparent 60%),
+             var(--bg0)
+}
+.hero-grid-lines{
+  position:absolute;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:60px 60px
+}
+.hero-content{position:relative;z-index:1;max-width:620px}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:var(--rf);background:rgba(92,156,255,.1);border:1px solid rgba(92,156,255,.2);font-size:13px;font-weight:700;color:var(--blue);margin-bottom:24px}
+.hero h1{font-size:clamp(36px,5vw,62px);font-weight:900;line-height:1.1;margin-bottom:20px}
+.hero-desc{font-size:17px;color:var(--t2);max-width:500px;margin-bottom:32px}
+.hero-search{
+  display:flex;background:rgba(255,255,255,.06);
+  border:1px solid var(--border2);border-radius:var(--rf);
+  overflow:hidden;max-width:540px;margin-bottom:32px;
+  transition:var(--tx)
+}
+.hero-search:focus-within{border-color:var(--blue);box-shadow:0 0 0 4px rgba(92,156,255,.12)}
+.hero-search input{flex:1;background:transparent;border:none;padding:14px 20px;color:var(--t1);font-size:15px}
+.hero-search input::placeholder{color:var(--t3)}
+.hero-search button{margin:6px;border-radius:var(--rf)}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.hero-stat{display:flex;flex-direction:column}
+.hero-stat-num{font-family:'Urbanist',sans-serif;font-size:26px;font-weight:800;background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:12px;color:var(--t3);font-weight:600;letter-spacing:.04em}
+.hero-visual{position:absolute;right:-20px;top:0;bottom:0;width:520px;z-index:1;display:flex;align-items:center;justify-content:center}
+.hero-card-float{
+  background:var(--glass2);border:1px solid var(--border2);border-radius:var(--r2);
+  padding:16px 20px;backdrop-filter:blur(16px);animation:float 4s ease-in-out infinite
+}
+.hero-card-float.c1{position:absolute;top:80px;right:120px;width:220px;animation-delay:0s}
+.hero-card-float.c2{position:absolute;bottom:100px;right:40px;width:200px;animation-delay:1.5s}
+.hero-card-float.c3{position:absolute;top:160px;right:360px;width:180px;animation-delay:.8s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* Categories */
+.section{padding:48px}
+.section-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px}
+.section-title{font-size:28px;font-weight:800}
+.section-sub{font-size:14px;color:var(--t2);margin-top:4px}
+
+.categories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.cat-card{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  padding:24px 16px;border-radius:var(--r2);cursor:pointer;
+  border:1px solid var(--border);background:var(--glass);
+  transition:var(--tx);text-align:center
+}
+.cat-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:var(--sh)}
+.cat-icon{width:52px;height:52px;border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:22px}
+.cat-name{font-weight:700;font-size:14px}
+.cat-count{font-size:12px;color:var(--t3)}
+
+/* Courses grid */
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.course-card{
+  border-radius:var(--r2);overflow:hidden;
+  background:var(--bg1);border:1px solid var(--border);
+  transition:var(--tx);cursor:pointer
+}
+.course-card:hover{transform:translateY(-5px);border-color:var(--border2);box-shadow:var(--sh)}
+.course-thumb{width:100%;height:160px;object-fit:cover;display:block;position:relative;overflow:hidden}
+.course-thumb-img{width:100%;height:100%;object-fit:cover}
+.course-thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--tx)}
+.course-card:hover .course-thumb-overlay{opacity:1}
+.play-icon{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:#333;font-size:18px}
+.course-body{padding:16px}
+.course-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.course-title{font-family:'Urbanist',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px;line-height:1.3}
+.course-teacher{font-size:13px;color:var(--t2);display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.course-teacher img{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.course-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.course-price{font-family:'Urbanist',sans-serif;font-size:20px;font-weight:800;background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.course-price-free{font-family:'Urbanist',sans-serif;font-size:18px;font-weight:800;color:var(--green)}
+.course-orig-price{font-size:13px;color:var(--t3);text-decoration:line-through;margin-left:4px}
+.rating-row{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--t2)}
+.rating-row .stars{font-size:11px}
+
+/* Teachers */
+.teachers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.teacher-card{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:28px 16px;border-radius:var(--r2);border:1px solid var(--border);
+  background:var(--glass);cursor:pointer;transition:var(--tx)
+}
+.teacher-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:var(--sh)}
+.teacher-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid transparent;background:linear-gradient(var(--bg1),var(--bg1)) padding-box,var(--gp) border-box;margin-bottom:12px}
+.teacher-name{font-weight:800;font-size:15px;margin-bottom:4px}
+.teacher-subject{font-size:13px;color:var(--t2);margin-bottom:8px}
+.teacher-stats{display:flex;gap:16px;font-size:12px;color:var(--t3)}
+
+/* ───────────────────────────────────────
+   MARKETPLACE PAGE
+─────────────────────────────────────── */
+#page-marketplace{padding:32px 32px 32px 32px}
+.marketplace-layout{display:flex;gap:24px;align-items:flex-start}
+.filter-sidebar{width:260px;min-width:260px;position:sticky;top:calc(var(--hh) + 16px)}
+.filter-sidebar .card{padding:20px}
+.filter-title{font-family:'Urbanist',sans-serif;font-size:16px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.filter-section{margin-bottom:20px}
+.filter-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+.filter-check{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;font-size:14px;color:var(--t2);transition:var(--tx)}
+.filter-check:hover{color:var(--t1)}
+.filter-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+.price-range{display:flex;flex-direction:column;gap:8px}
+.range-input{width:100%;accent-color:var(--blue);cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--t3)}
+.marketplace-main{flex:1}
+.marketplace-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.marketplace-count{font-size:14px;color:var(--t2)}
+.sort-select{background:var(--glass2);border:1px solid var(--border);color:var(--t1);padding:8px 14px;border-radius:var(--r1);font-size:14px;cursor:pointer}
+.sort-select option{background:var(--bg2)}
+.marketplace-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.search-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+
+/* ───────────────────────────────────────
+   COURSE DETAIL PAGE
+─────────────────────────────────────── */
+#page-course-detail{padding:32px}
+.detail-layout{display:flex;gap:28px;align-items:flex-start}
+.detail-main{flex:1}
+.detail-sidebar{width:320px;min-width:320px;position:sticky;top:calc(var(--hh) + 16px)}
+.video-player{
+  width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--r2);
+  overflow:hidden;position:relative;margin-bottom:20px
+}
+.video-player-inner{width:100%;height:100%;background:linear-gradient(135deg,#0a0a20,#1a1a40);display:flex;align-items:center;justify-content:center;position:relative}
+.play-btn-large{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--gp);display:flex;align-items:center;justify-content:center;
+  font-size:26px;color:#fff;cursor:pointer;
+  box-shadow:0 8px 32px rgba(92,156,255,.4);transition:var(--tx)
+}
+.play-btn-large:hover{transform:scale(1.1);box-shadow:0 12px 40px rgba(92,156,255,.6)}
+.video-controls{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.8));
+  padding:20px 16px 12px;display:flex;align-items:center;gap:12px
+}
+.vid-progress{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.3);cursor:pointer}
+.vid-progress-fill{width:35%;height:100%;background:var(--blue);border-radius:2px}
+.vid-time{font-size:12px;color:rgba(255,255,255,.8)}
+.detail-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.detail-tab{padding:10px 16px;font-size:14px;font-weight:700;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:var(--tx)}
+.detail-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-content{display:none}.tab-content.active{display:block}
+.curriculum-item{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-radius:var(--r1);background:var(--glass);border:1px solid var(--border);
+  margin-bottom:8px;cursor:pointer;transition:var(--tx)
+}
+.curriculum-item:hover{border-color:var(--border2);background:var(--glass2)}
+.curriculum-item.locked .ci-icon{color:var(--t3)}
+.curriculum-item.free .ci-icon{color:var(--green)}
+.ci-icon{width:32px;height:32px;border-radius:var(--r1);background:var(--glass2);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--blue);flex-shrink:0}
+.ci-title{flex:1;font-size:14px;font-weight:600}
+.ci-dur{font-size:12px;color:var(--t3)}
+.detail-buy-card{padding:24px}
+.detail-price-big{font-family:'Urbanist',sans-serif;font-size:36px;font-weight:900;background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.detail-orig-price{font-size:15px;color:var(--t3);text-decoration:line-through;margin-bottom:16px}
+.detail-includes{margin-top:20px}
+.include-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;color:var(--t2);border-bottom:1px solid var(--border)}
+.include-item:last-child{border-bottom:none}
+.include-item i{color:var(--blue);width:16px;text-align:center}
+
+/* ───────────────────────────────────────
+   DASHBOARD SHARED
+─────────────────────────────────────── */
+.dashboard-page{padding:32px}
+.dash-header{margin-bottom:32px}
+.dash-title{font-size:28px;font-weight:800}
+.dash-sub{color:var(--t2);font-size:14px;margin-top:4px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{padding:20px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--border)}
+.stat-icon{width:44px;height:44px;border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.stat-val{font-family:'Urbanist',sans-serif;font-size:28px;font-weight:800;margin-bottom:2px}
+.stat-lbl{font-size:13px;color:var(--t2)}
+.stat-change{font-size:12px;margin-top:4px}
+.stat-change.up{color:var(--green)}
+.stat-change.down{color:var(--red)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.panel-card{padding:24px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--border)}
+.panel-card-title{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+
+/* ── MINI CHART ── */
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:48px}
+.mini-bar{flex:1;background:rgba(92,156,255,.25);border-radius:3px 3px 0 0;transition:var(--tx)}
+.mini-bar:hover{background:rgba(92,156,255,.6)}
+.mini-bar.active{background:var(--blue)}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding:8px 12px;border-bottom:1px solid var(--border)}
+.data-table td{padding:12px;font-size:14px;border-bottom:1px solid var(--border)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--glass)}
+
+/* ── ENROLLED COURSE ROW ── */
+.enrolled-row{display:flex;align-items:center;gap:14px;padding:14px;border-radius:var(--r1);background:var(--glass);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;transition:var(--tx)}
+.enrolled-row:hover{border-color:var(--border2);background:var(--glass2)}
+.enrolled-thumb{width:72px;height:52px;border-radius:var(--r1);object-fit:cover;flex-shrink:0;background:var(--bg2)}
+.enrolled-info{flex:1}
+.enrolled-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.enrolled-meta{font-size:12px;color:var(--t2);margin-bottom:8px}
+
+/* ── EARNINGS CHART ── */
+.earnings-chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:16px}
+.earn-bar{flex:1;border-radius:4px 4px 0 0;cursor:pointer;transition:var(--tx);position:relative;min-height:8px}
+.earn-bar:hover{filter:brightness(1.3)}
+.earn-bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--t3);white-space:nowrap}
+.earn-months{display:flex;gap:8px;margin-top:24px}
+.earn-month{flex:1;text-align:center;font-size:10px;color:var(--t3)}
+
+/* ── CREATE FORM ── */
+.form-group{margin-bottom:20px}
+.form-label{display:block;font-size:13px;font-weight:700;color:var(--t2);margin-bottom:8px}
+.form-input{width:100%;background:var(--glass2);border:1px solid var(--border);border-radius:var(--r1);padding:10px 14px;color:var(--t1);font-size:14px;transition:var(--tx)}
+.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(92,156,255,.12)}
+.form-input::placeholder{color:var(--t3)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236060A0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.form-textarea{resize:vertical;min-height:100px}
+.upload-zone{
+  border:2px dashed var(--border2);border-radius:var(--r2);
+  padding:36px;text-align:center;cursor:pointer;transition:var(--tx);
+  background:var(--glass)
+}
+.upload-zone:hover{border-color:var(--blue);background:rgba(92,156,255,.05)}
+.upload-zone i{font-size:32px;color:var(--t3);margin-bottom:12px}
+.upload-zone p{font-size:14px;color:var(--t2)}
+.upload-zone span{font-size:12px;color:var(--t3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ───────────────────────────────────────
+   ADMIN SPECIFIC
+─────────────────────────────────────── */
+.approval-card{
+  display:flex;align-items:center;gap:14px;padding:16px;
+  border-radius:var(--r2);background:var(--glass);border:1px solid var(--border);
+  margin-bottom:10px;transition:var(--tx)
+}
+.approval-card:hover{border-color:var(--border2)}
+.approval-info{flex:1}
+.approval-name{font-weight:700;font-size:15px;margin-bottom:2px}
+.approval-sub{font-size:13px;color:var(--t2)}
+.approval-actions{display:flex;gap:8px}
+
+/* ── DONUT CHART ── */
+.donut-wrap{display:flex;align-items:center;gap:20px}
+.donut{width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--blue) 0% 45%,var(--purple) 45% 70%,var(--teal) 70% 85%,var(--border) 85% 100%);position:relative;flex-shrink:0}
+.donut::after{content:'';position:absolute;inset:22px;border-radius:50%;background:var(--bg1)}
+.donut-legend{display:flex;flex-direction:column;gap:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ── REVENUE TABLE ── */
+.revenue-breakdown{margin-top:16px}
+.rev-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.rev-row:last-child{border-bottom:none}
+.rev-name{flex:1;font-size:14px}
+.rev-bar-wrap{width:120px;height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.rev-fill{height:100%;border-radius:3px;background:var(--gp)}
+.rev-amt{font-size:14px;font-weight:700;min-width:80px;text-align:right}
+
+/* ───────────────────────────────────────
+   PAYMENT PAGE
+─────────────────────────────────────── */
+#page-payment{padding:48px}
+.plans-header{text-align:center;margin-bottom:48px}
+.plans-header h2{font-size:40px;font-weight:900;margin-bottom:12px}
+.plans-toggle{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:20px}
+.toggle-pill{
+  display:flex;background:var(--glass2);border:1px solid var(--border);
+  border-radius:var(--rf);padding:4px;gap:4px
+}
+.toggle-opt{padding:7px 20px;border-radius:var(--rf);font-size:14px;font-weight:700;cursor:pointer;transition:var(--tx);color:var(--t2)}
+.toggle-opt.active{background:var(--gp);color:#fff;box-shadow:0 2px 12px rgba(92,156,255,.3)}
+.save-tag{background:rgba(16,185,129,.15);color:var(--green);border-radius:var(--rf);padding:4px 10px;font-size:12px;font-weight:700}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
+.plan-card{
+  padding:32px;border-radius:var(--r3);border:1px solid var(--border);
+  background:var(--glass);transition:var(--tx);position:relative;overflow:hidden
+}
+.plan-card.featured{border-color:rgba(92,156,255,.4);background:rgba(92,156,255,.06);transform:scale(1.02)}
+.plan-card.featured::before{content:'MOST POPULAR';position:absolute;top:0;left:0;right:0;background:var(--gp);color:#fff;font-size:11px;font-weight:800;letter-spacing:.1em;text-align:center;padding:8px}
+.plan-name{font-family:'Urbanist',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;margin-top:28px}
+.plan-card:not(.featured) .plan-name{margin-top:0}
+.plan-price{font-family:'Urbanist',sans-serif;font-size:42px;font-weight:900;margin-bottom:4px}
+.plan-price sup{font-size:20px;font-weight:600;vertical-align:super;margin-right:2px}
+.plan-price span{font-size:16px;color:var(--t2);font-weight:500}
+.plan-desc{font-size:14px;color:var(--t2);margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.plan-features{margin-bottom:28px}
+.plan-feature{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:14px}
+.plan-feature i.fa-check{color:var(--green)}
+.plan-feature i.fa-times{color:var(--t3)}
+.plan-feature.disabled{color:var(--t3)}
+
+/* ── CHECKOUT MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);padding:32px;width:90%;max-width:480px;position:relative;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--glass2);border:1px solid var(--border);color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--tx)}
+.modal-close:hover{color:var(--t1);background:var(--glass2)}
+.checkout-plan-summary{background:rgba(92,156,255,.06);border:1px solid rgba(92,156,255,.15);border-radius:var(--r2);padding:16px;margin-bottom:20px}
+.payment-methods{display:flex;gap:10px;margin-bottom:20px}
+.pay-method{
+  flex:1;padding:12px;border-radius:var(--r1);
+  border:2px solid var(--border);background:var(--glass);
+  text-align:center;cursor:pointer;transition:var(--tx);font-size:13px;font-weight:700;color:var(--t2)
+}
+.pay-method.active{border-color:var(--blue);color:var(--blue);background:rgba(92,156,255,.08)}
+.pay-method:hover{border-color:var(--border2)}
+.card-input-group{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.card-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ───────────────────────────────────────
+   ROLE SWITCHER
+─────────────────────────────────────── */
+.role-switcher{
+  position:fixed;bottom:90px;right:20px;z-index:150;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rf);
+  padding:6px;display:flex;flex-direction:column;gap:4px;
+  box-shadow:var(--sh)
+}
+.role-btn{
+  padding:8px 16px;border-radius:var(--rf);font-size:12px;font-weight:800;
+  cursor:pointer;transition:var(--tx);color:var(--t2);background:transparent;
+  letter-spacing:.04em;white-space:nowrap
+}
+.role-btn.active{background:var(--gp);color:#fff}
+.role-btn:hover:not(.active){background:var(--glass2);color:var(--t1)}
+.role-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:4px 12px 0}
+
+/* ───────────────────────────────────────
+   BOTTOM MOBILE NAV
+─────────────────────────────────────── */
+.bottom-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(10,10,28,.95);border-top:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  height:64px;padding:0 8px;align-items:center;justify-content:space-around
+}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:8px 16px;border-radius:var(--r1);cursor:pointer;
+  font-size:10px;font-weight:700;color:var(--t3);transition:var(--tx);
+  letter-spacing:.04em;text-transform:uppercase
+}
+.bn-item.active{color:var(--blue)}
+.bn-item i{font-size:20px}
+.bn-item .bn-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);margin:auto;margin-top:2px;display:none}
+.bn-item.active .bn-dot{display:block}
+
+/* ───────────────────────────────────────
+   NOTIFICATION DROPDOWN
+─────────────────────────────────────── */
+.notif-dropdown{
+  position:absolute;top:calc(100% + 8px);right:0;width:320px;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
+  box-shadow:var(--sh);z-index:200;overflow:hidden
+}
+.notif-dropdown.hidden{display:none}
+.notif-header-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);font-weight:800;font-size:14px}
+.notif-item{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--tx)}
+.notif-item:hover{background:var(--glass)}
+.notif-item:last-child{border-bottom:none}
+.notif-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.notif-text{font-size:13px;line-height:1.4;color:var(--t2)}
+.notif-time{font-size:11px;color:var(--t3);margin-top:4px}
+
+/* ───────────────────────────────────────
+   TOAST
+─────────────────────────────────────── */
+.toast-container{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rf);
+  padding:12px 20px;font-size:14px;font-weight:600;color:var(--t1);
+  box-shadow:var(--sh);display:flex;align-items:center;gap:10px;
+  animation:slideUp .25s ease;white-space:nowrap
+}
+.toast.success{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.1)}
+.toast.error{border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.1)}
+
+/* ───────────────────────────────────────
+   MISC COMPONENTS
+─────────────────────────────────────── */
+.empty-state{text-align:center;padding:48px;color:var(--t3)}
+.empty-state i{font-size:40px;margin-bottom:16px;display:block}
+.empty-state p{font-size:15px}
+.divider{height:1px;background:var(--border);margin:24px 0}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--rf);background:var(--glass2);border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;transition:var(--tx)}
+.chip:hover,.chip.active{background:rgba(92,156,255,.1);border-color:rgba(92,156,255,.3);color:var(--blue)}
+
+/* ── INSTITUTE CARD ── */
+.institute-card{display:flex;gap:16px;align-items:center;padding:20px;border-radius:var(--r2);background:rgba(92,156,255,.06);border:1px solid rgba(92,156,255,.15);margin-bottom:20px}
+.inst-logo{width:64px;height:64px;border-radius:var(--r2);object-fit:cover;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.inst-info .inst-name{font-size:18px;font-weight:800;margin-bottom:4px}
+.inst-info .inst-type{font-size:13px;color:var(--t2);margin-bottom:8px}
+.inst-info .inst-stats{display:flex;gap:16px;font-size:13px;color:var(--t3)}
+
+/* ── AVATAR STACK ── */
+.avatar-stack{display:flex}
+.avatar-stack img{width:28px;height:28px;border-radius:50%;border:2px solid var(--bg1);margin-left:-8px;object-fit:cover}
+.avatar-stack img:first-child{margin-left:0}
+.avatar-stack .more{width:28px;height:28px;border-radius:50%;background:var(--glass2);border:2px solid var(--bg1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--t2);margin-left:-8px}
+
+/* ── PAGINATION ── */
+.pagination{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:28px}
+.page-btn{width:36px;height:36px;border-radius:var(--r1);background:var(--glass2);border:1px solid var(--border);color:var(--t2);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--tx)}
+.page-btn.active{background:var(--gp);color:#fff;border-color:transparent}
+.page-btn:hover:not(.active){border-color:var(--border2);color:var(--t1)}
+
+/* ── SECTION WITH BG ── */
+.section-alt{background:var(--bg1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.testimonial-card{padding:24px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--border)}
+.testimonial-text{font-size:15px;line-height:1.7;color:var(--t2);margin-bottom:16px;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:10px}
+.testimonial-author img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.t-author-name{font-weight:700;font-size:14px}
+.t-author-role{font-size:12px;color:var(--t3)}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.how-card{padding:28px;border-radius:var(--r2);border:1px solid var(--border);background:var(--glass);text-align:center}
+.how-step{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--blue);margin-bottom:12px}
+.how-icon{width:60px;height:60px;border-radius:var(--r2);background:rgba(92,156,255,.1);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px}
+.how-title{font-size:17px;font-weight:800;margin-bottom:8px}
+.how-desc{font-size:14px;color:var(--t2)}
+
+/* ───────────────────────────────────────
+   RESPONSIVE
+─────────────────────────────────────── */
+@media(max-width:1024px){
+  .two-col,.three-col{grid-template-columns:1fr}
+  .detail-layout{flex-direction:column}
+  .detail-sidebar{width:100%;min-width:unset;position:static}
+  .how-grid{grid-template-columns:1fr 1fr}
+  .plans-grid{grid-template-columns:1fr}
+  .plan-card.featured{transform:none}
+  .hero-visual{display:none}
+  .marketplace-layout{flex-direction:column}
+  .filter-sidebar{width:100%;min-width:unset;position:static}
+}
+@media(max-width:768px){
+  :root{--sw:0px;--hh:60px}
+  #sidebar{transform:translateX(-100%);width:260px}
+  #sidebar.open{transform:translateX(0)}
+  #main-content,#main-content.no-sidebar{margin-left:0}
+  .header-nav,.header-search{display:none}
+  .menu-toggle{display:flex}
+  .hero{padding:32px 20px;min-height:auto}
+  .section{padding:32px 20px}
+  .dashboard-page{padding:20px}
+  .hero h1{font-size:30px}
+  .hero-stats{gap:16px}
+  .courses-grid,.teachers-grid,.categories-grid,.testimonials-grid{grid-template-columns:1fr 1fr}
+  .bottom-nav{display:flex}
+  .role-switcher{bottom:74px;right:10px}
+  #page-marketplace{padding:20px}
+  .marketplace-layout{flex-direction:column}
+  #page-course-detail{padding:20px}
+  .detail-layout{flex-direction:column}
+  #page-payment{padding:24px}
+  .plans-grid{grid-template-columns:1fr}
+  .plan-card.featured{transform:none}
+  .how-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .courses-grid,.teachers-grid,.categories-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<header id="header">
+  <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+  <div class="header-logo" onclick="showPage('home',this)" style="cursor:pointer">
+    <svg width="36" height="36" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5C9CFF"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient></defs>
+      <path d="M10 62 L10 28 L32 52 L54 28 L54 62" stroke="url(#lg1)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M54 62 L54 28 L70 45" stroke="#8B5CF6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="62" cy="20" r="4" fill="#5C9CFF"/>
+      <circle cx="70" cy="14" r="2.5" fill="#8B5CF6"/>
+    </svg>
+    <span class="logo-m">Mentlify</span>
+  </div>
+  <div class="header-search">
+    <i class="fa fa-search search-icon"></i>
+    <input type="text" placeholder="Search courses, teachers, institutes…" oninput="handleSearch(this.value)">
+  </div>
+  <nav class="header-nav">
+    <a href="#" onclick="showPage('home',this)" class="active" data-page="home">Home</a>
+    <a href="#" onclick="showPage('marketplace',this)" data-page="marketplace">Courses</a>
+    <a href="#" onclick="showPage('teachers',this)" data-page="teachers">Teachers</a>
+    <a href="#" onclick="showPage('payment',this)" data-page="payment">Plans</a>
+  </nav>
+  <div class="header-actions">
+    <div style="position:relative">
+      <div class="notif-btn" onclick="toggleNotif()">
+        <i class="fa fa-bell"></i>
+        <span class="notif-dot"></span>
+      </div>
+      <div class="notif-dropdown hidden" id="notif-dropdown">
+        <div class="notif-header-row"><span>Notifications</span><span style="font-size:12px;color:var(--blue);cursor:pointer">Mark all read</span></div>
+        <div class="notif-item"><div class="notif-icon" style="background:rgba(92,156,255,.15);color:var(--blue)"><i class="fa fa-play"></i></div><div><div class="notif-text">New lecture added in <b>JEE Physics Batch</b></div><div class="notif-time">2 minutes ago</div></div></div>
+        <div class="notif-item"><div class="notif-icon" style="background:rgba(16,185,129,.15);color:var(--green)"><i class="fa fa-check"></i></div><div><div class="notif-text">Your assignment was reviewed by <b>Dr. Sharma</b></div><div class="notif-time">1 hour ago</div></div></div>
+        <div class="notif-item"><div class="notif-icon" style="background:rgba(245,158,11,.15);color:var(--gold)"><i class="fa fa-star"></i></div><div><div class="notif-text">You earned a <b>Top Performer</b> badge!</div><div class="notif-time">Yesterday</div></div></div>
+        <div class="notif-item"><div class="notif-icon" style="background:rgba(139,92,246,.15);color:var(--purple)"><i class="fa fa-video"></i></div><div><div class="notif-text">Live class starts in <b>30 minutes</b></div><div class="notif-time">Today 3:30 PM</div></div></div>
+      </div>
+    </div>
+    <div class="user-avatar-btn" onclick="toggleUserMenu()">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Supriyo&backgroundColor=b6e3f4" alt="User">
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="showPage('payment',this)"><i class="fa fa-crown"></i> Upgrade</button>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<aside id="sidebar">
+  <div class="sidebar-role-card" id="sidebar-role-card">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Supriyo&backgroundColor=b6e3f4" alt="User" style="width:40px;height:40px;border-radius:50%;border:2px solid rgba(92,156,255,.4)">
+      <div>
+        <div class="role-name" id="sidebar-role-name">Supriyo K.</div>
+        <div class="role-sub" id="sidebar-role-sub">Student • Free Plan</div>
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+      <div style="font-size:11px;color:var(--t3);margin-top:4px">40% profile complete</div>
+    </div>
+  </div>
+
+  <!-- STUDENT NAV -->
+  <div id="nav-student">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Main Menu</div>
+      <div class="sidebar-item active" onclick="switchDashboard('student-overview')"><i class="fa fa-home"></i> Overview</div>
+      <div class="sidebar-item" onclick="switchDashboard('student-courses')"><i class="fa fa-book-open"></i> My Courses</div>
+      <div class="sidebar-item" onclick="showPage('marketplace',this)"><i class="fa fa-th-large"></i> Explore</div>
+      <div class="sidebar-item" onclick="switchDashboard('student-live')"><i class="fa fa-circle" style="color:var(--red)"></i> Live Classes <span class="sidebar-badge">2</span></div>
+      <div class="sidebar-item" onclick="switchDashboard('student-tests')"><i class="fa fa-clipboard-list"></i> Test Series</div>
+    </div>
+    <div class="sidebar-section" style="margin-top:8px">
+      <div class="sidebar-section-label">Account</div>
+      <div class="sidebar-item" onclick="showPage('payment',this)"><i class="fa fa-crown" style="color:var(--gold)"></i> Subscription</div>
+      <div class="sidebar-item" onclick="switchDashboard('student-bookmarks')"><i class="fa fa-bookmark"></i> Bookmarks</div>
+      <div class="sidebar-item" onclick="switchDashboard('student-profile')"><i class="fa fa-user-circle"></i> Profile</div>
+    </div>
+  </div>
+
+  <!-- TEACHER NAV -->
+  <div id="nav-teacher" class="hidden">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Teaching</div>
+      <div class="sidebar-item active" onclick="switchDashboard('teacher-overview')"><i class="fa fa-home"></i> Overview</div>
+      <div class="sidebar-item" onclick="switchDashboard('teacher-courses')"><i class="fa fa-book"></i> My Courses</div>
+      <div class="sidebar-item" onclick="switchDashboard('teacher-create')"><i class="fa fa-plus-circle"></i> Create Course</div>
+      <div class="sidebar-item" onclick="switchDashboard('teacher-batches')"><i class="fa fa-users"></i> Batches</div>
+      <div class="sidebar-item" onclick="switchDashboard('teacher-students')"><i class="fa fa-graduation-cap"></i> Students</div>
+    </div>
+    <div class="sidebar-section" style="margin-top:8px">
+      <div class="sidebar-section-label">Finance</div>
+      <div class="sidebar-item" onclick="switchDashboard('teacher-earnings')"><i class="fa fa-rupee-sign" style="color:var(--gold)"></i> Earnings</div>
+      <div class="sidebar-item" onclick="switchDashboard('teacher-analytics')"><i class="fa fa-chart-bar"></i> Analytics</div>
+    </div>
+  </div>
+
+  <!-- COACH NAV -->
+  <div id="nav-coach" class="hidden">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Institute</div>
+      <div class="sidebar-item active" onclick="switchDashboard('coach-overview')"><i class="fa fa-home"></i> Overview</div>
+      <div class="sidebar-item" onclick="switchDashboard('coach-institute')"><i class="fa fa-building"></i> My Institute</div>
+      <div class="sidebar-item" onclick="switchDashboard('coach-teachers')"><i class="fa fa-chalkboard-teacher"></i> Teachers</div>
+      <div class="sidebar-item" onclick="switchDashboard('coach-courses')"><i class="fa fa-book"></i> Courses</div>
+      <div class="sidebar-item" onclick="switchDashboard('coach-batches')"><i class="fa fa-users"></i> Batches</div>
+      <div class="sidebar-item" onclick="switchDashboard('coach-analytics')"><i class="fa fa-chart-line"></i> Analytics</div>
+    </div>
+  </div>
+
+  <!-- ADMIN NAV -->
+  <div id="nav-admin" class="hidden">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Platform</div>
+      <div class="sidebar-item active" onclick="switchDashboard('admin-overview')"><i class="fa fa-tachometer-alt"></i> Dashboard</div>
+      <div class="sidebar-item" onclick="switchDashboard('admin-users')"><i class="fa fa-users"></i> Users</div>
+      <div class="sidebar-item" onclick="switchDashboard('admin-courses')"><i class="fa fa-book"></i> Courses</div>
+      <div class="sidebar-item" onclick="switchDashboard('admin-approvals')"><i class="fa fa-check-circle" style="color:var(--green)"></i> Approvals <span class="sidebar-badge">5</span></div>
+      <div class="sidebar-item" onclick="switchDashboard('admin-revenue')"><i class="fa fa-rupee-sign"></i> Revenue</div>
+      <div class="sidebar-item" onclick="switchDashboard('admin-settings')"><i class="fa fa-cog"></i> Settings</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<main id="main-content" class="no-sidebar">
+
+<!-- ━━━ HOME PAGE ━━━ -->
+<section id="page-home" class="page active">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-content">
+      <div class="hero-tag"><i class="fa fa-rocket"></i> India's #1 EdTech Marketplace</div>
+      <h1>Learn From The <span class="grad-text">Best Teachers</span> Near You</h1>
+      <p class="hero-desc">Discover courses, coaching centers, and top educators all in one platform. Study smarter, achieve more.</p>
+      <div class="hero-search">
+        <input type="text" placeholder="Search JEE Physics, UPSC, Class 12 Maths…">
+        <button class="btn btn-primary" onclick="showPage('marketplace',this)"><i class="fa fa-search"></i> Search</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-num">50K+</span><span class="hero-stat-label">Students</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">2K+</span><span class="hero-stat-label">Courses</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">500+</span><span class="hero-stat-label">Teachers</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">100+</span><span class="hero-stat-label">Institutes</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-float c1">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=priya&backgroundColor=c0aede" style="width:36px;height:36px;border-radius:50%">
+          <div><div style="font-weight:700;font-size:13px">Priya just enrolled</div><div style="font-size:11px;color:var(--t3)">JEE Mains 2025 Batch</div></div>
+        </div>
+        <div style="background:rgba(92,156,255,.1);border-radius:8px;padding:8px;font-size:12px;color:var(--blue);font-weight:700;text-align:center">🎉 +2500 XP Earned!</div>
+      </div>
+      <div class="hero-card-float c2">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:4px">LIVE RIGHT NOW</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite"></div>
+          <span style="font-weight:700;font-size:14px">Organic Chemistry</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--t3)">
+          <span>Dr. Sharma • 1.2K watching</span>
+          <span style="color:var(--blue);font-weight:700">JOIN</span>
+        </div>
+      </div>
+      <div class="hero-card-float c3">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:6px">YOUR PROGRESS</div>
+        <div style="font-weight:800;font-size:22px;margin-bottom:6px">82%</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px">Physics Chapter 6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="section">
+    <div class="section-header">
+      <div><h2 class="section-title">Browse by Category</h2><p class="section-sub">Find the right learning path for you</p></div>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace',this)">View All <i class="fa fa-arrow-right"></i></button>
+    </div>
+    <div class="categories-grid">
+      <div class="cat-card" onclick="showPage('marketplace',this)"><div class="cat-icon" style="background:rgba(92,156,255,.15)">🏫</div><div class="cat-name">School</div><div class="cat-count">342 courses</div></div>
+      <div class="cat-card" onclick="showPage('marketplace',this)"><div class="cat-icon" style="background:rgba(139,92,246,.15)">🎓</div><div class="cat-name">College</div><div class="cat-count">218 courses</div></div>
+      <div class="cat-card" onclick="showPage('marketplace',this)"><div class="cat-icon" style="background:rgba(16,185,129,.15)">📚</div><div class="cat-name">Coaching</div><div class="cat-count">190 courses</div></div>
+      <div class="cat-card" onclick="showPage('marketplace',this)"><div class="cat-icon" style="background:rgba(245,158,11,.15)">💻</div><div class="cat-name">Online Skills</div><div class="cat-count">405 courses</div></div>
+      <div class="cat-card" onclick="showPage('marketplace',this)"><div class="cat-icon" style="background:rgba(236,72,153,.15)">🔴</div><div class="cat-name">Live Classes</div><div class="cat-count">85 courses</div></div>
+      <div class="cat-card" onclick="showPage('marketplace',this)"><div class="cat-icon" style="background:rgba(45,212,191,.15)">📝</div><div class="cat-name">Test Series</div><div class="cat-count">120 series</div></div>
+    </div>
+  </div>
+
+  <!-- Featured Courses -->
+  <div class="section section-alt">
+    <div class="section-header">
+      <div><h2 class="section-title">Featured Courses</h2><p class="section-sub">Handpicked by our academic team</p></div>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace',this)">See All Courses <i class="fa fa-arrow-right"></i></button>
+    </div>
+    <div class="courses-grid" id="featured-courses"></div>
+  </div>
+
+  <!-- Top Teachers -->
+  <div class="section">
+    <div class="section-header">
+      <div><h2 class="section-title">Top Teachers</h2><p class="section-sub">Learn from India's finest educators</p></div>
+      <button class="btn btn-secondary btn-sm">View All <i class="fa fa-arrow-right"></i></button>
+    </div>
+    <div class="teachers-grid" id="home-teachers"></div>
+  </div>
+
+  <!-- How it works -->
+  <div class="section section-alt">
+    <div class="section-header" style="justify-content:center;text-align:center">
+      <div><h2 class="section-title">How Mentlify Works</h2><p class="section-sub">Start learning in 3 simple steps</p></div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-step">STEP 01</div><div class="how-icon" style="background:rgba(92,156,255,.1);color:var(--blue)"><i class="fa fa-search"></i></div><div class="how-title">Discover</div><p class="how-desc">Browse thousands of courses, coaching centers, and teachers. Filter by subject, location, and price.</p></div>
+      <div class="how-card"><div class="how-step">STEP 02</div><div class="how-icon" style="background:rgba(139,92,246,.1);color:var(--purple)"><i class="fa fa-play-circle"></i></div><div class="how-title">Enroll & Learn</div><p class="how-desc">Enroll in courses instantly. Watch videos, attend live classes, and take tests at your own pace.</p></div>
+      <div class="how-card"><div class="how-step">STEP 03</div><div class="how-icon" style="background:rgba(16,185,129,.1);color:var(--green)"><i class="fa fa-trophy"></i></div><div class="how-title">Achieve</div><p class="how-desc">Track your progress, earn certificates, and connect with top institutes for placements.</p></div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="section">
+    <div class="section-header"><div><h2 class="section-title">What Students Say</h2><p class="section-sub">Real stories from real learners</p></div></div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card"><p class="testimonial-text">"Mentlify completely changed how I prepare for JEE. The video quality and teacher explanations are on another level compared to anything else I've tried."</p><div class="testimonial-author"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=rohit&backgroundColor=d1d4f9" alt="Rohit"><div><div class="t-author-name">Rohit Sharma</div><div class="t-author-role">JEE Aspirant • AIR 342</div></div></div></div>
+      <div class="testimonial-card"><p class="testimonial-text">"As a teacher, the dashboard tools are incredible. I can manage my entire batch, track student progress, and collect fees — all in one place."</p><div class="testimonial-author"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=anita&backgroundColor=ffd5dc" alt="Anita"><div><div class="t-author-name">Anita Verma</div><div class="t-author-role">Chemistry Teacher • 1.2K students</div></div></div></div>
+      <div class="testimonial-card"><p class="testimonial-text">"Running a coaching center was a nightmare before Mentlify. Now I manage 15 teachers, 400 students, and all admissions from a single panel."</p><div class="testimonial-author"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=suresh&backgroundColor=c0aede" alt="Suresh"><div><div class="t-author-name">Suresh Kumar</div><div class="t-author-role">Coaching Owner • Patna</div></div></div></div>
+    </div>
+  </div>
+
+  <!-- CTA Banner -->
+  <div class="section">
+    <div style="background:linear-gradient(135deg,rgba(92,156,255,.15),rgba(139,92,246,.15));border:1px solid rgba(92,156,255,.2);border-radius:var(--r3);padding:48px;text-align:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(92,156,255,.08),transparent);pointer-events:none"></div>
+      <div style="position:relative">
+        <div class="badge badge-blue" style="margin-bottom:16px"><i class="fa fa-crown"></i> LIMITED OFFER</div>
+        <h2 style="font-size:36px;font-weight:900;margin-bottom:12px">Get <span class="grad-text">Pro Access</span> for ₹299/month</h2>
+        <p style="color:var(--t2);font-size:16px;margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto">Unlimited courses, live classes, doubt solving, and priority support. Cancel anytime.</p>
+        <button class="btn btn-primary btn-lg" onclick="showPage('payment',this)"><i class="fa fa-rocket"></i> Start Free Trial</button>
+        <p style="font-size:13px;color:var(--t3);margin-top:12px">7-day free trial • No credit card required</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ━━━ MARKETPLACE PAGE ━━━ -->
+<section id="page-marketplace" class="page">
+  <div style="padding:28px 32px 0">
+    <h2 style="font-size:24px;font-weight:800">All Courses</h2>
+    <p style="color:var(--t2);font-size:14px;margin-top:4px">Discover the perfect course for your goals</p>
+    <div class="search-tags" style="margin-top:14px">
+      <span class="chip active">All</span>
+      <span class="chip">JEE / NEET</span>
+      <span class="chip">Class 11-12</span>
+      <span class="chip">UPSC</span>
+      <span class="chip">Programming</span>
+      <span class="chip">IELTS</span>
+      <span class="chip">SSC / Banking</span>
+    </div>
+  </div>
+  <div class="marketplace-layout" style="padding:20px 32px">
+    <div class="filter-sidebar">
+      <div class="card">
+        <div class="filter-title">Filters <button class="btn btn-ghost" style="font-size:12px;padding:4px 8px;color:var(--blue)">Clear All</button></div>
+        <div class="filter-section">
+          <div class="filter-label">Category</div>
+          <label class="filter-check"><input type="checkbox" checked> School Education <span style="margin-left:auto;color:var(--t3);font-size:12px">342</span></label>
+          <label class="filter-check"><input type="checkbox"> College Prep <span style="margin-left:auto;color:var(--t3);font-size:12px">218</span></label>
+          <label class="filter-check"><input type="checkbox"> JEE / NEET <span style="margin-left:auto;color:var(--t3);font-size:12px">145</span></label>
+          <label class="filter-check"><input type="checkbox"> Programming <span style="margin-left:auto;color:var(--t3);font-size:12px">120</span></label>
+          <label class="filter-check"><input type="checkbox"> UPSC / SSC <span style="margin-left:auto;color:var(--t3);font-size:12px">98</span></label>
+        </div>
+        <div class="filter-section">
+          <div class="filter-label">Level</div>
+          <label class="filter-check"><input type="checkbox" checked> Beginner</label>
+          <label class="filter-check"><input type="checkbox" checked> Intermediate</label>
+          <label class="filter-check"><input type="checkbox"> Advanced</label>
+        </div>
+        <div class="filter-section">
+          <div class="filter-label">Price</div>
+          <label class="filter-check"><input type="checkbox"> Free</label>
+          <label class="filter-check"><input type="checkbox" checked> Paid</label>
+          <div class="price-range" style="margin-top:8px">
+            <input type="range" min="0" max="5000" value="3000" class="range-input">
+            <div class="range-labels"><span>₹0</span><span>Up to ₹3,000</span></div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-label">Rating</div>
+          <label class="filter-check"><input type="radio" name="rating"> <span class="stars">★★★★★</span> 5.0</label>
+          <label class="filter-check"><input type="radio" name="rating" checked> <span class="stars">★★★★☆</span> 4.0+</label>
+          <label class="filter-check"><input type="radio" name="rating"> <span class="stars">★★★☆☆</span> 3.0+</label>
+        </div>
+        <div class="filter-section">
+          <div class="filter-label">Language</div>
+          <label class="filter-check"><input type="checkbox" checked> Hindi</label>
+          <label class="filter-check"><input type="checkbox" checked> English</label>
+          <label class="filter-check"><input type="checkbox"> Bengali</label>
+          <label class="filter-check"><input type="checkbox"> Telugu</label>
+        </div>
+      </div>
+    </div>
+    <div class="marketplace-main">
+      <div class="marketplace-header">
+        <span class="marketplace-count" id="marketplace-count">Showing 12 courses</span>
+        <select class="sort-select">
+          <option>Most Popular</option>
+          <option>Newest First</option>
+          <option>Price: Low to High</option>
+          <option>Price: High to Low</option>
+          <option>Highest Rated</option>
+        </select>
+      </div>
+      <div class="marketplace-grid" id="marketplace-grid"></div>
+      <div class="pagination">
+        <button class="page-btn"><i class="fa fa-chevron-left"></i></button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">…</button>
+        <button class="page-btn">8</button>
+        <button class="page-btn"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ COURSE DETAIL PAGE ━━━ -->
+<section id="page-course-detail" class="page">
+  <div style="background:var(--bg1);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;gap:8px">
+    <button class="btn btn-ghost btn-sm" onclick="showPage('marketplace',this)"><i class="fa fa-arrow-left"></i> Back</button>
+    <span style="color:var(--t3);font-size:14px">/ Courses / JEE Physics 2025</span>
+  </div>
+  <div class="detail-layout" style="padding:28px 32px">
+    <div class="detail-main">
+      <div class="video-player">
+        <div class="video-player-inner">
+          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800') center/cover;opacity:.2"></div>
+          <div class="play-btn-large" onclick="togglePlay(this)"><i class="fa fa-play" id="play-icon"></i></div>
+          <div class="video-controls">
+            <button style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer"><i class="fa fa-play"></i></button>
+            <div class="vid-progress"><div class="vid-progress-fill"></div></div>
+            <span class="vid-time">12:45 / 48:30</span>
+            <button style="background:none;border:none;color:#fff;font-size:14px;cursor:pointer"><i class="fa fa-volume-up"></i></button>
+            <button style="background:none;border:none;color:#fff;font-size:14px;cursor:pointer"><i class="fa fa-expand"></i></button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="flex gap-1 items-center flex-wrap" style="margin-bottom:8px">
+          <span class="badge badge-blue">JEE MAINS</span>
+          <span class="badge badge-purple">PHYSICS</span>
+          <span class="badge badge-green">BESTSELLER</span>
+        </div>
+        <h1 style="font-size:26px;font-weight:800;margin-bottom:8px">Complete JEE Physics 2025 — Mechanics to Modern Physics</h1>
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="rating-row"><span class="stars">★★★★★</span><span style="font-weight:700">4.9</span><span style="color:var(--t3)">(2,847 ratings)</span></div>
+          <span style="color:var(--t3)">•</span>
+          <span style="color:var(--t2);font-size:14px"><i class="fa fa-users"></i> 18,432 students</span>
+          <span style="color:var(--t3)">•</span>
+          <span style="color:var(--t2);font-size:14px"><i class="fa fa-clock"></i> 142 hours</span>
+        </div>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=prof&backgroundColor=c0aede" style="width:36px;height:36px;border-radius:50%">
+          <div><div style="font-weight:700;font-size:14px">Dr. Arvind Sharma</div><div style="font-size:12px;color:var(--t3)">Physics Expert • IIT Bombay Alumni • 10+ years</div></div>
+        </div>
+      </div>
+      <div class="detail-tabs">
+        <div class="detail-tab active" onclick="switchTab(this,'tab-overview')">Overview</div>
+        <div class="detail-tab" onclick="switchTab(this,'tab-curriculum')">Curriculum (68 Lessons)</div>
+        <div class="detail-tab" onclick="switchTab(this,'tab-reviews')">Reviews</div>
+        <div class="detail-tab" onclick="switchTab(this,'tab-qa')">Q&A</div>
+      </div>
+      <div id="tab-overview" class="tab-content active">
+        <h3 style="font-weight:800;margin-bottom:12px">What you'll learn</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+          <div style="display:flex;gap:8px;font-size:14px;color:var(--t2)"><i class="fa fa-check-circle" style="color:var(--green);margin-top:2px"></i> Complete Mechanics & Kinematics</div>
+          <div style="display:flex;gap:8px;font-size:14px;color:var(--t2)"><i class="fa fa-check-circle" style="color:var(--green);margin-top:2px"></i> Electromagnetism & Circuits</div>
+          <div style="display:flex;gap:8px;font-size:14px;color:var(--t2)"><i class="fa fa-check-circle" style="color:var(--green);margin-top:2px"></i> Optics & Wave Theory</div>
+          <div style="display:flex;gap:8px;font-size:14px;color:var(--t2)"><i class="fa fa-check-circle" style="color:var(--green);margin-top:2px"></i> Modern Physics & Quantum</div>
+          <div style="display:flex;gap:8px;font-size:14px;color:var(--t2)"><i class="fa fa-check-circle" style="color:var(--green);margin-top:2px"></i> 2000+ Practice Problems</div>
+          <div style="display:flex;gap:8px;font-size:14px;color:var(--t2)"><i class="fa fa-check-circle" style="color:var(--green);margin-top:2px"></i> Previous Year Papers (10 Yrs)</div>
+        </div>
+        <div class="divider"></div>
+        <h3 style="font-weight:800;margin-bottom:12px">About this course</h3>
+        <p style="color:var(--t2);font-size:15px;line-height:1.8">This comprehensive JEE Physics course covers the entire syllabus from Class 11 and 12, designed for students aiming for JEE Mains and Advanced. With 142 hours of HD video lectures, 2000+ solved problems, and live doubt sessions twice a week, this course is your complete preparation tool.</p>
+      </div>
+      <div id="tab-curriculum" class="tab-content">
+        <h3 style="font-weight:800;margin-bottom:16px">Course Content • 68 Lessons • 142 hours</h3>
+        <div class="curriculum-item free"><div class="ci-icon"><i class="fa fa-play"></i></div><div class="ci-info flex-1"><div class="ci-title">Introduction to Mechanics</div><div style="font-size:11px;color:var(--green);margin-top:2px">FREE PREVIEW</div></div><span class="ci-dur">28 min</span></div>
+        <div class="curriculum-item free"><div class="ci-icon"><i class="fa fa-play"></i></div><div class="ci-info flex-1"><div class="ci-title">Kinematics — 1D Motion</div><div style="font-size:11px;color:var(--green);margin-top:2px">FREE PREVIEW</div></div><span class="ci-dur">52 min</span></div>
+        <div class="curriculum-item locked"><div class="ci-icon"><i class="fa fa-lock"></i></div><div class="ci-info flex-1"><div class="ci-title">Kinematics — 2D Motion & Projectile</div></div><span class="ci-dur">64 min</span></div>
+        <div class="curriculum-item locked"><div class="ci-icon"><i class="fa fa-lock"></i></div><div class="ci-info flex-1"><div class="ci-title">Newton's Laws of Motion</div></div><span class="ci-dur">78 min</span></div>
+        <div class="curriculum-item locked"><div class="ci-icon"><i class="fa fa-file-alt"></i></div><div class="ci-info flex-1"><div class="ci-title">Practice Sheet — Mechanics Set 1</div></div><span class="ci-dur">PDF</span></div>
+        <div class="curriculum-item locked"><div class="ci-icon"><i class="fa fa-lock"></i></div><div class="ci-info flex-1"><div class="ci-title">Work, Energy & Power</div></div><span class="ci-dur">55 min</span></div>
+        <div class="curriculum-item locked"><div class="ci-icon"><i class="fa fa-lock"></i></div><div class="ci-info flex-1"><div class="ci-title">Rotational Motion & Torque</div></div><span class="ci-dur">90 min</span></div>
+        <div style="text-align:center;padding:16px"><button class="btn btn-secondary btn-sm">Show all 68 lessons <i class="fa fa-chevron-down"></i></button></div>
+      </div>
+      <div id="tab-reviews" class="tab-content">
+        <div style="display:flex;gap:24px;align-items:center;margin-bottom:24px;padding:20px;background:var(--glass);border-radius:var(--r2);border:1px solid var(--border)">
+          <div style="text-align:center"><div style="font-size:52px;font-weight:900;font-family:'Urbanist',sans-serif;background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent">4.9</div><div class="stars" style="font-size:18px">★★★★★</div><div style="font-size:13px;color:var(--t3);margin-top:4px">Course Rating</div></div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:78%"></div></div><span style="font-size:13px;color:var(--t2);white-space:nowrap">78% ★★★★★</span></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:15%"></div></div><span style="font-size:13px;color:var(--t2);white-space:nowrap">15% ★★★★☆</span></div>
+            <div style="display:flex;align-items:center;gap:10px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:7%;background:var(--gw)"></div></div><span style="font-size:13px;color:var(--t2);white-space:nowrap">7% ★★★☆☆</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="padding:16px;background:var(--glass);border-radius:var(--r2);border:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=ankit&backgroundColor=b6e3f4" style="width:36px;height:36px;border-radius:50%"><div><div style="font-weight:700;font-size:14px">Ankit Gupta</div><div class="stars" style="font-size:12px">★★★★★</div></div></div><p style="font-size:14px;color:var(--t2)">Best physics course I've ever taken. Dr. Sharma explains concepts in the most intuitive way. Already jumped from 40% to 78% in mock tests.</p></div>
+          <div style="padding:16px;background:var(--glass);border-radius:var(--r2);border:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=meera&backgroundColor=ffd5dc" style="width:36px;height:36px;border-radius:50%"><div><div style="font-weight:700;font-size:14px">Meera Singh</div><div class="stars" style="font-size:12px">★★★★★</div></div></div><p style="font-size:14px;color:var(--t2)">The live doubt sessions are a game changer. He remembers every student's weak areas. Worth every rupee!</p></div>
+        </div>
+      </div>
+      <div id="tab-qa" class="tab-content">
+        <div style="display:flex;gap:10px;margin-bottom:20px">
+          <input class="form-input" style="flex:1" placeholder="Ask a question about this course…">
+          <button class="btn btn-primary" onclick="showToast('Question posted!','success')"><i class="fa fa-paper-plane"></i></button>
+        </div>
+        <div style="padding:16px;background:var(--glass);border-radius:var(--r2);border:1px solid var(--border);margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=raj&backgroundColor=c0aede" style="width:28px;height:28px;border-radius:50%"><span style="font-weight:700;font-size:13px">Raj Patel</span><span style="color:var(--t3);font-size:12px">• 2 days ago</span></div><p style="font-size:14px;color:var(--t2)">What's the difference between average and instantaneous velocity?</p><button style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;margin-top:6px">2 Answers <i class="fa fa-chevron-down"></i></button></div>
+      </div>
+    </div>
+    <div class="detail-sidebar">
+      <div class="card detail-buy-card">
+        <div class="detail-price-big">₹1,299</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <span class="detail-orig-price">₹4,999</span>
+          <span class="badge badge-red">74% OFF</span>
+          <span style="font-size:12px;color:var(--red);font-weight:700">⏱ 2 days left</span>
+        </div>
+        <button class="btn btn-primary w-full btn-lg" style="justify-content:center;margin-bottom:10px" onclick="openCheckout()"><i class="fa fa-rocket"></i> Enroll Now</button>
+        <button class="btn btn-secondary w-full" style="justify-content:center" onclick="showToast('Added to wishlist!','success')"><i class="fa fa-heart"></i> Add to Wishlist</button>
+        <p style="text-align:center;font-size:12px;color:var(--t3);margin-top:10px">30-Day Money-Back Guarantee</p>
+        <div class="divider"></div>
+        <div class="detail-includes">
+          <div style="font-weight:800;font-size:14px;margin-bottom:10px">This course includes:</div>
+          <div class="include-item"><i class="fa fa-video"></i> 142 hours of HD video</div>
+          <div class="include-item"><i class="fa fa-file-alt"></i> 50 practice sheets (PDF)</div>
+          <div class="include-item"><i class="fa fa-broadcast-tower"></i> 8 live doubt sessions/month</div>
+          <div class="include-item"><i class="fa fa-mobile-alt"></i> Watch on mobile & desktop</div>
+          <div class="include-item"><i class="fa fa-certificate"></i> Certificate of completion</div>
+          <div class="include-item"><i class="fa fa-infinity"></i> Lifetime access</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12px" onclick="showToast('Link copied!','success')"><i class="fa fa-share"></i> Share</button>
+          <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12px" onclick="showToast('Added to wishlist!','success')"><i class="fa fa-gift"></i> Gift</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ STUDENT DASHBOARD ━━━ -->
+<section id="page-student" class="page">
+  <div class="dashboard-page">
+    <!-- Student Overview -->
+    <div id="student-overview">
+      <div class="dash-header flex justify-between items-center">
+        <div><h2 class="dash-title">Good Morning, Supriyo! 👋</h2><p class="dash-sub">You're on a 7-day streak. Keep it up!</p></div>
+        <div style="text-align:right"><div style="font-size:28px;font-weight:900;font-family:'Urbanist',sans-serif">🔥 7</div><div style="font-size:12px;color:var(--t3)">Day Streak</div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(92,156,255,.12);color:var(--blue)"><i class="fa fa-book-open"></i></div><div class="stat-val">4</div><div class="stat-lbl">Enrolled Courses</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> 1 this week</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.12);color:var(--green)"><i class="fa fa-clock"></i></div><div class="stat-val">48h</div><div class="stat-lbl">Hours Watched</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> 6h this week</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.12);color:var(--gold)"><i class="fa fa-star"></i></div><div class="stat-val">2,840</div><div class="stat-lbl">Total XP</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +340 today</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,.12);color:var(--purple)"><i class="fa fa-certificate"></i></div><div class="stat-val">2</div><div class="stat-lbl">Certificates</div></div>
+      </div>
+      <div class="two-col" style="margin-bottom:20px">
+        <div class="panel-card">
+          <div class="panel-card-title">Continue Watching <button class="btn btn-ghost btn-sm">View All</button></div>
+          <div class="enrolled-row" onclick="showPage('course-detail',this)">
+            <div class="enrolled-thumb" style="background:linear-gradient(135deg,#1a1a40,#2a2a60);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:20px">⚛️</div>
+            <div class="enrolled-info">
+              <div class="enrolled-title">JEE Physics 2025</div>
+              <div class="enrolled-meta">Dr. Arvind Sharma • Lecture 14/68</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:21%"></div></div>
+              <div style="font-size:11px;color:var(--t3);margin-top:3px">21% Complete</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0"><i class="fa fa-play"></i></button>
+          </div>
+          <div class="enrolled-row">
+            <div class="enrolled-thumb" style="background:linear-gradient(135deg,#1a3020,#2a4030);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:20px">🧬</div>
+            <div class="enrolled-info">
+              <div class="enrolled-title">NEET Biology Complete</div>
+              <div class="enrolled-meta">Dr. Priya Nair • Lecture 28/52</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:54%"></div></div>
+              <div style="font-size:11px;color:var(--t3);margin-top:3px">54% Complete</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0"><i class="fa fa-play"></i></button>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-card-title">Upcoming Classes</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="padding:12px;border-radius:var(--r1);background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.15);display:flex;align-items:center;gap:12px">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite"></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:13px">LIVE: Organic Chemistry</div><div style="font-size:12px;color:var(--t3)">Starts in 20 min • Dr. Kapoor</div></div>
+              <button class="btn btn-danger btn-sm">Join</button>
+            </div>
+            <div style="padding:12px;border-radius:var(--r1);background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;gap:12px">
+              <div style="width:32px;height:32px;border-radius:var(--r1);background:rgba(92,156,255,.1);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--blue);flex-shrink:0"><i class="fa fa-video"></i></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:13px">JEE Mock Test — Physics</div><div style="font-size:12px;color:var(--t3)">Tomorrow 10:00 AM</div></div>
+              <span class="badge badge-blue">Test</span>
+            </div>
+            <div style="padding:12px;border-radius:var(--r1);background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;gap:12px">
+              <div style="width:32px;height:32px;border-radius:var(--r1);background:rgba(139,92,246,.1);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--purple);flex-shrink:0"><i class="fa fa-book"></i></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:13px">Electrostatics — Doubt Session</div><div style="font-size:12px;color:var(--t3)">Wed, 16 Apr • 7:00 PM</div></div>
+              <span class="badge badge-purple">Q&A</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-card-title">Learning Activity (Last 7 Days) <span style="font-size:14px;font-weight:500;color:var(--t2)">Total: 6.2 hours</span></div>
+        <div class="earnings-chart" style="height:80px">
+          <div class="earn-bar" style="height:40%;background:rgba(92,156,255,.3)"><span class="earn-bar-label">Mon</span></div>
+          <div class="earn-bar" style="height:75%;background:rgba(92,156,255,.5)"><span class="earn-bar-label">Tue</span></div>
+          <div class="earn-bar" style="height:55%;background:rgba(92,156,255,.4)"><span class="earn-bar-label">Wed</span></div>
+          <div class="earn-bar" style="height:90%;background:var(--gp)"><span class="earn-bar-label">Thu</span></div>
+          <div class="earn-bar" style="height:30%;background:rgba(92,156,255,.25)"><span class="earn-bar-label">Fri</span></div>
+          <div class="earn-bar" style="height:65%;background:rgba(92,156,255,.45)"><span class="earn-bar-label">Sat</span></div>
+          <div class="earn-bar" style="height:50%;background:rgba(92,156,255,.35)"><span class="earn-bar-label">Sun</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ TEACHER DASHBOARD ━━━ -->
+<section id="page-teacher" class="page">
+  <div class="dashboard-page">
+    <div id="teacher-overview">
+      <div class="dash-header"><h2 class="dash-title">Teacher Dashboard</h2><p class="dash-sub">Manage your courses, students, and earnings</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.12);color:var(--gold)"><i class="fa fa-rupee-sign"></i></div><div class="stat-val">₹48,200</div><div class="stat-lbl">Total Earnings</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +12% this month</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(92,156,255,.12);color:var(--blue)"><i class="fa fa-users"></i></div><div class="stat-val">1,247</div><div class="stat-lbl">Total Students</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +89 this month</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.12);color:var(--green)"><i class="fa fa-book"></i></div><div class="stat-val">6</div><div class="stat-lbl">Active Courses</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,.12);color:var(--purple)"><i class="fa fa-star"></i></div><div class="stat-val">4.9</div><div class="stat-lbl">Avg Rating</div></div>
+      </div>
+      <div class="two-col" style="margin-bottom:20px">
+        <div class="panel-card">
+          <div class="panel-card-title">Monthly Earnings</div>
+          <div class="earnings-chart">
+            <div class="earn-bar" style="height:40%;background:rgba(92,156,255,.3)"><span class="earn-bar-label">Oct</span></div>
+            <div class="earn-bar" style="height:55%;background:rgba(92,156,255,.4)"><span class="earn-bar-label">Nov</span></div>
+            <div class="earn-bar" style="height:45%;background:rgba(92,156,255,.35)"><span class="earn-bar-label">Dec</span></div>
+            <div class="earn-bar" style="height:70%;background:rgba(92,156,255,.5)"><span class="earn-bar-label">Jan</span></div>
+            <div class="earn-bar" style="height:85%;background:rgba(92,156,255,.6)"><span class="earn-bar-label">Feb</span></div>
+            <div class="earn-bar" style="height:100%;background:var(--gp)"><span class="earn-bar-label">Mar</span></div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-card-title">My Courses Performance</div>
+          <table class="data-table">
+            <thead><tr><th>Course</th><th>Students</th><th>Rating</th></tr></thead>
+            <tbody>
+              <tr><td>JEE Physics 2025</td><td><span class="badge badge-blue">18,432</span></td><td><span style="color:var(--gold)">★ 4.9</span></td></tr>
+              <tr><td>Class 12 Mechanics</td><td><span class="badge badge-blue">4,280</span></td><td><span style="color:var(--gold)">★ 4.8</span></td></tr>
+              <tr><td>Electrostatics Deep</td><td><span class="badge badge-blue">2,140</span></td><td><span style="color:var(--gold)">★ 4.7</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-card-title">Create New Course <button class="btn btn-primary btn-sm" onclick="switchDashboard('teacher-create')"><i class="fa fa-plus"></i> Create</button></div>
+        <div class="how-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div style="text-align:center;padding:20px;border-radius:var(--r1);background:rgba(92,156,255,.08);border:1px dashed rgba(92,156,255,.3);cursor:pointer" onclick="switchDashboard('teacher-create')"><i class="fa fa-video" style="font-size:24px;color:var(--blue);margin-bottom:8px"></i><div style="font-weight:700;font-size:13px">Video Course</div><div style="font-size:12px;color:var(--t3)">Pre-recorded lectures</div></div>
+          <div style="text-align:center;padding:20px;border-radius:var(--r1);background:rgba(244,63,94,.08);border:1px dashed rgba(244,63,94,.3);cursor:pointer"><i class="fa fa-broadcast-tower" style="font-size:24px;color:var(--red);margin-bottom:8px"></i><div style="font-weight:700;font-size:13px">Live Course</div><div style="font-size:12px;color:var(--t3)">Live sessions + recordings</div></div>
+          <div style="text-align:center;padding:20px;border-radius:var(--r1);background:rgba(16,185,129,.08);border:1px dashed rgba(16,185,129,.3);cursor:pointer"><i class="fa fa-clipboard-list" style="font-size:24px;color:var(--green);margin-bottom:8px"></i><div style="font-weight:700;font-size:13px">Test Series</div><div style="font-size:12px;color:var(--t3)">Practice papers & mocks</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="teacher-create" class="hidden">
+      <div class="dash-header flex items-center gap-2"><button class="btn btn-ghost btn-sm" onclick="switchDashboard('teacher-overview')"><i class="fa fa-arrow-left"></i></button><div><h2 class="dash-title">Create New Course</h2><p class="dash-sub">Fill in the details to publish your course</p></div></div>
+      <div class="two-col">
+        <div>
+          <div class="panel-card" style="margin-bottom:20px">
+            <div class="panel-card-title">Course Details</div>
+            <div class="form-group"><label class="form-label">Course Title *</label><input class="form-input" placeholder="e.g. Complete JEE Physics 2025"></div>
+            <div class="form-group"><label class="form-label">Description</label><textarea class="form-input form-textarea" placeholder="Describe what students will learn…"></textarea></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Category</label><select class="form-input form-select"><option>School (Class 11-12)</option><option>JEE / NEET</option><option>UPSC / SSC</option><option>Programming</option></select></div>
+              <div class="form-group"><label class="form-label">Level</label><select class="form-input form-select"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Price (₹)</label><input class="form-input" type="number" placeholder="1299"></div>
+              <div class="form-group"><label class="form-label">Language</label><select class="form-input form-select"><option>Hindi</option><option>English</option><option>Bengali</option></select></div>
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-title">Upload Thumbnail</div>
+            <div class="upload-zone"><i class="fa fa-image"></i><p>Drag & drop your thumbnail here</p><span>Recommended: 1280×720 px, JPG/PNG, max 5MB</span><br><button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="showToast('File selected','success')"><i class="fa fa-upload"></i> Browse File</button></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel-card" style="margin-bottom:20px">
+            <div class="panel-card-title">Upload Videos</div>
+            <div class="upload-zone"><i class="fa fa-video"></i><p>Upload course videos</p><span>MP4, MOV supported • Max 2GB per file</span><br><button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="showToast('Upload started…','success')"><i class="fa fa-upload"></i> Select Videos</button></div>
+            <div style="margin-top:16px">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--glass);border-radius:var(--r1);margin-bottom:8px"><i class="fa fa-file-video" style="color:var(--blue)"></i><div style="flex:1"><div style="font-size:13px;font-weight:700">Lecture_01_Introduction.mp4</div><div class="progress-bar" style="margin-top:4px"><div class="progress-fill" style="width:100%"></div></div></div><span class="badge badge-green">Done</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--glass);border-radius:var(--r1)"><i class="fa fa-file-video" style="color:var(--blue)"></i><div style="flex:1"><div style="font-size:13px;font-weight:700">Lecture_02_Kinematics.mp4</div><div class="progress-bar" style="margin-top:4px"><div class="progress-fill" style="width:65%"></div></div></div><span style="font-size:12px;color:var(--t3)">65%</span></div>
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-title">Pricing & Visibility</div>
+            <div class="form-group"><label class="form-label">Enrollment Type</label><select class="form-input form-select"><option>Paid</option><option>Free</option><option>Free + Certificate Paid</option></select></div>
+            <div class="form-group"><label class="form-label">Publish Status</label><select class="form-input form-select"><option>Draft</option><option>Published</option><option>Scheduled</option></select></div>
+            <div style="display:flex;gap:10px;margin-top:8px">
+              <button class="btn btn-secondary flex-1" style="justify-content:center" onclick="showToast('Saved as draft','success')">Save Draft</button>
+              <button class="btn btn-primary flex-1" style="justify-content:center" onclick="showToast('Course published! 🎉','success')"><i class="fa fa-rocket"></i> Publish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ COACHING PANEL ━━━ -->
+<section id="page-coach" class="page">
+  <div class="dashboard-page">
+    <div id="coach-overview">
+      <div class="dash-header"><h2 class="dash-title">Coaching Panel</h2><p class="dash-sub">Manage your institute, teachers, and courses</p></div>
+      <div class="institute-card">
+        <div class="inst-logo">🏢</div>
+        <div class="inst-info">
+          <div class="inst-name">Apex Study Circle</div>
+          <div class="inst-type">Coaching Center • Hooghly, West Bengal <span class="badge badge-green" style="margin-left:8px">Verified</span></div>
+          <div class="inst-stats">
+            <span><i class="fa fa-users"></i> 420 Students</span>
+            <span><i class="fa fa-chalkboard-teacher"></i> 12 Teachers</span>
+            <span><i class="fa fa-book"></i> 28 Courses</span>
+            <span><i class="fa fa-star"></i> 4.7 Rating</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Opening settings…','success')"><i class="fa fa-cog"></i> Manage</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.12);color:var(--gold)"><i class="fa fa-rupee-sign"></i></div><div class="stat-val">₹1.2L</div><div class="stat-lbl">Monthly Revenue</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +18%</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(92,156,255,.12);color:var(--blue)"><i class="fa fa-users"></i></div><div class="stat-val">420</div><div class="stat-lbl">Active Students</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +34</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.12);color:var(--green)"><i class="fa fa-chalkboard-teacher"></i></div><div class="stat-val">12</div><div class="stat-lbl">Teachers</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(236,72,153,.12);color:var(--pink)"><i class="fa fa-layer-group"></i></div><div class="stat-val">8</div><div class="stat-lbl">Active Batches</div></div>
+      </div>
+      <div class="two-col">
+        <div class="panel-card">
+          <div class="panel-card-title">Teachers <button class="btn btn-primary btn-sm" onclick="showToast('Add Teacher modal…','success')"><i class="fa fa-plus"></i> Add</button></div>
+          <table class="data-table">
+            <thead><tr><th>Teacher</th><th>Subject</th><th>Students</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=t1&backgroundColor=c0aede" style="width:28px;height:28px;border-radius:50%"> Dr. Sharma</div></td><td style="color:var(--t2)">Physics</td><td>18K</td><td><span class="badge badge-green">Active</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=t2&backgroundColor=ffd5dc" style="width:28px;height:28px;border-radius:50%"> Ms. Ghosh</div></td><td style="color:var(--t2)">Chemistry</td><td>9.2K</td><td><span class="badge badge-green">Active</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=t3&backgroundColor=b6e3f4" style="width:28px;height:28px;border-radius:50%"> Mr. Roy</div></td><td style="color:var(--t2)">Mathematics</td><td>7.8K</td><td><span class="badge badge-gold">On Leave</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=t4&backgroundColor=d1d4f9" style="width:28px;height:28px;border-radius:50%"> Dr. Nair</div></td><td style="color:var(--t2)">Biology</td><td>12K</td><td><span class="badge badge-green">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-card">
+          <div class="panel-card-title">Admission Pipeline</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="padding:12px;border-radius:var(--r1);background:var(--glass);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:700;font-size:14px">JEE Mains Batch 2025</span><span class="badge badge-blue">Open</span></div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2)"><span>52/60 seats filled</span><span style="color:var(--red);font-weight:700">8 left!</span></div><div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:87%"></div></div></div>
+            <div style="padding:12px;border-radius:var(--r1);background:var(--glass);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:700;font-size:14px">NEET 2025 Crash Course</span><span class="badge badge-green">New</span></div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2)"><span>23/80 seats filled</span><span style="color:var(--green)">57 available</span></div><div class="progress-bar" style="margin-top:6px"><div class="progress-fill" style="width:29%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ ADMIN PANEL ━━━ -->
+<section id="page-admin" class="page">
+  <div class="dashboard-page">
+    <div id="admin-overview">
+      <div class="dash-header"><h2 class="dash-title">Admin Dashboard</h2><p class="dash-sub">Platform-wide analytics and controls</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(92,156,255,.12);color:var(--blue)"><i class="fa fa-users"></i></div><div class="stat-val">52,840</div><div class="stat-lbl">Total Users</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +1,248 this week</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.12);color:var(--gold)"><i class="fa fa-rupee-sign"></i></div><div class="stat-val">₹24.8L</div><div class="stat-lbl">Monthly Revenue</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +22%</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.12);color:var(--green)"><i class="fa fa-book"></i></div><div class="stat-val">2,148</div><div class="stat-lbl">Total Courses</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +48</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,.12);color:var(--purple)"><i class="fa fa-building"></i></div><div class="stat-val">104</div><div class="stat-lbl">Institutes</div><div class="stat-change up"><i class="fa fa-arrow-up"></i> +6</div></div>
+      </div>
+      <div class="two-col" style="margin-bottom:20px">
+        <div class="panel-card">
+          <div class="panel-card-title">Revenue Breakdown</div>
+          <div class="donut-wrap">
+            <div class="donut"></div>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div><span>Subscriptions — 45%</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div><span>Course Sales — 25%</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div><span>Coaching Fees — 15%</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--border2)"></div><span>Other — 15%</span></div>
+            </div>
+          </div>
+          <div class="revenue-breakdown">
+            <div class="rev-row"><span class="rev-name">Subscriptions</span><div class="rev-bar-wrap"><div class="rev-fill" style="width:75%"></div></div><span class="rev-amt">₹11.2L</span></div>
+            <div class="rev-row"><span class="rev-name">Course Sales</span><div class="rev-bar-wrap"><div class="rev-fill" style="width:42%"></div></div><span class="rev-amt">₹6.2L</span></div>
+            <div class="rev-row"><span class="rev-name">Coaching</span><div class="rev-bar-wrap"><div class="rev-fill" style="width:25%"></div></div><span class="rev-amt">₹3.7L</span></div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-card-title">Pending Approvals <span class="sidebar-badge" style="position:static;margin-left:8px">5</span></div>
+          <div class="approval-card">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=newt1&backgroundColor=c0aede" style="width:44px;height:44px;border-radius:50%">
+            <div class="approval-info"><div class="approval-name">Rahul Mehta</div><div class="approval-sub">Mathematics Teacher • 8 yrs exp</div></div>
+            <div class="approval-actions"><button class="btn btn-success btn-sm" onclick="showToast('Teacher approved!','success')"><i class="fa fa-check"></i></button><button class="btn btn-danger btn-sm" onclick="showToast('Rejected','error')"><i class="fa fa-times"></i></button></div>
+          </div>
+          <div class="approval-card">
+            <div style="width:44px;height:44px;border-radius:var(--r1);background:rgba(139,92,246,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏫</div>
+            <div class="approval-info"><div class="approval-name">Bright Future Academy</div><div class="approval-sub">New Institute • Kolkata</div></div>
+            <div class="approval-actions"><button class="btn btn-success btn-sm" onclick="showToast('Institute approved!','success')"><i class="fa fa-check"></i></button><button class="btn btn-danger btn-sm" onclick="showToast('Rejected','error')"><i class="fa fa-times"></i></button></div>
+          </div>
+          <div class="approval-card">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=newt2&backgroundColor=ffd5dc" style="width:44px;height:44px;border-radius:50%">
+            <div class="approval-info"><div class="approval-name">Priya Singh</div><div class="approval-sub">Chemistry Teacher • 5 yrs exp</div></div>
+            <div class="approval-actions"><button class="btn btn-success btn-sm" onclick="showToast('Teacher approved!','success')"><i class="fa fa-check"></i></button><button class="btn btn-danger btn-sm" onclick="showToast('Rejected','error')"><i class="fa fa-times"></i></button></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-card-title">Recent Transactions</div>
+        <table class="data-table">
+          <thead><tr><th>Student</th><th>Course</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=s1&backgroundColor=b6e3f4" style="width:26px;height:26px;border-radius:50%"> Amit Kumar</div></td><td style="color:var(--t2);font-size:13px">JEE Physics 2025</td><td style="font-weight:700;color:var(--green)">₹1,299</td><td style="color:var(--t3);font-size:13px">15 Apr 2025</td><td><span class="badge badge-green">Success</span></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=s2&backgroundColor=d1d4f9" style="width:26px;height:26px;border-radius:50%"> Simran Kaur</div></td><td style="color:var(--t2);font-size:13px">Pro Subscription</td><td style="font-weight:700;color:var(--blue)">₹299</td><td style="color:var(--t3);font-size:13px">15 Apr 2025</td><td><span class="badge badge-green">Success</span></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=s3&backgroundColor=ffd5dc" style="width:26px;height:26px;border-radius:50%"> Vikram Iyer</div></td><td style="color:var(--t2);font-size:13px">NEET Biology</td><td style="font-weight:700;color:var(--green)">₹1,999</td><td style="color:var(--t3);font-size:13px">14 Apr 2025</td><td><span class="badge badge-gold">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ PAYMENT PAGE ━━━ -->
+<section id="page-payment" class="page">
+  <div style="padding:48px">
+    <div class="plans-header">
+      <div class="badge badge-purple" style="margin-bottom:12px"><i class="fa fa-crown"></i> SUBSCRIPTION PLANS</div>
+      <h2>Choose Your <span class="grad-text">Learning Plan</span></h2>
+      <p style="color:var(--t2);font-size:16px;margin-top:8px">Unlock unlimited learning, live classes, and doubt solving</p>
+      <div class="plans-toggle" style="margin-top:20px">
+        <div class="toggle-pill">
+          <div class="toggle-opt active" onclick="toggleBilling('monthly',this)">Monthly</div>
+          <div class="toggle-opt" onclick="toggleBilling('yearly',this)">Yearly</div>
+        </div>
+        <span class="save-tag">Save 40% on Yearly</span>
+      </div>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><sup>₹</sup>0<span>/forever</span></div>
+        <p class="plan-desc">Perfect for exploring Mentlify</p>
+        <div class="plan-features">
+          <div class="plan-feature"><i class="fa fa-check"></i> 10 free courses</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Basic video quality (480p)</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Community forums</div>
+          <div class="plan-feature disabled"><i class="fa fa-times"></i> Live classes</div>
+          <div class="plan-feature disabled"><i class="fa fa-times"></i> Doubt solving</div>
+          <div class="plan-feature disabled"><i class="fa fa-times"></i> Download videos offline</div>
+          <div class="plan-feature disabled"><i class="fa fa-times"></i> Certificates</div>
+        </div>
+        <button class="btn btn-secondary w-full" style="justify-content:center" onclick="showToast('You are on the Free plan','success')">Current Plan</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price" id="pro-price"><sup>₹</sup>299<span>/month</span></div>
+        <p class="plan-desc">Best for serious learners and exam prep</p>
+        <div class="plan-features">
+          <div class="plan-feature"><i class="fa fa-check"></i> Unlimited courses</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Full HD (1080p) video</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> 5 live classes / month</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Doubt solving (text)</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Download for offline</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Certificates included</div>
+          <div class="plan-feature disabled"><i class="fa fa-times"></i> 1-on-1 mentoring</div>
+        </div>
+        <button class="btn btn-primary w-full btn-lg" style="justify-content:center" onclick="openCheckout('Pro')"><i class="fa fa-rocket"></i> Start Free Trial</button>
+        <p style="text-align:center;font-size:12px;color:var(--t3);margin-top:8px">7 days free • Cancel anytime</p>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Elite</div>
+        <div class="plan-price" id="elite-price"><sup>₹</sup>599<span>/month</span></div>
+        <p class="plan-desc">For achievers who want maximum support</p>
+        <div class="plan-features">
+          <div class="plan-feature"><i class="fa fa-check"></i> Everything in Pro</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Unlimited live classes</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Doubt solving (video call)</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> 2 sessions/month mentoring</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Personalized study plan</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Priority support 24/7</div>
+          <div class="plan-feature"><i class="fa fa-check"></i> Career counseling</div>
+        </div>
+        <button class="btn btn-gold w-full btn-lg" style="justify-content:center" onclick="openCheckout('Elite')"><i class="fa fa-crown"></i> Get Elite</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:40px;color:var(--t3);font-size:13px">
+      <i class="fa fa-shield-alt" style="color:var(--green)"></i> Secure payment via Razorpay · <i class="fa fa-sync-alt"></i> Cancel anytime · <i class="fa fa-undo"></i> 30-day money back guarantee
+    </div>
+  </div>
+</section>
+
+</main><!-- /main-content -->
+
+<!-- ══════════════════════════════════════
+     CHECKOUT MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="checkout-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCheckout()"><i class="fa fa-times"></i></button>
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px">Complete Your Purchase</h3>
+    <div class="checkout-plan-summary">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-weight:700;font-size:15px" id="checkout-plan-name">Pro Plan</div><div style="font-size:13px;color:var(--t2)">Monthly Subscription</div></div>
+        <div style="font-size:24px;font-weight:900;font-family:'Urbanist',sans-serif;background:var(--gp);-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="checkout-price">₹299</div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:var(--t2);margin-bottom:10px">Payment Method</div>
+    <div class="payment-methods">
+      <div class="pay-method active" onclick="selectPay(this)"><i class="fa fa-credit-card"></i><br>Card</div>
+      <div class="pay-method" onclick="selectPay(this)"><i class="fa fa-mobile-alt"></i><br>UPI</div>
+      <div class="pay-method" onclick="selectPay(this)"><i class="fa fa-university"></i><br>NetBanking</div>
+      <div class="pay-method" onclick="selectPay(this)"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/100px-Paytm_Logo_%28standalone%29.svg.png" style="height:14px;filter:invert(1)"><br>Wallet</div>
+    </div>
+    <div class="card-input-group" id="card-fields">
+      <input class="form-input" placeholder="Card Number" maxlength="19" oninput="formatCard(this)">
+      <div class="card-row">
+        <input class="form-input" placeholder="MM/YY">
+        <input class="form-input" placeholder="CVV" maxlength="3">
+      </div>
+      <input class="form-input" placeholder="Cardholder Name">
+    </div>
+    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:var(--r1);padding:10px 14px;font-size:13px;color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:16px"><i class="fa fa-shield-alt"></i> 256-bit SSL encrypted · Powered by Razorpay</div>
+    <button class="btn btn-primary w-full btn-lg" style="justify-content:center" onclick="processPayment()"><i class="fa fa-lock"></i> Pay & Subscribe</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ROLE SWITCHER
+══════════════════════════════════════ -->
+<div class="role-switcher">
+  <div class="role-label">View As</div>
+  <button class="role-btn active" onclick="setRole('student',this)">👨‍🎓 Student</button>
+  <button class="role-btn" onclick="setRole('teacher',this)">👨‍🏫 Teacher</button>
+  <button class="role-btn" onclick="setRole('coach',this)">🏢 Coach</button>
+  <button class="role-btn" onclick="setRole('admin',this)">👑 Admin</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     BOTTOM NAV (MOBILE)
+══════════════════════════════════════ -->
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bn-item active" onclick="showPage('home',this);setBottomNav(this)"><i class="fa fa-home"></i><span>Home</span></div>
+  <div class="bn-item" onclick="showPage('marketplace',this);setBottomNav(this)"><i class="fa fa-th-large"></i><span>Courses</span></div>
+  <div class="bn-item" onclick="showDashboard();setBottomNav(this)"><i class="fa fa-tachometer-alt"></i><span>Dashboard</span></div>
+  <div class="bn-item" onclick="showPage('payment',this);setBottomNav(this)"><i class="fa fa-crown"></i><span>Plans</span></div>
+  <div class="bn-item" onclick="setBottomNav(this)"><i class="fa fa-user-circle"></i><span>Profile</span></div>
+</nav>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ── DATA ──
+const courses = [
+  {id:1,title:'Complete JEE Physics 2025',teacher:'Dr. Arvind Sharma',teacherAvatar:'prof',price:1299,origPrice:4999,rating:4.9,reviews:2847,students:18432,category:'JEE',level:'Advanced',color:'#1a1a40,#2a2a60',emoji:'⚛️',badge:'BESTSELLER',badgeClass:'badge-green'},
+  {id:2,title:'NEET Biology: Cell & Genetics',teacher:'Dr. Priya Nair',teacherAvatar:'priya',price:1999,origPrice:5999,rating:4.8,reviews:1920,students:12480,category:'NEET',level:'Intermediate',color:'#1a3020,#2a4030',emoji:'🧬',badge:'TOP RATED',badgeClass:'badge-blue'},
+  {id:3,title:'Class 12 Chemistry — Organic',teacher:'Ms. Anjali Ghosh',teacherAvatar:'anjali',price:899,origPrice:2499,rating:4.7,reviews:1240,students:8240,category:'School',level:'Intermediate',color:'#2a1a40,#3a2a60',emoji:'🧪',badge:'NEW',badgeClass:'badge-purple'},
+  {id:4,title:'Python & Data Science 2025',teacher:'Rahul Dev',teacherAvatar:'rahul',price:2499,origPrice:7999,rating:4.9,reviews:3280,students:24800,category:'Programming',level:'Beginner',color:'#1a2a3a,#2a3a4a',emoji:'🐍',badge:'BESTSELLER',badgeClass:'badge-green'},
+  {id:5,title:'UPSC Prelims Complete Course',teacher:'IAS Vijay Kumar',teacherAvatar:'vijay',price:3999,origPrice:9999,rating:4.8,reviews:980,students:5600,category:'UPSC',level:'Advanced',color:'#2a2a1a,#3a3a2a',emoji:'🏛️',badge:'TOP RATED',badgeClass:'badge-gold'},
+  {id:6,title:'Class 10 Maths — Board Prep',teacher:'Suresh Roy',teacherAvatar:'suresh',price:0,origPrice:1499,rating:4.6,reviews:4200,students:32000,category:'School',level:'Beginner',color:'#1a3a3a,#2a4a4a',emoji:'📐',badge:'FREE',badgeClass:'badge-teal'},
+  {id:7,title:'JEE Advanced Mathematics',teacher:'Prof. Amit Joshi',teacherAvatar:'amit',price:2999,origPrice:8999,rating:4.9,reviews:1560,students:9800,category:'JEE',level:'Advanced',color:'#3a1a2a,#4a2a3a',emoji:'∫',badge:'HOT',badgeClass:'badge-red'},
+  {id:8,title:'English Speaking & Grammar',teacher:'Ms. Sarah Khan',teacherAvatar:'sarah',price:599,origPrice:1999,rating:4.5,reviews:5600,students:44000,category:'Skills',level:'Beginner',color:'#1a3a2a,#2a4a3a',emoji:'🗣️',badge:null,badgeClass:''},
+];
+
+const teachers = [
+  {name:'Dr. Arvind Sharma',subject:'Physics • JEE/NEET',rating:4.9,students:'18K',courses:6,avatar:'prof',seed:'prof'},
+  {name:'Dr. Priya Nair',subject:'Biology • NEET',rating:4.8,students:'12K',courses:4,avatar:'priya',seed:'priya'},
+  {name:'Rahul Dev',subject:'Programming • Python',rating:4.9,students:'24K',courses:8,avatar:'rahul',seed:'rahul'},
+  {name:'Ms. Anjali Ghosh',subject:'Chemistry • Class 12',rating:4.7,students:'8K',courses:5,avatar:'anjali',seed:'anjali'},
+  {name:'Prof. Amit Joshi',subject:'Mathematics • JEE',rating:4.9,students:'9K',courses:3,avatar:'amit',seed:'amit'},
+];
+
+// ── STATE ──
+let currentRole = 'student';
+let currentPage = 'home';
+
+// ── RENDER COURSES ──
+function renderCourseCard(c,clickFn){
+  const priceHtml = c.price === 0
+    ? `<span class="course-price-free">FREE</span>`
+    : `<span class="course-price">₹${c.price.toLocaleString()}</span><span class="course-orig-price">₹${c.origPrice.toLocaleString()}</span>`;
+  const badgeHtml = c.badge ? `<span class="badge ${c.badgeClass}">${c.badge}</span>` : '';
+  return `
+    <div class="course-card" onclick="${clickFn||"showPage('course-detail',this)"}">
+      <div class="course-thumb" style="position:relative">
+        <div class="course-thumb-img" style="background:linear-gradient(135deg,#${c.color});display:flex;align-items:center;justify-content:center;font-size:40px;height:160px">${c.emoji}</div>
+        <div class="course-thumb-overlay"><div class="play-icon"><i class="fa fa-play"></i></div></div>
+        ${badgeHtml ? `<div style="position:absolute;top:10px;right:10px">${badgeHtml}</div>` : ''}
+      </div>
+      <div class="course-body">
+        <div class="course-meta"><span class="tag" style="font-size:11px;padding:2px 8px">${c.category}</span><span class="tag" style="font-size:11px;padding:2px 8px">${c.level}</span></div>
+        <div class="course-title">${c.title}</div>
+        <div class="course-teacher">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${c.teacherAvatar}&backgroundColor=c0aede" alt="${c.teacher}">
+          ${c.teacher}
+        </div>
+        <div class="rating-row"><span class="stars">★★★★★</span><span style="font-weight:700">${c.rating}</span><span style="color:var(--t3)">(${c.reviews.toLocaleString()})</span><span style="margin-left:auto;font-size:12px;color:var(--t3)"><i class="fa fa-users"></i> ${(c.students/1000).toFixed(1)}K</span></div>
+        <div class="course-footer">${priceHtml}<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();handleEnroll(this)">Enroll</button></div>
+      </div>
+    </div>`;
+}
+
+function renderTeacherCard(t){
+  return `
+    <div class="teacher-card">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${t.seed}&backgroundColor=c0aede" class="teacher-avatar" alt="${t.name}">
+      <div class="teacher-name">${t.name}</div>
+      <div class="teacher-subject t2">${t.subject}</div>
+      <div class="teacher-stats">
+        <span><i class="fa fa-star" style="color:var(--gold)"></i> ${t.rating}</span>
+        <span><i class="fa fa-users"></i> ${t.students}</span>
+        <span><i class="fa fa-book"></i> ${t.courses} courses</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:12px;width:100%;justify-content:center" onclick="showToast('Viewing ${t.name.split(' ')[1]}\'s profile','success')">View Profile</button>
+    </div>`;
+}
+
+// ── INIT ──
+function init(){
+  // Featured courses (first 6)
+  const fc = document.getElementById('featured-courses');
+  if(fc) fc.innerHTML = courses.slice(0,6).map(c => renderCourseCard(c)).join('');
+  // Home teachers
+  const ht = document.getElementById('home-teachers');
+  if(ht) ht.innerHTML = teachers.map(t => renderTeacherCard(t)).join('');
+  // Marketplace grid (all 8)
+  const mg = document.getElementById('marketplace-grid');
+  if(mg) mg.innerHTML = courses.map(c => renderCourseCard(c)).join('');
+}
+
+// ── PAGE NAVIGATION ──
+function showPage(page, el){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pEl = document.getElementById('page-'+page);
+  if(pEl) pEl.classList.add('active');
+  currentPage = page;
+  // Update header nav
+  document.querySelectorAll('.header-nav a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+  // Sidebar toggle
+  const hasSidebar = ['student','teacher','coach','admin'].includes(page);
+  const main = document.getElementById('main-content');
+  const sidebar = document.getElementById('sidebar');
+  if(hasSidebar){
+    main.classList.remove('no-sidebar');
+    sidebar.classList.remove('collapsed');
+    if(window.innerWidth < 768) sidebar.classList.remove('open');
+  } else {
+    main.classList.add('no-sidebar');
+    sidebar.classList.add('collapsed');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+  closeNotif();
+}
+
+function showDashboard(){
+  const map = {student:'student',teacher:'teacher',coach:'coach',admin:'admin'};
+  showPage(map[currentRole]);
+}
+
+// ── SIDEBAR DASHBOARD SECTIONS ──
+function switchDashboard(section){
+  const page = section.split('-')[0];
+  // Hide all subsections in the page
+  const allSections = document.querySelectorAll(`#page-${page} [id^="${page}-"]`);
+  allSections.forEach(s => s.classList.add('hidden'));
+  const target = document.getElementById(section);
+  if(target) target.classList.remove('hidden');
+  // Update sidebar active
+  document.querySelectorAll('.sidebar-item').forEach(i => {
+    i.classList.remove('active');
+  });
+}
+
+// ── ROLE SWITCHER ──
+function setRole(role, btn){
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Update sidebar
+  ['student','teacher','coach','admin'].forEach(r => {
+    document.getElementById(`nav-${r}`).classList.toggle('hidden', r !== role);
+  });
+  // Update role display
+  const names = {student:'Supriyo K.',teacher:'Dr. Arvind',coach:'Suresh Owner',admin:'Admin Panel'};
+  const subs = {student:'Student • Free Plan',teacher:'Teacher • 1.2K Students',coach:'Coach • Apex Study Circle',admin:'Super Admin'};
+  document.getElementById('sidebar-role-name').textContent = names[role];
+  document.getElementById('sidebar-role-sub').textContent = subs[role];
+  showPage(role);
+  showToast(`Switched to ${role.charAt(0).toUpperCase()+role.slice(1)} view`,'success');
+}
+
+// ── TABS ──
+function switchTab(tabEl, tabId){
+  const parent = tabEl.closest('.detail-tabs');
+  parent.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+  const detailMain = tabEl.closest('.detail-main');
+  detailMain.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const tc = document.getElementById(tabId);
+  if(tc) tc.classList.add('active');
+}
+
+// ── SIDEBAR TOGGLE ──
+function toggleSidebar(){
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('open');
+}
+
+// ── NOTIFICATIONS ──
+function toggleNotif(){
+  document.getElementById('notif-dropdown').classList.toggle('hidden');
+}
+function closeNotif(){
+  document.getElementById('notif-dropdown').classList.add('hidden');
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.notif-btn') && !e.target.closest('#notif-dropdown')) closeNotif();
+});
+
+// ── CHECKOUT ──
+let checkoutPlan = 'Pro';
+function openCheckout(plan){
+  checkoutPlan = plan || 'Pro';
+  const prices = {Pro:'₹299',Elite:'₹599'};
+  document.getElementById('checkout-plan-name').textContent = checkoutPlan + ' Plan';
+  document.getElementById('checkout-price').textContent = prices[checkoutPlan] || '₹299';
+  document.getElementById('checkout-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeCheckout(){
+  document.getElementById('checkout-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function selectPay(el){
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+}
+function processPayment(){
+  closeCheckout();
+  showToast('🎉 Payment successful! Welcome to ' + checkoutPlan + ' plan!','success');
+}
+function formatCard(input){
+  let v = input.value.replace(/\D/g,'');
+  v = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+  input.value = v;
+}
+
+// ── BILLING TOGGLE ──
+function toggleBilling(type, btn){
+  document.querySelectorAll('.toggle-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const proEl = document.getElementById('pro-price');
+  const eliteEl = document.getElementById('elite-price');
+  if(type === 'yearly'){
+    if(proEl) proEl.innerHTML = '<sup>₹</sup>179<span>/month</span><div style="font-size:11px;color:var(--green);margin-top:2px">Billed ₹2,148/year</div>';
+    if(eliteEl) eliteEl.innerHTML = '<sup>₹</sup>359<span>/month</span><div style="font-size:11px;color:var(--green);margin-top:2px">Billed ₹4,308/year</div>';
+  } else {
+    if(proEl) proEl.innerHTML = '<sup>₹</sup>299<span>/month</span>';
+    if(eliteEl) eliteEl.innerHTML = '<sup>₹</sup>599<span>/month</span>';
+  }
+}
+
+// ── ENROLL ──
+function handleEnroll(btn){
+  btn.innerHTML = '<i class="fa fa-check"></i> Enrolled';
+  btn.style.background = 'var(--green)';
+  btn.onclick = null;
+  showToast('Course added to your library! 🎉','success');
+}
+
+// ── SEARCH ──
+function handleSearch(val){
+  if(val.length > 2){
+    showPage('marketplace', null);
+    const count = document.getElementById('marketplace-count');
+    if(count) count.textContent = `Showing results for "${val}"`;
+  }
+}
+
+// ── PLAY TOGGLE ──
+function togglePlay(btn){
+  const icon = document.getElementById('play-icon');
+  if(icon.classList.contains('fa-play')){
+    icon.classList.replace('fa-play','fa-pause');
+    btn.style.background = 'rgba(255,255,255,.2)';
+  } else {
+    icon.classList.replace('fa-pause','fa-play');
+    btn.style.background = 'var(--gp)';
+  }
+}
+
+// ── BOTTOM NAV ──
+function setBottomNav(el){
+  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── TOAST ──
+function showToast(msg, type = 'success'){
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = {success:'<i class="fa fa-check-circle" style="color:var(--green)"></i>',error:'<i class="fa fa-times-circle" style="color:var(--red)"></i>'};
+  t.innerHTML = (icons[type]||'') + ' ' + msg;
+  tc.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(10px)'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+// ── USER MENU ──
+function toggleUserMenu(){
+  showToast('Profile menu coming soon!','success');
+}
+
+// ── MODAL CLICK OUTSIDE ──
+document.getElementById('checkout-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('checkout-modal')) closeCheckout();
+});
+
+// ── RESPONSIVE SIDEBAR ──
+window.addEventListener('resize', () => {
+  const sidebar = document.getElementById('sidebar');
+  if(window.innerWidth >= 768){
+    sidebar.classList.remove('open');
+    const hasSidebar = ['student','teacher','coach','admin'].includes(currentPage);
+    if(!hasSidebar) sidebar.classList.add('collapsed');
+    else sidebar.classList.remove('collapsed');
+  }
+});
+
+// ── CSS PULSE ──
+const style = document.createElement('style');
+style.textContent = '@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}';
+document.head.appendChild(style);
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', init);
+init(); // Run immediately too
+</script>
+</body>
+</html>
