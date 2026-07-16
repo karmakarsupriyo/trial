@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Freshers Welcome 2026</title><style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#07122d,#0f3d91,#4d1020);color:#fff}
+section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:900px;width:100%;background:rgba(255,255,255,.08);backdrop-filter:blur(10px);padding:32px;border-radius:20px}
+h1,h2,p{text-align:center}.btn{display:inline-block;margin-top:20px;padding:12px 24px;background:#2563eb;color:#fff;text-decoration:none;border-radius:999px}
+input{width:100%;padding:12px;margin:16px 0;border-radius:10px;border:none}button{padding:12px 20px;background:#dc2626;color:#fff;border:none;border-radius:10px;cursor:pointer}#letter{display:none;margin-top:20px;padding:18px;background:rgba(255,255,255,.08);border-radius:12px}
+ul{max-width:320px;margin:18px auto;line-height:2}
+</style></head><body>
+<section><div class='card'><h1>WELCOME FRESHERS 2026</h1><h2>Sammilani Mahavidyalaya</h2><p>B.Sc. Computer Science</p><p>25 July 2026</p><p><a class='btn' href='#invite'>Open Invitation</a></p></div></section>
+<section id='invite'><div class='card'><h2>Generate Your Welcome Letter</h2><input id='name' placeholder='Enter your name'><p><button onclick='gen()'>Generate</button></p><div id='letter'><h2 id='ttl'></h2><p id='txt'></p></div></div></section>
+<section><div class='card'><h2>Event Details</h2><p>Date: 25 July 2026</p><h2>Dress Code</h2><ul><li>Girls: Saree</li><li>Boys: Punjabi</li></ul><p>Every great programmer was once a fresher. Welcome to your journey.</p></div></section>
+<script>
+function gen(){let n=document.getElementById('name').value.trim()||'Student';document.getElementById('letter').style.display='block';document.getElementById('ttl').innerText='Dear '+n+',';document.getElementById('txt').innerHTML='You are warmly invited to the Freshers\' Welcome 2026 of <b>Sammilani Mahavidyalaya</b> (B.Sc. Computer Science).<br><br>Dress Code: Girls - Saree | Boys - Punjabi.<br><br>We look forward to celebrating this special day with you!';}
+</script></body></html>
