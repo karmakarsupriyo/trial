@@ -1,86 +1,665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome Freshers 2026 | Sammilani Mahavidyalaya</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{
-background:linear-gradient(135deg,#0b1f5e,#1546a0,#b3122d);
-color:#fff;overflow-x:hidden;
-}
-header{
-min-height:100vh;display:flex;flex-direction:column;
-justify-content:center;align-items:center;text-align:center;padding:20px;
-}
-.logo{
-width:150px;height:150px;border-radius:50%;
-background:#fff;padding:10px;box-shadow:0 0 25px rgba(255,255,255,.4);
-}
-h1{font-size:3rem;margin:20px 0 10px}
-h2{color:#b9d7ff}
-p{margin:8px 0;font-size:1.1rem}
-.btn{
-display:inline-block;margin-top:30px;padding:14px 28px;
-background:#ff3b5c;color:#fff;text-decoration:none;border-radius:30px;
-}
-section{max-width:900px;margin:auto;padding:60px 20px}
-.card{
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(12px);
-padding:25px;border-radius:16px;margin:20px 0;
-}
-footer{text-align:center;padding:25px;background:#07122d}
-#countdown{font-size:1.6rem;color:#ffd54f;margin-top:20px;font-weight:bold}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freshers' Welcome 2026 | B.Sc. Computer Science | Sammilani Mahavidyalaya</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CSS VARIABLES & THEME SETTINGS
+           ========================================= */
+        :root {
+            --color-bg-dark: #020205;
+            --color-accent-blue: #0071e3;
+            --color-accent-blue-glow: rgba(0, 113, 227, 0.6);
+            --color-accent-red: #ff3b30;
+            --color-accent-red-glow: rgba(255, 59, 48, 0.6);
+            --color-text-main: #f5f5f7;
+            --color-text-muted: #a1a1a6;
+            
+            --glass-bg: rgba(25, 25, 30, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* =========================================
+           RESET & GLOBAL STYLES
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hide default cursor for custom cursor */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        ::selection {
+            background: var(--color-accent-blue);
+            color: #fff;
+        }
+
+        /* =========================================
+           BACKGROUND & PARTICLES
+           ========================================= */
+        #particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            z-index: -2;
+            animation: pulse-glow 8s infinite alternate ease-in-out;
+        }
+
+        .glow-blue {
+            background: var(--color-accent-blue);
+            width: 50vw;
+            height: 50vw;
+            top: -10vw;
+            left: -10vw;
+        }
+
+        .glow-red {
+            background: var(--color-accent-red);
+            width: 40vw;
+            height: 40vw;
+            bottom: -5vw;
+            right: -10vw;
+            animation-delay: 2s;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+            100% { transform: scale(1.2) translate(5%, 5%); opacity: 0.6; }
+        }
+
+        /* =========================================
+           CUSTOM CURSOR
+           ========================================= */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 50%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s;
+            mix-blend-mode: screen;
+        }
+        
+        .cursor-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        /* =========================================
+           UTILITIES & COMPONENTS
+           ========================================= */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+            padding: 2.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: none;
+            color: #fff;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            z-index: 1;
+            background: transparent;
+        }
+
+        .btn-glow-blue {
+            background: linear-gradient(135deg, var(--color-accent-blue), #005bb5);
+            box-shadow: 0 0 20px var(--color-accent-blue-glow);
+        }
+
+        .btn-glow-red {
+            background: linear-gradient(135deg, var(--color-accent-red), #d92d24);
+            box-shadow: 0 0 20px var(--color-accent-red-glow);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.2), transparent);
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #a1a1a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-gradient-accent {
+            background: linear-gradient(135deg, var(--color-accent-blue), #5ac8fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* =========================================
+           LAYOUT & SECTIONS
+           ========================================= */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-separator {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        /* --- PAGE 1: INVITATION --- */
+        #hero {
+            text-align: center;
+            max-width: 1000px;
+        }
+
+        .hero-tag {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--color-accent-blue);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            display: block;
+            animation: slideUp 1s ease forwards;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: slideUp 1.2s ease forwards;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--color-text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            animation: slideUp 1.4s ease forwards;
+        }
+
+        .hero-date {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: slideUp 1.6s ease forwards;
+        }
+
+        .typing-container {
+            height: 40px;
+            margin-bottom: 3rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            color: var(--color-accent-blue);
+            animation: slideUp 1.8s ease forwards;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            opacity: 0.7;
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+        }
+
+        /* --- PAGE 2: PERSONALIZED INVITATION --- */
+        #generator {
+            width: 100%;
+        }
+
+        .generator-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .generator-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .name-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 1.2rem 1.5rem;
+            font-size: 1.2rem;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            transition: var(--transition-smooth);
+            font-family: var(--font-main);
+            text-align: center;
+        }
+
+        .name-input:focus {
+            border-color: var(--color-accent-blue);
+            box-shadow: 0 0 15px rgba(0, 113, 227, 0.3);
+            background: rgba(0,0,0,0.6);
+        }
+
+        #invitation-result {
+            display: none;
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        #invitation-result.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .invite-card {
+            background: linear-gradient(135deg, rgba(25, 25, 30, 0.8), rgba(10, 10, 15, 0.9));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .invite-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--color-accent-blue), var(--color-accent-red));
+        }
+
+        .invite-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .invite-name {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* --- PAGE 3: EVENT DETAILS --- */
+        #details {
+            width: 100%;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 4rem;
+        }
+
+        .details-card-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dress-code-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.2rem;
+        }
+
+        .dress-code-item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-list {
+            list-style: none;
+            position: relative;
+        }
+
+        .schedule-list::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .schedule-item {
+            padding-left: 30px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .schedule-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-accent-red);
+            box-shadow: 0 0 10px var(--color-accent-red-glow);
+        }
+
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .time-box {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 1.5rem 1rem;
+            min-width: 100px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .time-value {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-label {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .quote-container {
+            text-align: center;
+            max-width: 800px;
+            margin: 4rem auto 0;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .quote-text {
+            font-family: 'Outfit', serif;
+            font-size: 1.8rem;
+            font-style: italic;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .quote-text::before, .quote-text::after {
+            content: '"';
+            color: var(--color-accent-blue);
+            font-size: 3rem;
+            vertical-align: bottom;
+            opacity: 0.5;
+        }
+
+        /* =========================================
+           EXTRA FEATURES (UI & ANIMATIONS)
+           ========================================= */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent-blue), var(--color-accent-red));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--color-bg-dark);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--color-accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        #music-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(25, 25, 30, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            z-index: 100;
+            transition: var(--transition-smooth);
+        }
+
+        #music-btn:hover {
+            background: rgba(25, 25, 30, 0.9);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--color-accent-blue);
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 113, 227, 0.4);
+        }
+
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.8);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 768px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .timer-container { flex-wrap: wrap; }
+            section { padding: 4rem 1rem; }
+            .glass-panel { padding: 1.5rem; }
+            #music-btn, #back-to-top { bottom: 15px; }
+            #music-btn { left: 15px; }
+            #back-to-top { right: 15px; }
+            .cursor-glow, .cursor-dot { display: none; } /* Disable custom cursor on mobile */
+            * { cursor: auto; }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-<img src="logo.png" class="logo" alt="College Logo">
-<h1>WELCOME FRESHERS 2026</h1>
-<h2>B.Sc. Computer Science</h2>
-<p><strong>Sammilani Mahavidyalaya</strong></p>
-<p>25th July 2026</p>
-<div id="countdown"></div>
-<a href="#about" class="btn">Explore</a>
-</header>
+    <div id="loader">
+        <div class="loader-spinner"></div>
+        <div style="font-family: var(--font-heading); font-size: 1.2rem; letter-spacing: 2px;">INITIALIZING SYSTEM...</div>
+    </div>
 
-<section id="about">
-<div class="card">
-<h2>Welcome!</h2>
-<p>Welcome to the Computer Science family. We wish you a wonderful academic journey filled with innovation, friendship and success.</p>
-</div>
+    <div id="progress-bar"></div>
 
-<div class="card">
-<h2>Orientation</h2>
-<p>📅 25th July 2026</p>
-<p>🏫 Sammilani Mahavidyalaya</p>
-<p>💻 Department of B.Sc. Computer Science</p>
-</div>
+    <div class="cursor-glow" id="cursor-glow"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
 
-<div class="card">
-<h2>Your Learning Roadmap</h2>
-<p>C Programming → HTML & CSS → JavaScript → Python → Git & GitHub → Data Structures → Projects</p>
-</div>
-</section>
+    <div class="ambient-glow glow-blue"></div>
+    <div class="ambient-glow glow-red"></div>
+    <canvas id="particles-bg"></canvas>
 
-<footer>Made with ❤️ for the Freshers of Sammilani Mahavidyalaya</footer>
+    <button id="music-btn" onclick="toggleMusic()">🎵 Music OFF</button>
+    <button id="back-to-top" onclick="scrollToTop()">↑</button>
 
-<script>
-const target=new Date("2026-07-25T09:00:00").getTime();
-setInterval(()=>{
-const now=Date.now();
-const diff=target-now;
-if(diff<0){document.getElementById("countdown").innerHTML="Welcome Day has arrived!";return;}
-const d=Math.floor(diff/86400000);
-const h=Math.floor(diff%86400000/3600000);
-const m=Math.floor(diff%3600000/60000);
-const s=Math.floor(diff%60000/1000);
-document.getElementById("countdown").innerHTML=`${d} Days ${h}h ${m}m ${s}s`;
-},1000);
-</script>
-
-</body>
-</html>
+    <audio id="bg-music" loop>
+        <source src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
