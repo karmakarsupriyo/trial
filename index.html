@@ -3,374 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Norixel Technologies</title>
-
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
+<title>Welcome Freshers 2026 | Sammilani Mahavidyalaya</title>
 <style>
-
-/* ================= GLOBAL ================= */
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{
-background:#fff;
-color:#111;
-overflow-x:hidden;
+background:linear-gradient(135deg,#0b1f5e,#1546a0,#b3122d);
+color:#fff;overflow-x:hidden;
 }
-
-/* Gradient Background Animation */
-body::before{
-content:"";
-position:fixed;
-width:200%;
-height:200%;
-background:radial-gradient(circle at 20% 20%, rgba(100,150,255,0.15), transparent),
-radial-gradient(circle at 80% 30%, rgba(200,150,255,0.12), transparent),
-radial-gradient(circle at 50% 80%, rgba(255,200,150,0.12), transparent);
-animation:moveBg 15s infinite alternate;
-z-index:-1;
+header{
+min-height:100vh;display:flex;flex-direction:column;
+justify-content:center;align-items:center;text-align:center;padding:20px;
 }
-@keyframes moveBg{
-0%{transform:translate(0,0);}
-100%{transform:translate(-10%, -10%);}
+.logo{
+width:150px;height:150px;border-radius:50%;
+background:#fff;padding:10px;box-shadow:0 0 25px rgba(255,255,255,.4);
 }
-
-/* ================= NAVBAR ================= */
-.nav{
-position:fixed;
-top:0;
-width:100%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 40px;
-background:rgba(255,255,255,0.6);
-backdrop-filter:blur(12px);
-z-index:999;
+h1{font-size:3rem;margin:20px 0 10px}
+h2{color:#b9d7ff}
+p{margin:8px 0;font-size:1.1rem}
+.btn{
+display:inline-block;margin-top:30px;padding:14px 28px;
+background:#ff3b5c;color:#fff;text-decoration:none;border-radius:30px;
 }
-
-.nav a{
-text-decoration:none;
-margin:0 15px;
-color:#000;
-position:relative;
-}
-
-.nav a::after{
-content:"";
-position:absolute;
-width:0%;
-height:2px;
-background:#000;
-bottom:-4px;
-left:0;
-transition:0.3s;
-}
-.nav a:hover::after{width:100%;}
-
-.cta-btn{
-background:linear-gradient(45deg,#4facfe,#00f2fe);
-padding:10px 20px;
-border-radius:30px;
-color:#fff;
-border:none;
-cursor:pointer;
-transition:0.4s;
-}
-.cta-btn:hover{
-transform:scale(1.05);
-}
-
-/* ================= HERO ================= */
-.hero{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:120px 10%;
-min-height:100vh;
-}
-
-.hero h1{
-font-size:50px;
-font-weight:800;
-background:linear-gradient(45deg,#000,#555);
--webkit-background-clip:text;
-color:transparent;
-}
-
-.hero p{
-margin:20px 0;
-font-size:18px;
-}
-
-.hero-btns button{
-margin-right:15px;
-padding:12px 20px;
-border-radius:30px;
-border:none;
-cursor:pointer;
-}
-
-.whatsapp{background:#25D366;color:#fff;}
-.call{border:2px solid #000;background:transparent;}
-
-.hero-img{
-width:400px;
-height:400px;
-background:linear-gradient(135deg,#e0e0ff,#f8f8ff);
-border-radius:20px;
-box-shadow:0 20px 40px rgba(0,0,0,0.05);
-}
-
-/* ================= SERVICES ================= */
-.services{
-padding:80px 10%;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
-}
-
+section{max-width:900px;margin:auto;padding:60px 20px}
 .card{
-padding:30px;
-border-radius:20px;
-background:rgba(255,255,255,0.7);
-backdrop-filter:blur(10px);
-transition:0.4s;
-box-shadow:0 10px 30px rgba(0,0,0,0.05);
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+padding:25px;border-radius:16px;margin:20px 0;
 }
-
-.card:hover{
-transform:translateY(-10px) scale(1.03);
-box-shadow:0 20px 40px rgba(0,0,0,0.1);
-}
-
-/* ================= WHY ================= */
-.why{
-padding:80px 10%;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
-}
-
-/* ================= FEATURE ================= */
-.feature{
-margin:80px;
-padding:60px;
-border-radius:30px;
-background:linear-gradient(135deg,#000,#333);
-color:#fff;
-text-align:center;
-}
-
-/* ================= UPLOAD SECTION ================= */
-.upload{
-padding:80px 10%;
-text-align:center;
-}
-
-.upload input{
-margin:10px;
-}
-
-.preview img, .preview video{
-max-width:300px;
-margin-top:20px;
-border-radius:10px;
-}
-
-/* ================= FLOAT BUTTONS ================= */
-.float{
-position:fixed;
-bottom:20px;
-right:20px;
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.float a{
-width:55px;
-height:55px;
-display:flex;
-align-items:center;
-justify-content:center;
-border-radius:50%;
-color:#fff;
-text-decoration:none;
-font-size:20px;
-}
-
-.wa{background:#25D366;animation:pulse 2s infinite;}
-.call-btn{background:#007bff;}
-
-@keyframes pulse{
-0%{box-shadow:0 0 0 0 rgba(37,211,102,0.7);}
-70%{box-shadow:0 0 0 10px transparent;}
-}
-
-/* ================= POPUP ================= */
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.4);
-display:none;
-align-items:center;
-justify-content:center;
-}
-
-.popup-content{
-background:#fff;
-padding:30px;
-border-radius:20px;
-width:300px;
-text-align:center;
-}
-
-/* ================= FOOTER ================= */
-footer{
-padding:50px 10%;
-background:#f8f8f8;
-display:flex;
-justify-content:space-between;
-flex-wrap:wrap;
-}
-
-@media(max-width:768px){
-.hero{flex-direction:column;text-align:center;}
-.hero-img{margin-top:30px;}
-}
-
+footer{text-align:center;padding:25px;background:#07122d}
+#countdown{font-size:1.6rem;color:#ffd54f;margin-top:20px;font-weight:bold}
 </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
-<div class="nav">
-<div><strong>Norixel</strong></div>
-<div>
-<a href="#">Home</a>
-<a href="#">Services</a>
-<a href="#">About</a>
-<a href="#">Contact</a>
-</div>
-<button class="cta-btn">Start Now</button>
+<header>
+<img src="logo.png" class="logo" alt="College Logo">
+<h1>WELCOME FRESHERS 2026</h1>
+<h2>B.Sc. Computer Science</h2>
+<p><strong>Sammilani Mahavidyalaya</strong></p>
+<p>25th July 2026</p>
+<div id="countdown"></div>
+<a href="#about" class="btn">Explore</a>
+</header>
+
+<section id="about">
+<div class="card">
+<h2>Welcome!</h2>
+<p>Welcome to the Computer Science family. We wish you a wonderful academic journey filled with innovation, friendship and success.</p>
 </div>
 
-<!-- HERO -->
-<section class="hero">
-<div>
-<h1>Turn Your Brand Into a Market Leader</h1>
-<p>We help businesses grow with smart digital strategies.</p>
-<div class="hero-btns">
-<button class="whatsapp" onclick="window.open('https://wa.me/919679481018')">Chat on WhatsApp</button>
-<button class="call" onclick="window.location.href='tel:7679975939'">Call Now</button>
+<div class="card">
+<h2>Orientation</h2>
+<p>📅 25th July 2026</p>
+<p>🏫 Sammilani Mahavidyalaya</p>
+<p>💻 Department of B.Sc. Computer Science</p>
 </div>
+
+<div class="card">
+<h2>Your Learning Roadmap</h2>
+<p>C Programming → HTML & CSS → JavaScript → Python → Git & GitHub → Data Structures → Projects</p>
 </div>
-<div class="hero-img"></div>
 </section>
 
-<!-- SERVICES -->
-<section class="services">
-<div class="card">Social Media Marketing</div>
-<div class="card">Google Business Optimization</div>
-<div class="card">Ads (Google + Meta)</div>
-<div class="card">WhatsApp Lead Generation</div>
-<div class="card">Branding & Design</div>
-<div class="card">Content Strategy</div>
-</section>
-
-<!-- WHY -->
-<section class="why">
-<div class="card">Dedicated Team</div>
-<div class="card">Result Driven</div>
-<div class="card">On-Time Delivery</div>
-<div class="card">Client Satisfaction</div>
-</section>
-
-<!-- FEATURE -->
-<section class="feature">
-<h2>We Build Brands That Grow 🚀</h2>
-</section>
-
-<!-- UPLOAD SECTION -->
-<section class="upload">
-<h2>Show Your Ads / Reviews</h2>
-<input type="file" id="fileUpload" accept="image/*,video/*">
-<div class="preview" id="preview"></div>
-</section>
-
-<!-- FLOAT BUTTONS -->
-<div class="float">
-<a href="https://wa.me/919679481018" class="wa">W</a>
-<a href="tel:7679975939" class="call-btn">C</a>
-</div>
-
-<!-- POPUP -->
-<div class="popup" id="popup">
-<div class="popup-content">
-<h3>Free Consultation</h3>
-<input type="text" placeholder="Name"><br><br>
-<input type="text" placeholder="Phone"><br><br>
-<input type="text" placeholder="Business"><br><br>
-<button onclick="submitForm()">Submit</button>
-</div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-<div>
-<h3>Norixel Technologies</h3>
-<p>Grow your business with us</p>
-</div>
-
-<div>
-<p>📞 7679975939 / 9679481018</p>
-<p>📧 technologies@norixel.in</p>
-<p>📍 Tarakeswar, Hooghly</p>
-</div>
-
-<div>
-<a href="https://www.facebook.com/share/1atFwhYTP4/">Facebook</a><br>
-<a href="https://www.instagram.com/norixel_official">Instagram</a>
-</div>
-</footer>
+<footer>Made with ❤️ for the Freshers of Sammilani Mahavidyalaya</footer>
 
 <script>
-
-/* Popup Auto Open */
-setTimeout(()=>{
-document.getElementById('popup').style.display='flex';
-},5000);
-
-/* Form Submit */
-function submitForm(){
-alert("Success! Redirecting to WhatsApp...");
-window.open("https://wa.me/919679481018");
-}
-
-/* Upload Preview */
-document.getElementById("fileUpload").addEventListener("change",function(e){
-const preview=document.getElementById("preview");
-preview.innerHTML="";
-const file=e.target.files[0];
-
-if(file.type.startsWith("image")){
-const img=document.createElement("img");
-img.src=URL.createObjectURL(file);
-preview.appendChild(img);
-}
-else if(file.type.startsWith("video")){
-const vid=document.createElement("video");
-vid.src=URL.createObjectURL(file);
-vid.controls=true;
-preview.appendChild(vid);
-}
-});
-
+const target=new Date("2026-07-25T09:00:00").getTime();
+setInterval(()=>{
+const now=Date.now();
+const diff=target-now;
+if(diff<0){document.getElementById("countdown").innerHTML="Welcome Day has arrived!";return;}
+const d=Math.floor(diff/86400000);
+const h=Math.floor(diff%86400000/3600000);
+const m=Math.floor(diff%3600000/60000);
+const s=Math.floor(diff%60000/1000);
+document.getElementById("countdown").innerHTML=`${d} Days ${h}h ${m}m ${s}s`;
+},1000);
 </script>
 
 </body>
