@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Freshers' Welcome 2026 · B.Sc. Computer Science · Sammilani Mahavidyalaya</title>
+<meta name="description" content="An official invitation to the Freshers' Welcome 2026, Department of B.Sc. Computer Science, Sammilani Mahavidyalaya.">
+
+<!--
+  =====================================================================
+  FRESHERS' WELCOME 2026 — SAMMILANI MAHAVIDYALAYA
+  Single-file production build. All CSS + JS embedded. No dependencies.
+  Design language: "Ceremonial Circuit" — a university seal reimagined
+  as a dual-tone (blue/red) rotating crest, laid over a dark academic
+  night-sky, with binary/code motifs standing in for falling confetti.
+  =====================================================================
+-->
+
+<style>
+/* =====================================================================
+   0. DESIGN TOKENS
+   ===================================================================== */
+:root{
+  --void:        #060911;
+  --void-2:      #0a0f1c;
+  --panel:       rgba(18, 26, 46, 0.55);
+  --panel-solid: #101728;
+  --border:      rgba(255,255,255,0.10);
+  --border-hi:   rgba(255,255,255,0.22);
+
+  --blue-900:    #0d1e4a;
+  --blue-600:    #2451d6;
+  --blue-500:    #3b6bf0;
+  --blue-300:    #8fb1ff;
+
+  --red-900:     #4a0d16;
+  --red-600:     #c21f34;
+  --red-500:     #e0273d;
+  --red-300:     #ff8b96;
+
+  --gold:        #d9b968;
+  --gold-soft:   #f0dca3;
+
+  --ink:         #f4f6fb;
+  --ink-dim:     #aab3c9;
+  --ink-faint:   #6c7690;
+
+  --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  --sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono:  ui-monospace, SFMono-Regular, 'Cascadia Code', Consolas, 'Courier New', monospace;
+
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-inout: cubic-bezier(.65,0,.35,1);
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+*,*::before,*::after{ box-sizing: border-box; margin:0; padding:0; }
+html{ scroll-behavior: smooth; }
+::selection{ background: var(--red-500); color:#fff; }
+
+body{
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.55;
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none), (pointer: coarse){
+  body{ cursor: auto; }
+}
+
+a{ color: inherit; text-decoration: none; }
+button{ font-family: inherit; }
+img{ max-width: 100%; display:block; }
+
+:focus-visible{
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container{ width:100%; max-width: 1180px; margin:0 auto; padding: 0 24px; }
+.eyebrow{
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  display:flex; align-items:center; gap:10px;
+  justify-content:center;
+}
+.eyebrow::before,.eyebrow::after{ content:''; width:28px; height:1px; background: linear-gradient(90deg, transparent, var(--gold-soft)); }
+.eyebrow::after{ background: linear-gradient(90deg, var(--gold-soft), transparent); }
+
+/* =====================================================================
+   1. BACKGROUND LAYERS — ambient sky, particles canvas, mouse glow
+   ===================================================================== */
+.bg-sky{
+  position: fixed; inset:0; z-index:-3;
+  background:
+    radial-gradient(ellipse 60% 45% at 18% 10%, rgba(59,107,240,0.22), transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 85%, rgba(224,39,61,0.18), transparent 60%),
+    linear-gradient(180deg, var(--void-2), var(--void) 60%);
+}
+#particle-canvas{ position: fixed; inset:0; z-index:-2; pointer-events:none; }
+
+.mouse-glow{
+  position: fixed; top:0; left:0; width: 480px; height:480px;
+  border-radius:50%; pointer-events:none; z-index:0;
+  background: radial-gradient(circle, rgba(59,107,240,0.16), rgba(224,39,61,0.08) 45%, transparent 70%);
+  transform: translate(-50%,-50%);
+  transition: opacity .4s ease;
+  will-change: transform;
+}
+@media (hover:none){ .mouse-glow{ display:none; } }
+
+.cursor-dot, .cursor-ring{
+  position: fixed; top:0; left:0; pointer-events:none; z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+}
+.cursor-dot{ width:6px; height:6px; background: var(--gold); }
+.cursor-ring{ width:34px; height:34px; border:1px solid var(--border-hi); transition: transform .15s var(--ease-out), border-color .2s; }
+.cursor-ring.is-active{ transform: translate(-50%,-50%) scale(1.6); border-color: var(--gold); }
+@media (hover:none), (pointer:coarse){ .cursor-dot,.cursor-ring{ display:none; } }
+
+/* =====================================================================
+   2. LOADING SCREEN
+   ===================================================================== */
+#loader{
+  position: fixed; inset:0; z-index: 10000;
+  background: var(--void);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+  transition: opacity .7s var(--ease-inout), visibility .7s var(--ease-inout);
+}
+#loader.hide{ opacity:0; visibility:hidden; }
+.seal{
+  width:84px; height:84px; border-radius:50%;
+  background: conic-gradient(from 0deg, var(--blue-600) 0deg 180deg, var(--red-600) 180deg 360deg);
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+  animation: seal-spin 3.2s linear infinite;
+  box-shadow: 0 0 40px rgba(59,107,240,0.35), 0 0 60px rgba(224,39,61,0.2);
+}
+.seal::before{
+  content:''; position:absolute; inset:6px; border-radius:50%;
+  background: var(--void); 
+}
+.seal-mark{
+  position:relative; z-index:1; font-family: var(--serif); font-size:20px; letter-spacing:1px; color: var(--gold-soft);
+}
+@keyframes seal-spin{ to{ transform: rotate(360deg); } }
+.loader-text{ font-family: var(--mono); font-size:12px; letter-spacing:4px; color: var(--ink-dim); text-transform:uppercase; }
+.loader-bar{ width:180px; height:2px; background: rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
+.loader-bar-fill{ height:100%; width:0%; background: linear-gradient(90deg, var(--blue-500), var(--red-500)); transition: width .25s ease; }
+
+/* =====================================================================
+   3. SCROLL PROGRESS + NAV DOTS + BACK TO TOP + MUSIC TOGGLE
+   ===================================================================== */
+#scroll-progress{
+  position: fixed; top:0; left:0; height:3px; width:0%;
+  background: linear-gradient(90deg, var(--blue-500), var(--gold), var(--red-500));
+  z-index: 9998; transition: width .1s linear;
+}
+
+.side-nav{
+  position: fixed; right: 22px; top:50%; transform: translateY(-50%);
+  z-index: 500; display:flex; flex-direction:column; gap:14px;
+}
+.side-nav button{
+  width:10px; height:10px; border-radius:50%; background: transparent;
+  border: 1px solid var(--border-hi); cursor: pointer; padding:0;
+  transition: all .3s var(--ease-out);
+}
+.side-nav button.active{ background: var(--gold); border-color: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(1.3); }
+@media (max-width: 720px){ .side-nav{ display:none; } }
+
+.floating-controls{
+  position: fixed; left: 22px; bottom: 22px; z-index: 500;
+  display:flex; flex-direction: column; gap: 12px;
+}
+.fab{
+  width:46px; height:46px; border-radius:50%; border:1px solid var(--border-hi);
+  background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  color: var(--ink); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:18px; transition: all .3s var(--ease-out);
+  opacity:0; transform: translateY(10px); pointer-events:none;
+}
+.fab.show{ opacity:1; transform:none; pointer-events:auto; }
+.fab:hover{ border-color: var(--gold); box-shadow: 0 0 18px rgba(217,185,104,0.3); transform: translateY(-3px); }
+.fab#music-toggle.playing{ color: var(--gold); border-color: var(--gold); }
+
+/* =====================================================================
+   4. SECTIONS — full-viewport, snap
+   ===================================================================== */
+main{ scroll-snap-type: y proximity; }
+section.screen{
+  min-height: 100svh; width:100%;
+  display:flex; align-items:center; justify-content:center;
+  position: relative; padding: 90px 0;
+  scroll-snap-align: start;
+}
+
+.reveal{ opacity:0; transform: translateY(28px); transition: opacity .9s var(--ease-out), transform .9s var(--ease-out); }
+.reveal.in{ opacity:1; transform:none; }
+.reveal-delay-1{ transition-delay: .1s; } .reveal-delay-2{ transition-delay: .22s; }
+.reveal-delay-3{ transition-delay: .34s; } .reveal-delay-4{ transition-delay: .46s; }
+
+/* ---- SECTION 1: HERO ---- */
+#hero{ text-align:center; flex-direction:column; }
+.hero-inner{ display:flex; flex-direction:column; align-items:center; gap:28px; position:relative; z-index:2; }
+.hero-crest{
+  width:64px; height:64px; border-radius:50%;
+  background: conic-gradient(from 45deg, var(--blue-500), var(--red-500), var(--blue-500));
+  padding:2px; animation: seal-spin 10s linear infinite;
+}
+.hero-crest-inner{ width:100%; height:100%; border-radius:50%; background: var(--void-2); display:flex; align-items:center; justify-content:center; font-family: var(--serif); color: var(--gold-soft); font-size:18px; }
+
+.hero-title{
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: 1px;
+}
+.hero-title .line{
+  display:block;
+  font-size: clamp(3.2rem, 11vw, 8.2rem);
+  background: linear-gradient(100deg, var(--ink) 20%, var(--blue-300) 45%, var(--gold-soft) 55%, var(--red-300) 80%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 7s ease-in-out infinite;
+}
+.hero-title .line:nth-child(2){ animation-delay: .4s; }
+@keyframes shimmer{ 0%,100%{ background-position: 0% 50%; } 50%{ background-position: 100% 50%; } }
+
+.hero-dept{ font-family: var(--sans); font-size: clamp(1rem,2.4vw,1.3rem); color: var(--ink-dim); font-weight:300; }
+.hero-dept strong{ color: var(--ink); font-weight:600; }
+.hero-college{ font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem,2.8vw,1.6rem); color: var(--gold-soft); }
+
+.hero-subtitle{
+  font-family: var(--mono); font-size: 13px; letter-spacing: 4px; text-transform:uppercase;
+  color: var(--ink-dim); min-height: 20px;
+}
+.hero-subtitle .cursor-blink{ display:inline-block; width:2px; background: var(--gold); margin-left:2px; animation: blink 1s step-end infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+.btn{
+  position: relative; overflow:hidden; isolation:isolate;
+  display:inline-flex; align-items:center; gap:10px;
+  padding: 16px 38px; border-radius: 100px;
+  font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase; font-weight:600;
+  border: 1px solid var(--border-hi);
+  background: var(--panel); color: var(--ink);
+  cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .35s;
+}
+.btn:hover{ transform: translateY(-3px); box-shadow: 0 14px 40px rgba(59,107,240,0.25), 0 14px 40px rgba(224,39,61,0.12); border-color: var(--gold); }
+.btn:active{ transform: translateY(-1px) scale(.98); }
+.btn-primary{ background: linear-gradient(120deg, var(--blue-600), var(--red-600)); border-color: transparent; }
+.btn-primary:hover{ box-shadow: 0 16px 46px rgba(59,107,240,0.4), 0 10px 30px rgba(224,39,61,0.3); }
+.ripple{ position:absolute; border-radius:50%; background: rgba(255,255,255,0.5); transform: scale(0); animation: ripple-anim .7s ease-out; pointer-events:none; }
+@keyframes ripple-anim{ to{ transform: scale(3.2); opacity:0; } }
+
+.scroll-cue{ position:absolute; bottom: 34px; left:50%; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; color: var(--ink-faint); z-index:2; }
+.scroll-cue .wheel{ width:22px; height:36px; border:1px solid var(--border-hi); border-radius:12px; position:relative; }
+.scroll-cue .wheel::after{ content:''; position:absolute; top:6px; left:50%; width:3px; height:7px; background: var(--gold); border-radius:2px; transform:translateX(-50%); animation: cue-drop 1.8s ease-in-out infinite; }
+@keyframes cue-drop{ 0%{ opacity:1; top:6px; } 70%{ opacity:0; top:20px; } 100%{ opacity:0; top:6px; } }
+.scroll-cue span{ font-family: var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; }
+
+/* ---- shared section heading ---- */
+.section-head{ text-align:center; max-width: 640px; margin: 0 auto 48px; display:flex; flex-direction:column; gap:14px; }
+.section-title{ font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight:400; }
+.section-sub{ color: var(--ink-dim); font-size: 15px; font-weight:300; }
+
+/* ---- SECTION 2: INVITATION GENERATOR ---- */
+#invite{ flex-direction:column; }
+.glass-card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.gen-card{ width: min(560px, 92vw); padding: clamp(28px,5vw,52px); text-align:center; margin: 0 auto; position:relative; }
+.gen-card h3{ font-family: var(--serif); font-size: clamp(1.5rem,3.6vw,2rem); font-weight:400; margin-bottom: 8px; }
+.gen-card p.hint{ color: var(--ink-faint); font-size: 13px; margin-bottom: 28px; }
+
+.field{ position: relative; margin-bottom: 22px; }
+.field input{
+  width:100%; padding: 17px 20px; border-radius: 14px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--ink); font-size: 16px; font-family: var(--sans);
+  transition: border-color .3s, box-shadow .3s, background .3s;
+}
+.field input::placeholder{ color: var(--ink-faint); }
+.field input:focus{ border-color: var(--gold); background: rgba(255,255,255,0.06); box-shadow: 0 0 0 4px rgba(217,185,104,0.12); outline:none; }
+
+#invite-error{ color: var(--red-300); font-size: 12px; min-height: 16px; margin-bottom: 8px; }
+
+/* invitation output card */
+#invite-output{ margin-top: 30px; text-align:left; display:none; }
+#invite-output.show{ display:block; animation: card-in .7s var(--ease-out); }
+@keyframes card-in{ from{ opacity:0; transform: translateY(18px) scale(.97); } to{ opacity:1; transform:none; } }
+
+.invitation{
+  position:relative; border-radius: 20px; padding: 34px 30px 30px;
+  background: linear-gradient(165deg, rgba(13,30,74,0.5), rgba(74,13,22,0.4)), var(--panel-solid);
+  border: 1px solid var(--border-hi);
+  overflow:hidden;
+}
+.invitation::before{
+  content:''; position:absolute; inset:8px; border: 1px solid rgba(217,185,104,0.35); border-radius: 13px; pointer-events:none;
+}
+.invitation-seal{
+  width:48px; height:48px; margin: 0 auto 16px;
+  border-radius:50%; background: conic-gradient(from 20deg, var(--blue-500), var(--red-500));
+  display:flex; align-items:center; justify-content:center; position:relative;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+.invitation-seal::before{ content:''; position:absolute; inset:4px; border-radius:50%; background: var(--panel-solid); }
+.invitation-seal span{ position:relative; font-family: var(--serif); font-size:13px; color: var(--gold-soft); }
+.invitation-heading{ text-align:center; font-family: var(--mono); letter-spacing:5px; font-size:11px; color: var(--gold-soft); text-transform:uppercase; margin-bottom: 6px; }
+.invitation-name{ text-align:center; font-family: var(--serif); font-size: clamp(1.5rem,4vw,2.1rem); margin-bottom: 20px; color: var(--ink); }
+.invitation-body{ font-size: 14.5px; color: var(--ink-dim); line-height: 1.85; margin-bottom: 18px; }
+.invitation-body .lead{ color: var(--ink); }
+.invitation-sign{ font-family: var(--serif); font-style: italic; color: var(--gold-soft); font-size: 14px; text-align:right; }
+.invitation-sign small{ display:block; font-style: normal; font-family: var(--mono); color: var(--ink-faint); font-size: 11px; margin-top:4px; letter-spacing:1px; }
+.invitation-id{ position:absolute; top:14px; right:18px; font-family: var(--mono); font-size:9px; color: var(--ink-faint); letter-spacing:1px; }
+
+.invite-actions{ display:flex; gap:12px; margin-top: 22px; justify-content:center; flex-wrap:wrap; }
+.btn-ghost{ background: transparent; padding: 12px 24px; font-size:12px; }
+
+/* ---- SECTION 3: DETAILS + TIMELINE ---- */
+#details{ flex-direction: column; }
+.detail-grid{
+  display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+  max-width: 980px; margin: 0 auto 60px; width:100%;
+}
+@media (max-width: 820px){ .detail-grid{ grid-template-columns: 1fr; } }
+.detail-card{
+  padding: 30px 26px; text-align:center; transition: transform .4s var(--ease-out), border-color .4s;
+}
+.detail-card:hover{ transform: translateY(-8px); border-color: var(--gold); }
+.detail-icon{ width:52px; height:52px; margin:0 auto 18px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:22px; background: linear-gradient(135deg, rgba(59,107,240,0.25), rgba(224,39,61,0.2)); border:1px solid var(--border); }
+.detail-card h4{ font-family: var(--serif); font-size: 1.2rem; font-weight:400; margin-bottom: 8px; }
+.detail-card p{ color: var(--ink-dim); font-size: 13.5px; }
+.detail-card .tag{ display:inline-block; margin-top:10px; font-family: var(--mono); font-size:10px; letter-spacing:2px; color: var(--gold-soft); text-transform:uppercase; border:1px solid var(--border); padding:4px 10px; border-radius:20px; }
+
+.timeline{ max-width: 720px; margin: 0 auto; width:100%; position:relative; padding-left: 30px; }
+.timeline::before{ content:''; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background: linear-gradient(180deg, var(--blue-500), var(--gold), var(--red-500)); }
+.tl-item{ position:relative; padding-bottom: 30px; }
+.tl-item:last-child{ padding-bottom:0; }
+.tl-item::before{ content:''; position:absolute; left:-30px; top:4px; width:11px; height:11px; border-radius:50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(217,185,104,0.15); }
+.tl-time{ font-family: var(--mono); font-size:11px; letter-spacing:2px; color: var(--gold-soft); text-transform:uppercase; }
+.tl-title{ font-family: var(--serif); font-size: 1.15rem; margin: 4px 0 4px; }
+.tl-desc{ color: var(--ink-dim); font-size: 13.5px; }
+
+/* ---- SECTION 4: COUNTDOWN + FOOTER ---- */
+#countdown-section{ flex-direction: column; text-align:center; }
+.countdown-grid{ display:flex; gap: 18px; justify-content:center; flex-wrap:wrap; margin: 10px 0 26px; }
+.cd-unit{ width: 108px; padding: 22px 0; text-align:center; }
+.cd-num{ font-family: var(--serif); font-size: clamp(2.2rem,6vw,3.2rem); background: linear-gradient(160deg, var(--blue-300), var(--gold-soft), var(--red-300)); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }
+.cd-label{ font-family: var(--mono); font-size:10px; letter-spacing:3px; color: var(--ink-faint); text-transform:uppercase; margin-top: 10px; display:block; }
+.cd-tagline{ font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem,3vw,1.5rem); color: var(--gold-soft); margin: 10px 0 60px; }
+
+footer{ text-align:center; padding: 30px 20px 10px; color: var(--ink-faint); font-size: 12px; border-top: 1px solid var(--border); width:100%; max-width: 720px; }
+footer .foot-brand{ font-family: var(--serif); color: var(--ink-dim); font-size: 15px; margin-bottom: 4px; }
+footer .foot-college{ font-style: italic; color: var(--gold-soft); margin-bottom: 10px; }
+
+/* =====================================================================
+   5. PRINT STYLES — invitation only
+   ===================================================================== */
+@media print{
+  body *{ visibility: hidden; }
+  #invite-output, #invite-output *{ visibility: visible; }
+  #invite-output{ position: absolute; top:0; left:0; width:100%; margin:0; padding: 40px; background: #fff !important; }
+  .invitation{ background:#fff !important; border: 2px solid #333 !important; color:#111 !important; box-shadow:none !important; }
+  .invitation-body, .tl-desc, footer{ color:#333 !important; }
+  .invite-actions{ display:none !important; }
+}
+
+/* =====================================================================
+   6. RESPONSIVE TUNING
+   ===================================================================== */
+@media (max-width: 480px){
+  .cd-unit{ width: 78px; padding: 14px 0; }
+  .gen-card{ padding: 26px 18px; }
+  section.screen{ padding: 70px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOADER ===================== -->
+<div id="loader" aria-hidden="true">
+  <div class="seal"><span class="seal-mark">SM</span></div>
+  <div class="loader-text">Preparing your invitation</div>
+  <div class="loader-bar"><div class="loader-bar-fill" id="loader-fill"></div></div>
+</div>
+
+<!-- ===================== BACKGROUND ===================== -->
+<div class="bg-sky" aria-hidden="true"></div>
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+<div class="mouse-glow" id="mouse-glow" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+
+<!-- ===================== PROGRESS + NAV ===================== -->
+<div id="scroll-progress" role="progressbar" aria-label="Scroll progress"></div>
+<nav class="side-nav" aria-label="Section navigation">
+  <button data-target="hero" class="active" aria-label="Go to Welcome section"></button>
+  <button data-target="invite" aria-label="Go to Invitation section"></button>
+  <button data-target="details" aria-label="Go to Details section"></button>
+  <button data-target="countdown-section" aria-label="Go to Countdown section"></button>
+</nav>
+
+<div class="floating-controls">
+  <button class="fab" id="music-toggle" aria-pressed="false" title="Toggle ambient sound">♪</button>
+  <button class="fab" id="back-to-top" title="Back to top" aria-label="Back to top">↑</button>
+</div>
+
+<main>
+
+  <!-- ===================== SECTION 1 — HERO ===================== -->
+  <section class="screen" id="hero">
+    <div class="hero-inner container">
+      <div class="hero-crest reveal in" aria-hidden="true"><div class="hero-crest-inner">SM</div></div>
+
+      <p class="eyebrow reveal in">Sammilani Mahavidyalaya · Since Est.</p>
+
+      <h1 class="hero-title reveal in">
+        <span class="line">WELCOME</span>
+        <span class="line">FRESHERS</span>
+        <span class="line">2026</span>
+      </h1>
+
+      <p class="hero-dept reveal in">Department of <strong>B.Sc. Computer Science</strong></p>
+      <p class="hero-college reveal in">Sammilani Mahavidyalaya</p>
+
+      <p class="hero-subtitle reveal in" id="typing-target" aria-live="polite"></p>
+
+      <a href="#invite" class="btn btn-primary reveal in" id="open-invitation-btn">
+        <span>Open Your Invitation</span>
+      </a>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <div class="wheel"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2 — INVITATION GENERATOR ===================== -->
+  <section class="screen" id="invite">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">A Personal Invitation</p>
+        <h2 class="section-title">Enter Your Full Name</h2>
+        <p class="section-sub">Every invitation generated here is one of thousands of unique compositions — written, sealed, and addressed only to you.</p>
+      </div>
+
+      <div class="glass-card gen-card reveal reveal-delay-1">
+        <h3>Receive Your Invitation</h3>
+        <p class="hint">Type your name exactly as you'd like it to appear on your invitation card.</p>
+
+        <form id="invite-form" novalidate>
+          <div class="field">
+            <input type="text" id="name-input" placeholder="Enter Your Full Name" autocomplete="name" maxlength="60" aria-label="Your full name">
+          </div>
+          <p id="invite-error" role="alert"></p>
+          <button type="submit" class="btn btn-primary" id="generate-btn">
+            <span>Receive Your Invitation</span>
+          </button>
+        </form>
+
+        <div id="invite-output">
+          <div class="invitation" id="invitation-card">
+            <span class="invitation-id" id="invitation-id">№ 0000</span>
+            <div class="invitation-seal" aria-hidden="true"><span>SM</span></div>
+            <p class="invitation-heading" id="invitation-heading">Welcome</p>
+            <p class="invitation-name" id="invitation-name"></p>
+            <div class="invitation-body" id="invitation-body"></div>
+            <p class="invitation-sign">
+              Department of B.Sc. Computer Science
+              <small>Sammilani Mahavidyalaya · Freshers' Welcome 2026</small>
+            </p>
+          </div>
+          <div class="invite-actions">
+            <button class="btn btn-ghost" id="regenerate-btn" type="button">↻ New Invitation</button>
+            <button class="btn btn-ghost" id="print-btn" type="button">⬇ Download as PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3 — DETAILS ===================== -->
+  <section class="screen" id="details">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Invitation Details</p>
+        <h2 class="section-title">Everything You Need To Know</h2>
+      </div>
+
+      <div class="detail-grid">
+        <div class="glass-card detail-card reveal reveal-delay-1">
+          <div class="detail-icon">🎉</div>
+          <h4>Event</h4>
+          <p>Freshers' Welcome 2026 — an evening of celebration for the newest members of our department.</p>
+          <span class="tag">Ceremony</span>
+        </div>
+        <div class="glass-card detail-card reveal reveal-delay-2">
+          <div class="detail-icon">📅</div>
+          <h4>Date</h4>
+          <p>Tuesday, 28th July 2026 — mark your calendar for a day you'll remember.</p>
+          <span class="tag">28 · 07 · 2026</span>
+        </div>
+        <div class="glass-card detail-card reveal reveal-delay-3">
+          <div class="detail-icon">👗</div>
+          <h4>Dress Code</h4>
+          <p>Girls — Saree &nbsp;·&nbsp; Boys — Punjabi. Come dressed in the spirit of tradition.</p>
+          <span class="tag">Traditional</span>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-item reveal reveal-delay-1">
+          <p class="tl-time">Morning</p>
+          <p class="tl-title">Registration & Welcome Desk</p>
+          <p class="tl-desc">Freshers check in, receive their badge, and meet their department seniors.</p>
+        </div>
+        <div class="tl-item reveal reveal-delay-2">
+          <p class="tl-time">Midday</p>
+          <p class="tl-title">Ceremonial Welcome</p>
+          <p class="tl-desc">A formal address from faculty, followed by department introductions.</p>
+        </div>
+        <div class="tl-item reveal reveal-delay-3">
+          <p class="tl-time">Afternoon</p>
+          <p class="tl-title">Cultural Performances</p>
+          <p class="tl-desc">Music, dance, and performances led by second and third-year students.</p>
+        </div>
+        <div class="tl-item reveal reveal-delay-4">
+          <p class="tl-time">Evening</p>
+          <p class="tl-title">Freshers' Felicitation</p>
+          <p class="tl-desc">Titles, prizes, and a group photograph to close the celebration.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 4 — COUNTDOWN + FOOTER ===================== -->
+  <section class="screen" id="countdown-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">The Countdown Begins</p>
+        <h2 class="section-title">28th July 2026</h2>
+      </div>
+
+      <div class="countdown-grid reveal reveal-delay-1" id="countdown" aria-live="polite">
+        <div class="glass-card cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-label">Days</span></div>
+        <div class="glass-card cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Hours</span></div>
+        <div class="glass-card cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Minutes</span></div>
+        <div class="glass-card cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Seconds</span></div>
+      </div>
+
+      <p class="cd-tagline reveal reveal-delay-2">"We can't wait to welcome you."</p>
+
+      <footer class="reveal reveal-delay-3">
+        <p class="foot-brand">Department of B.Sc. Computer Science</p>
+        <p class="foot-college">Sammilani Mahavidyalaya</p>
+        <p>Freshers' Welcome 2026 · All rights reserved</p>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* =====================================================================
+   APP SCRIPT
+   Sections:
+   1. Loader
+   2. Custom cursor + mouse glow
+   3. Particle / floating code-symbol canvas
+   4. Scroll progress + side-nav + scroll-reveal
+   5. Hero typing animation
+   6. Ripple button effect
+   7. Invitation generator (100+ unique combinatorial templates)
+   8. Countdown timer
+   9. Back-to-top, print, ambient music (Web Audio, no external file)
+   ===================================================================== */
+(function(){
+  'use strict';
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- 1. LOADER ---------------- */
+  var loaderFill = document.getElementById('loader-fill');
+  var loader = document.getElementById('loader');
+  var pct = 0;
+  var loadTimer = setInterval(function(){
+    pct += Math.random() * 18 + 6;
+    if (pct >= 100){ pct = 100; clearInterval(loadTimer); }
+    loaderFill.style.width = pct + '%';
+  }, 140);
+
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      loaderFill.style.width = '100%';
+      setTimeout(function(){ loader.classList.add('hide'); }, 350);
+    }, 500);
+  });
+  // Safety fallback in case 'load' is delayed
+  setTimeout(function(){ loader.classList.add('hide'); }, 4000);
+
+  /* ---------------- 2. CUSTOM CURSOR + MOUSE GLOW ---------------- */
+  var glow = document.getElementById('mouse-glow');
+  var dot = document.getElementById('cursor-dot');
+  var ring = document.getElementById('cursor-ring');
+  var isCoarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  if (!isCoarse){
+    var ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', function(e){
+      mouseX = e.clientX; mouseY = e.clientY;
+      glow.style.transform = 'translate(' + mouseX + 'px,' + mouseY + 'px) translate(-50%,-50%)';
+      dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
+    });
+    (function animateRing(){
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+    document.querySelectorAll('a, button, input').forEach(function(el){
+      el.addEventListener('mouseenter', function(){ ring.classList.add('is-active'); });
+      el.addEventListener('mouseleave', function(){ ring.classList.remove('is-active'); });
+    });
+  } else {
+    glow.style.display = 'none';
+  }
+
+  /* ---------------- 3. PARTICLE / CODE-SYMBOL CANVAS ---------------- */
+  var canvas = document.getElementById('particle-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, particles = [];
+  var SYMBOLS = ['{','}','<','>','/','01','10',';','=>','#','&&','[]','()','::'];
+
+  function resizeCanvas(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  function initParticles(){
+    var count = window.innerWidth < 720 ? 26 : 50;
+    particles = [];
+    for (var i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        speed: 0.15 + Math.random()*0.35,
+        drift: (Math.random()-0.5) * 0.3,
+        size: 11 + Math.random()*13,
+        symbol: SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)],
+        hue: Math.random() > 0.5 ? 'rgba(139,177,255,' : 'rgba(255,139,150,',
+        alpha: 0.08 + Math.random()*0.16,
+        rot: Math.random()*Math.PI,
+        rotSpeed: (Math.random()-0.5) * 0.002
+      });
+    }
+  }
+  function drawParticles(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(function(p){
+      p.y -= p.speed;
+      p.x += p.drift;
+      p.rot += p.rotSpeed;
+      if (p.y < -30){ p.y = H + 30; p.x = Math.random()*W; }
+      if (p.x < -30) p.x = W + 30;
+      if (p.x > W + 30) p.x = -30;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.font = p.size + 'px ui-monospace, monospace';
+      ctx.fillStyle = p.hue + p.alpha + ')';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.symbol, 0, 0);
+      ctx.restore();
+    });
+    if (!prefersReducedMotion) requestAnimationFrame(drawParticles);
+  }
+  resizeCanvas();
+  initParticles();
+  drawParticles();
+  if (prefersReducedMotion){ ctx.clearRect(0,0,W,H); }
+  window.addEventListener('resize', function(){ resizeCanvas(); initParticles(); });
+
+  /* ---------------- 4. SCROLL PROGRESS + SIDE NAV + REVEAL ---------------- */
+  var progressBar = document.getElementById('scroll-progress');
+  var sections = ['hero','invite','details','countdown-section'].map(function(id){ return document.getElementById(id); });
+  var navButtons = document.querySelectorAll('.side-nav button');
+  var backToTop = document.getElementById('back-to-top');
+  var musicToggle = document.getElementById('music-toggle');
+
+  function onScroll(){
+    var doc = document.documentElement;
+    var scrolled = (doc.scrollTop) / (doc.scrollHeight - doc.clientHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+
+    backToTop.classList.toggle('show', doc.scrollTop > 400);
+    musicToggle.classList.add('show');
+
+    // Determine active section for side nav
+    var mid = window.scrollY + window.innerHeight/2;
+    var activeIndex = 0;
+    sections.forEach(function(sec, i){
+      if (sec && sec.offsetTop <= mid) activeIndex = i;
+    });
+    navButtons.forEach(function(btn, i){ btn.classList.toggle('active', i === activeIndex); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  navButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Scroll-reveal via IntersectionObserver
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------------- 5. HERO TYPING ANIMATION ---------------- */
+  var typingTarget = document.getElementById('typing-target');
+  var phrase = 'Code • Learn • Build • Innovate';
+  var ti = 0;
+
+  function typeLoop(){
+    if (prefersReducedMotion){ typingTarget.textContent = phrase; return; }
+    typingTarget.innerHTML = phrase.slice(0, ti) + '<span class="cursor-blink">&nbsp;</span>';
+    ti++;
+    if (ti <= phrase.length){
+      setTimeout(typeLoop, 55);
+    } else {
+      setTimeout(function(){ ti = 0; setTimeout(typeLoop, 900); }, 1800);
+    }
+  }
+  typeLoop();
+
+  /* ---------------- 6. RIPPLE BUTTON EFFECT ---------------- */
+  document.querySelectorAll('.btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      var rect = btn.getBoundingClientRect();
+      var ripple = document.createElement('span');
+      var size = Math.max(rect.width, rect.height);
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+      btn.appendChild(ripple);
+      setTimeout(function(){ ripple.remove(); }, 700);
+    });
+  });
+
+  /* ---------------- 7. INVITATION GENERATOR ---------------- */
+  /*
+    We compose each invitation from independent word-banks: an OPENING,
+    a BODY, a WISH and a HEADING. Combined together with the visitor's
+    name, this yields far more than 100 distinct, differently-worded
+    invitations (12 x 10 x 10 x 6 = 7,200+ unique combinations), so no
+    two visitors are likely to see identical wording, while every single
+    combination still reads as one coherent, complete invitation
+    paragraph — never a stitched-together sentence.
+  */
+  var HEADINGS = ['Welcome', 'You Are Invited', 'A Warm Welcome', 'With Great Pleasure', 'Cordially Invited', 'To Our Newest Family'];
+
+  var OPENINGS = [
+    'Dear {name},',
+    'Dearest {name},',
+    'To {name}, with warmth,',
+    'Dear {name}, welcome home,',
+    'Greetings, {name},',
+    'To our newest scholar, {name},',
+    'Dear {name}, it is our honour,',
+    'To {name}, from your new family,',
+    'Dear {name}, the wait is over,',
+    'Warmest greetings, {name},',
+    'Dear {name}, welcome aboard,',
+    'To {name}, on this special occasion,'
+  ];
+
+  var BODIES = [
+    'The Department of B.Sc. Computer Science warmly welcomes you to the Sammilani Mahavidyalaya family. You are cordially invited to attend the Freshers\' Welcome Ceremony on 28th July 2026.',
+    'It gives the Department of B.Sc. Computer Science immense joy to welcome you into our fold. Please join us for the Freshers\' Welcome Ceremony on 28th July 2026, a day made for you.',
+    'On behalf of the entire Department of B.Sc. Computer Science, we extend our heartfelt welcome. We eagerly await your presence at the Freshers\' Welcome Ceremony on 28th July 2026.',
+    'You have officially joined a community of thinkers, coders and dreamers. The Department of B.Sc. Computer Science invites you to our Freshers\' Welcome Ceremony on 28th July 2026.',
+    'A new chapter begins today, and we could not be more delighted to share it with you. Join the Department of B.Sc. Computer Science on 28th July 2026 for your Freshers\' Welcome.',
+    'From this moment, you are part of something larger — a family of learners at Sammilani Mahavidyalaya. We invite you to celebrate with us on 28th July 2026.',
+    'The corridors of our department have been waiting for a new batch of curious minds. We are proud to welcome you and invite you to our ceremony on 28th July 2026.',
+    'Every great journey begins with a single welcome, and this one is yours. The Department of B.Sc. Computer Science invites you to the Freshers\' Welcome on 28th July 2026.',
+    'You bring new energy, new ideas and new promise to our department. Please join us for the Freshers\' Welcome Ceremony on 28th July 2026, held in your honour.',
+    'Today, you step into a family built on curiosity and code. The Department of B.Sc. Computer Science requests the pleasure of your company on 28th July 2026.'
+  ];
+
+  var WISHES = [
+    'May this journey be filled with learning, friendship, innovation and unforgettable memories.',
+    'May your years here be marked by discovery, bold ideas and lasting friendships.',
+    'We hope this chapter brings you knowledge, camaraderie and moments you will cherish forever.',
+    'May every lecture, lab and late night of learning bring you closer to who you are meant to be.',
+    'Here\'s to new friendships, new skills and a future you will be proud to have built here.',
+    'We wish you a college life rich with learning, laughter and lifelong bonds.',
+    'May curiosity be your compass and this department be your second home.',
+    'We hope you find not just an education here, but a community that feels like family.',
+    'May your time in B.Sc. Computer Science be the beginning of something extraordinary.',
+    'We look forward to watching you grow, learn and thrive among us.'
+  ];
+
+  var CLOSERS = [
+    'We look forward to celebrating this special occasion with you.',
+    'We cannot wait to see you take your place among us.',
+    'Until then, we count the days with excitement.',
+    'Come as you are — you already belong here.',
+    'The whole department is looking forward to meeting you.',
+    'This is only the beginning of a truly special story.'
+  ];
+
+  function pick(arr, seed){ return arr[seed % arr.length]; }
+
+  function generateInvitation(name){
+    // Combine several independent random draws to maximise uniqueness.
+    var r1 = Math.floor(Math.random() * HEADINGS.length);
+    var r2 = Math.floor(Math.random() * OPENINGS.length);
+    var r3 = Math.floor(Math.random() * BODIES.length);
+    var r4 = Math.floor(Math.random() * WISHES.length);
+    var r5 = Math.floor(Math.random() * CLOSERS.length);
+
+    var heading = pick(HEADINGS, r1);
+    var opening = pick(OPENINGS, r2).replace('{name}', name);
+    var body = pick(BODIES, r3);
+    var wish = pick(WISHES, r4);
+    var closer = pick(CLOSERS, r5);
+
+    var serial = (r1*10000 + r2*1000 + r3*100 + r4*10 + r5) % 10000;
+
+    return {
+      heading: heading,
+      bodyHtml: '<p class="lead">' + opening + '</p><p style="margin-top:12px;">' + body + '</p><p style="margin-top:12px;">' + wish + '</p><p style="margin-top:12px;">' + closer + '</p>',
+      serial: serial
+    };
+  }
+
+  var form = document.getElementById('invite-form');
+  var nameInput = document.getElementById('name-input');
+  var errorEl = document.getElementById('invite-error');
+  var outputEl = document.getElementById('invite-output');
+  var invName = document.getElementById('invitation-name');
+  var invBody = document.getElementById('invitation-body');
+  var invHeading = document.getElementById('invitation-heading');
+  var invId = document.getElementById('invitation-id');
+  var regenerateBtn = document.getElementById('regenerate-btn');
+  var printBtn = document.getElementById('print-btn');
+  var lastName = '';
+
+  function renderInvitation(name){
+    var data = generateInvitation(name);
+    invHeading.textContent = data.heading;
+    invName.textContent = name;
+    invBody.innerHTML = data.bodyHtml;
+    invId.textContent = '№ ' + String(data.serial).padStart(4, '0');
+    outputEl.classList.add('show');
+    outputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function titleCase(str){
+    return str.trim().replace(/\s+/g, ' ').split(' ').map(function(w){
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var raw = nameInput.value;
+    if (!raw || !raw.trim()){
+      errorEl.textContent = 'Please enter your full name to receive your invitation.';
+      nameInput.focus();
+      return;
+    }
+    if (raw.trim().length < 2){
+      errorEl.textContent = 'Please enter a valid full name.';
+      return;
+    }
+    errorEl.textContent = '';
+    lastName = titleCase(raw);
+    renderInvitation(lastName);
+  });
+
+  regenerateBtn.addEventListener('click', function(){
+    if (lastName) renderInvitation(lastName);
+  });
+
+  printBtn.addEventListener('click', function(){
+    window.print();
+  });
+
+  /* Open Your Invitation button focuses the name field after scroll */
+  document.getElementById('open-invitation-btn').addEventListener('click', function(){
+    setTimeout(function(){ nameInput.focus(); }, 700);
+  });
+
+  /* ---------------- 8. COUNTDOWN TIMER ---------------- */
+  var EVENT_DATE = new Date('2026-07-28T09:00:00');
+  var elDays = document.getElementById('cd-days');
+  var elHours = document.getElementById('cd-hours');
+  var elMins = document.getElementById('cd-mins');
+  var elSecs = document.getElementById('cd-secs');
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function updateCountdown(){
+    var now = new Date();
+    var diff = EVENT_DATE - now;
+    if (diff <= 0){
+      elDays.textContent = elHours.textContent = elMins.textContent = elSecs.textContent = '00';
+      return;
+    }
+    var days = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
+    elDays.textContent = pad(days);
+    elHours.textContent = pad(hours);
+    elMins.textContent = pad(mins);
+    elSecs.textContent = pad(secs);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ---------------- 9. AMBIENT MUSIC (Web Audio, no external file) ---------------- */
+  var audioCtx = null, gainNode = null, oscillators = [], isPlaying = false;
+
+  function buildAmbientPad(){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = audioCtx.createGain();
+    gainNode.gain.value = 0;
+    gainNode.connect(audioCtx.destination);
+
+    var freqs = [220, 277.18, 329.63]; // soft A-minor-ish triad
+    freqs.forEach(function(f, i){
+      var osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      var lfo = audioCtx.createGain();
+      lfo.gain.value = 0.15 / (i+1);
+      osc.connect(lfo);
+      lfo.connect(gainNode);
+      osc.start();
+      oscillators.push(osc);
+    });
+  }
+
+  musicToggle.addEventListener('click', function(){
+    if (!audioCtx) buildAmbientPad();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    isPlaying = !isPlaying;
+    var now = audioCtx.currentTime;
+    gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+    gainNode.gain.linearRampToValueAtTime(isPlaying ? 0.05 : 0, now + 0.8);
+
+    musicToggle.classList.toggle('playing', isPlaying);
+    musicToggle.setAttribute('aria-pressed', String(isPlaying));
+    musicToggle.textContent = isPlaying ? '♫' : '♪';
+  });
+
+})();
+</script>
+</body>
+</html>
