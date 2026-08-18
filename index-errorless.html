@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ayushman Card PVC Printer — Dragon Sheet Layout Tool</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:   { 950: '#0b1220', 900: '#101a2c', 800: '#182338', 700: '#22304a' },
+          brass: { 500: '#c08a3e', 400: '#d6a75c', 300: '#e6c68a' },
+          teal:  { 600: '#0e6e63', 500: '#12897a', 400: '#3aa89b' },
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #22304a; border-radius: 4px; }
+
+  .dropzone-active { border-color: #d6a75c !important; background-color: rgba(214,167,92,0.08) !important; }
+
+  .card-slot { transition: transform .15s ease, box-shadow .15s ease; }
+  .card-slot.dragging { opacity: .4; }
+  .card-slot.drag-over { box-shadow: 0 0 0 2px #d6a75c inset; }
+
+  input[type=range] { -webkit-appearance: none; height: 4px; border-radius: 999px; background: #22304a; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #d6a75c; cursor: pointer; margin-top: -5px; }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #d6a75c; border: none; cursor: pointer; }
+
+  #sheetPreviewWrap { background-image: linear-gradient(45deg, #182338 25%, transparent 25%), linear-gradient(-45deg, #182338 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #182338 75%), linear-gradient(-45deg, transparent 75%, #182338 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
+
+  .spinner { border: 2px solid rgba(255,255,255,.15); border-top-color: #d6a75c; border-radius: 50%; width: 16px; height: 16px; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .chev { transform: rotate(90deg); }
+
+  @media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea { position: fixed; top: 0; left: 0; margin: 0; padding: 0; }
+    #printArea img { width: 210mm; height: 297mm; display: block; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body class="bg-ink-950 text-slate-200 min-h-screen">
+
+<!-- ============ HEADER ============ -->
+<header class="border-b border-ink-700 sticky top-0 z-30 bg-ink-950/95 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-md bg-brass-500/15 border border-brass-400/40 flex items-center justify-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d6a75c" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20"/><circle cx="7" cy="14.5" r="1.4" fill="#d6a75c" stroke="none"/><path d="M11 14.5h7"/></svg>
+      </div>
+      <div>
+        <h1 class="font-display font-semibold text-base sm:text-lg text-slate-50 leading-none">Ayushman PVC Card Layout</h1>
+        <p class="text-[11px] text-slate-400 font-mono mt-0.5">Dragon Sheet · 5-up A4 · client-side only</p>
+      </div>
+    </div>
+    <span id="loadedBadge" class="font-mono text-xs sm:text-sm px-3 py-1.5 rounded-full border border-ink-700 bg-ink-900 text-brass-300 whitespace-nowrap">0 / 5 cards loaded</span>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
+
+  <!-- ============ LEFT: uploader + slots + preview ============ -->
+  <section class="space-y-6 min-w-0">
+
+    <!-- Dropzone -->
+    <div id="dropzone" class="border-2 border-dashed border-ink-700 rounded-xl p-6 sm:p-8 text-center transition-colors">
+      <input id="fileInput" type="file" accept="application/pdf" multiple class="hidden" />
+      <svg class="mx-auto mb-3" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3aa89b" stroke-width="1.6"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <p class="text-slate-200 font-medium">Drag &amp; drop up to 5 Ayushman Bharat PDF files</p>
+      <p class="text-slate-500 text-sm mt-1">or a single multi-page PDF containing multiple cards</p>
+      <button id="browseBtn" class="mt-4 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium transition-colors">Choose files</button>
+      <p class="text-[11px] text-slate-500 mt-3 font-mono">100% local · nothing leaves your browser</p>
+    </div>
+
+    <!-- 5 card slots -->
+    <div>
+      <h2 class="font-display text-sm uppercase tracking-wider text-slate-400 mb-3">Card Slots <span class="text-slate-600">(drag to reorder)</span></h2>
+      <div id="slotsGrid" class="grid grid-cols-1 sm:grid-cols-5 gap-3"></div>
+    </div>
+
+    <!-- Live preview -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-display text-sm uppercase tracking-wider text-slate-400">Live A4 Preview</h2>
+        <span class="text-[11px] font-mono text-slate-500">210 × 297 mm · 300 DPI · 2480 × 3508 px</span>
+      </div>
+      <div id="sheetPreviewWrap" class="rounded-xl border border-ink-700 p-3 sm:p-6 flex justify-center overflow-x-auto">
+        <canvas id="sheetCanvas" width="2480" height="3508" class="bg-white shadow-2xl" style="width:100%; max-width:360px; height:auto;"></canvas>
+      </div>
+    </div>
+
+    <!-- Instructions drawer -->
+    <details class="rounded-xl border border-ink-700 bg-ink-900/60 open:pb-4">
+      <summary class="flex items-center justify-between px-4 py-3">
+        <span class="font-display text-sm text-slate-200">Dragon Sheet printing steps</span>
+        <svg class="chev transition-transform text-slate-500" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <ol class="px-4 pt-1 space-y-2.5 text-sm text-slate-400 font-mono">
+        <li><span class="text-brass-400">01</span> — Keep <b class="text-slate-200">Mirror Mode</b> ON. Print onto the non-peelable film side of the Dragon Sheet.</li>
+        <li><span class="text-brass-400">02</span> — Load the Dragon Sheet in the inkjet tray so the printed image lands on the film, not the paper backing.</li>
+        <li><span class="text-brass-400">03</span> — After printing, let the ink dry, then carefully peel away the PVC core protection layer.</li>
+        <li><span class="text-brass-400">04</span> — Sandwich with the blank PVC core + overlay film, then laminate at <b class="text-slate-200">110–130°C</b> using a hot laminator.</li>
+        <li><span class="text-brass-400">05</span> — Let the sheet cool flat, then die-cut each card to standard CR-80 size (85.6 × 54 mm).</li>
+      </ol>
+    </details>
+  </section>
+
+  <!-- ============ RIGHT: controls ============ -->
+  <aside class="space-y-5 lg:sticky lg:top-20 self-start">
+
+    <!-- Print mode -->
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 p-4">
+      <h3 class="font-display text-sm uppercase tracking-wider text-slate-400 mb-3">Print Mode</h3>
+      <label class="flex items-start gap-3 p-3 rounded-lg border border-ink-700 mb-2 cursor-pointer has-[:checked]:border-brass-400 has-[:checked]:bg-brass-400/5">
+        <input type="radio" name="mode" id="mirrorMode" checked class="mt-1 accent-brass-400">
+        <span>
+          <span class="block text-sm font-medium text-slate-100">Mirror Mode</span>
+          <span class="block text-xs text-slate-500 mt-0.5">For Dragon Sheet (image flips horizontally per card)</span>
+        </span>
+      </label>
+      <label class="flex items-start gap-3 p-3 rounded-lg border border-ink-700 cursor-pointer has-[:checked]:border-brass-400 has-[:checked]:bg-brass-400/5">
+        <input type="radio" name="mode" id="normalMode" class="mt-1 accent-brass-400">
+        <span>
+          <span class="block text-sm font-medium text-slate-100">Normal Mode</span>
+          <span class="block text-xs text-slate-500 mt-0.5">Direct PVC / glossy paper printing</span>
+        </span>
+      </label>
+    </div>
+
+    <!-- Enhance -->
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 p-4 space-y-4">
+      <h3 class="font-display text-sm uppercase tracking-wider text-slate-400">Print Enhancement</h3>
+      <div>
+        <div class="flex justify-between text-xs text-slate-400 mb-1"><span>Brightness</span><span id="brightnessVal" class="font-mono text-brass-300">100%</span></div>
+        <input type="range" id="brightness" min="70" max="140" value="100" class="w-full">
+      </div>
+      <div>
+        <div class="flex justify-between text-xs text-slate-400 mb-1"><span>Contrast</span><span id="contrastVal" class="font-mono text-brass-300">100%</span></div>
+        <input type="range" id="contrast" min="70" max="140" value="100" class="w-full">
+      </div>
+    </div>
+
+    <!-- Advanced settings -->
+    <details class="rounded-xl border border-ink-700 bg-ink-900/60">
+      <summary class="flex items-center justify-between px-4 py-3">
+        <span class="font-display text-sm uppercase tracking-wider text-slate-400">Advanced: Crop &amp; Split</span>
+        <svg class="chev transition-transform text-slate-500" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <div class="px-4 pb-4 pt-1 space-y-4 text-sm">
+        <p class="text-xs text-slate-500 leading-relaxed">Used when a PDF has only 1 page (front &amp; back on the same page), and to fine-tune the crop box for each side. Values are % of the source image.</p>
+
+        <div>
+          <div class="flex justify-between text-xs text-slate-400 mb-1"><span>Single-page split point</span><span id="splitVal" class="font-mono text-brass-300">50%</span></div>
+          <input type="range" id="splitPoint" min="10" max="90" value="50" class="w-full">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-2">
+            <p class="text-xs font-semibold text-slate-300">Front crop</p>
+            <label class="block text-[11px] text-slate-500">X <input type="number" id="frontX" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">Y <input type="number" id="frontY" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">W <input type="number" id="frontW" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">H <input type="number" id="frontH" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+          </div>
+          <div class="space-y-2">
+            <p class="text-xs font-semibold text-slate-300">Back crop</p>
+            <label class="block text-[11px] text-slate-500">X <input type="number" id="backX" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">Y <input type="number" id="backY" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">W <input type="number" id="backW" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">H <input type="number" id="backH" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+          </div>
+        </div>
+        <button id="applyCropBtn" class="w-full py-2 rounded-lg bg-ink-800 hover:bg-ink-700 border border-ink-700 text-sm text-slate-200 transition-colors">Re-apply to loaded cards</button>
+      </div>
+    </details>
+
+    <!-- Export -->
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 p-4 space-y-2.5">
+      <h3 class="font-display text-sm uppercase tracking-wider text-slate-400 mb-1">Export</h3>
+      <button id="downloadBtn" disabled class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brass-500 hover:bg-brass-400 disabled:opacity-40 disabled:cursor-not-allowed text-ink-950 text-sm font-semibold transition-colors">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>
+        Download High-Res PDF
+      </button>
+      <button id="printBtn" disabled class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V3h12v6"/><rect x="6" y="13" width="12" height="8"/><path d="M4 13h16"/></svg>
+        Print Directly
+      </button>
+      <p id="statusMsg" class="text-[11px] font-mono text-slate-500 pt-1 min-h-[14px]"></p>
+    </div>
+  </aside>
+</main>
+
+<div id="printArea" class="hidden"></div>
+
+<script>
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+/* ============ CONSTANTS ============ */
+const DPI = 300;
+const mmToPx = mm => Math.round(mm * DPI / 25.4);
+const PAGE_W = 2480, PAGE_H = 3508;          // A4 @ 300dpi
+const CARD_W = mmToPx(85.6), CARD_H = mmToPx(54); // CR-80 @ 300dpi
+const ROWS = 5;
+const MARGIN_X = Math.round((PAGE_W - CARD_W * 2 - 180) / 2); // leaves a gutter of 180px between columns
+const GAP_X = PAGE_W - MARGIN_X * 2 - CARD_W * 2;
+const MARGIN_Y = 90;
+const GAP_Y = (PAGE_H - MARGIN_Y * 2 - CARD_H * ROWS) / (ROWS - 1);
+
+/* ============ STATE ============ */
+const slots = new Array(5).fill(null); // each: {id, name, frontCanvas, backCanvas, loading}
+let dragSrcIndex = null;
+let processingFiles = false;
+
+function makeId() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
+  }
+  return 'card-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+}
+
+/* ============ DOM ============ */
+const dropzone   = document.getElementById('dropzone');
+const fileInput  = document.getElementById('fileInput');
+const browseBtn  = document.getElementById('browseBtn');
+const slotsGrid  = document.getElementById('slotsGrid');
+const badge      = document.getElementById('loadedBadge');
+const sheetCanvas= document.getElementById('sheetCanvas');
+const downloadBtn= document.getElementById('downloadBtn');
+const printBtn   = document.getElementById('printBtn');
+const statusMsg  = document.getElementById('statusMsg');
+
+const mirrorRadio = document.getElementById('mirrorMode');
+const normalRadio = document.getElementById('normalMode');
+const brightness = document.getElementById('brightness');
+const contrast   = document.getElementById('contrast');
+const brightnessVal = document.getElementById('brightnessVal');
+const contrastVal   = document.getElementById('contrastVal');
+const splitPoint = document.getElementById('splitPoint');
+const splitVal   = document.getElementById('splitVal');
+const applyCropBtn = document.getElementById('applyCropBtn');
+
+const cropFields = ['frontX','frontY','frontW','frontH','backX','backY','backW','backH'];
+
+/* ============ INIT SLOTS UI ============ */
+function renderSlots() {
+  slotsGrid.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const s = slots[i];
+    const el = document.createElement('div');
+    el.className = 'card-slot rounded-xl border border-dashed border-ink-700 bg-ink-900/50 p-2 min-h-[150px] flex flex-col';
+    el.draggable = !!s;
+    el.dataset.index = i;
+
+    if (!s) {
+      el.innerHTML = `
+        <div class="flex-1 flex flex-col items-center justify-center text-slate-600 gap-1">
+          <span class="font-mono text-lg">${i + 1}</span>
+          <span class="text-[10px]">empty slot</span>
+        </div>`;
+    } else {
+      el.classList.remove('border-dashed');
+      el.classList.add('border-solid', 'border-ink-600');
+      el.innerHTML = `
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-mono text-[10px] text-brass-300">SLOT ${i + 1}</span>
+          <button data-remove="${i}" class="text-slate-500 hover:text-red-400 text-xs leading-none">✕</button>
+        </div>
+        <div class="grid grid-cols-2 gap-1 flex-1">
+          <div class="rounded overflow-hidden border border-ink-700 bg-white flex items-center justify-center">${s.loading ? '<div class="spinner"></div>' : `<img src="${s.frontUrl}" class="w-full h-full object-cover" alt="front">`}</div>
+          <div class="rounded overflow-hidden border border-ink-700 bg-white flex items-center justify-center">${s.loading ? '<div class="spinner"></div>' : `<img src="${s.backUrl}" class="w-full h-full object-cover" alt="back">`}</div>
+        </div>
+        <p class="text-[10px] text-slate-500 truncate mt-1.5" title="${s.name}">${s.name}</p>`;
+    }
+    slotsGrid.appendChild(el);
+  }
+
+  slotsGrid.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = +btn.dataset.remove;
+      slots[idx] = null;
+      renderSlots();
+      updateBadge();
+      renderSheet();
+      updateExportButtons();
+    });
+  });
+
+  // drag reorder
+  slotsGrid.querySelectorAll('.card-slot').forEach(el => {
+    el.addEventListener('dragstart', () => { dragSrcIndex = +el.dataset.index; el.classList.add('dragging'); });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const targetIdx = +el.dataset.index;
+      if (dragSrcIndex === null || dragSrcIndex === targetIdx) return;
+      const tmp = slots[targetIdx];
+      slots[targetIdx] = slots[dragSrcIndex];
+      slots[dragSrcIndex] = tmp;
+      dragSrcIndex = null;
+      renderSlots();
+      renderSheet();
+    });
+  });
+}
+
+function updateBadge() {
+  const n = slots.filter(Boolean).length;
+  badge.textContent = `${n} / 5 cards loaded`;
+  badge.classList.toggle('text-teal-400', n === 5);
+}
+
+function updateExportButtons() {
+  const has = slots.some(Boolean);
+  downloadBtn.disabled = !has;
+  printBtn.disabled = !has;
+}
+
+function firstEmptySlot() {
+  return slots.findIndex(s => s === null);
+}
+
+/* ============ PDF RENDER / CROP HELPERS ============ */
+async function loadPdf(arrayBuffer) {
+  if (!window.pdfjsLib) throw new Error('PDF.js failed to load.');
+  return pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+}
+
+async function renderPageToCanvas(pdfDoc, pageNum, targetScale = 3) {
+  const page = await pdfDoc.getPage(pageNum);
+  const viewport = page.getViewport({ scale: targetScale });
+  const canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  return canvas;
+}
+
+// crop a % rectangle out of a source canvas -> new canvas
+function cropPct(sourceCanvas, xPct, yPct, wPct, hPct) {
+  if (!sourceCanvas || !sourceCanvas.width || !sourceCanvas.height) {
+    throw new Error('Invalid source canvas.');
+  }
+
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, Number(v) || 0));
+  const x = clamp(xPct, 0, 100);
+  const y = clamp(yPct, 0, 100);
+  const w = clamp(wPct, 1, 100 - x);
+  const h = clamp(hPct, 1, 100 - y);
+
+  const sx = Math.round(sourceCanvas.width * x / 100);
+  const sy = Math.round(sourceCanvas.height * y / 100);
+  const sw = Math.max(1, Math.round(sourceCanvas.width * w / 100));
+  const sh = Math.max(1, Math.round(sourceCanvas.height * h / 100));
+
+  const out = document.createElement('canvas');
+  out.width = sw;
+  out.height = sh;
+
+  const ctx = out.getContext('2d');
+  ctx.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
+  return out;
+}
+
+// stretch-fit a source canvas into fixed target pixel dimensions
+function fitToSize(sourceCanvas, w, h) {
+  if (!sourceCanvas || !sourceCanvas.width || !sourceCanvas.height) {
+    throw new Error('Invalid source canvas.');
+  }
+  const out = document.createElement('canvas');
+  out.width = Math.max(1, Math.round(w));
+  out.height = Math.max(1, Math.round(h));
+  out.getContext('2d').drawImage(sourceCanvas, 0, 0, out.width, out.height);
+  return out;
+}
+
+function getCropSettings() {
+  const v = id => Number(document.getElementById(id).value) || 0;
+  return {
+    split: Number(splitPoint.value),
+    front: { x: v('frontX'), y: v('frontY'), w: v('frontW') || 100, h: v('frontH') || 100 },
+    back:  { x: v('backX'),  y: v('backY'),  w: v('backW')  || 100, h: v('backH')  || 100 },
+  };
+}
+
+async function buildCardCanvases(pdfDoc) {
+  const cfg = getCropSettings();
+  let frontSource, backSource;
+
+  if (pdfDoc.numPages >= 2) {
+    frontSource = await renderPageToCanvas(pdfDoc, 1);
+    backSource  = await renderPageToCanvas(pdfDoc, 2);
+  } else {
+    const single = await renderPageToCanvas(pdfDoc, 1);
+    frontSource = cropPct(single, 0, 0, 100, cfg.split);
+    backSource  = cropPct(single, 0, cfg.split, 100, 100 - cfg.split);
+  }
+
+  const frontCropped = cropPct(frontSource, cfg.front.x, cfg.front.y, cfg.front.w, cfg.front.h);
+  const backCropped  = cropPct(backSource,  cfg.back.x,  cfg.back.y,  cfg.back.w,  cfg.back.h);
+
+  return {
+    frontCanvas: fitToSize(frontCropped, CARD_W, CARD_H),
+    backCanvas:  fitToSize(backCropped, CARD_W, CARD_H),
+  };
+}
+
+/* ============ FILE HANDLING ============ */
+async function handleFiles(fileList) {
+  if (processingFiles) {
+    setStatus('Please wait until the current files finish loading.');
+    return;
+  }
+
+  const files = Array.from(fileList)
+    .filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+
+  if (!files.length) {
+    setStatus('Please select one or more PDF files.');
+    return;
+  }
+
+  processingFiles = true;
+
+  try {
+    for (const file of files) {
+    const idx = firstEmptySlot();
+    if (idx === -1) { setStatus('All 5 slots are full — remove a card first.'); break; }
+
+    slots[idx] = { id: makeId(), name: file.name, loading: true };
+    renderSlots(); updateBadge();
+
+    try {
+      const buf = await file.arrayBuffer();
+      const pdfDoc = await loadPdf(buf.slice(0)); // slice to keep a safe copy
+      const { frontCanvas, backCanvas } = await buildCardCanvases(pdfDoc);
+
+      slots[idx] = {
+        id: slots[idx].id,
+        name: file.name,
+        pdfBuffer: buf,
+        frontCanvas, backCanvas,
+        frontUrl: frontCanvas.toDataURL('image/jpeg', 0.92),
+        backUrl: backCanvas.toDataURL('image/jpeg', 0.92),
+        loading: false,
+      };
+    } catch (err) {
+      console.error(err);
+      setStatus(`Could not read "${file.name}" — is it a valid PDF?`);
+      slots[idx] = null;
+    }
+      renderSlots(); updateBadge(); renderSheet(); updateExportButtons();
+    }
+  } finally {
+    processingFiles = false;
+  }
+}
+
+async function reapplyCropToAll() {
+  setStatus('Re-applying crop settings…');
+  for (let i = 0; i < slots.length; i++) {
+    const s = slots[i];
+    if (!s || !s.pdfBuffer) continue;
+    slots[i] = { ...s, loading: true };
+    renderSlots();
+    const pdfDoc = await loadPdf(s.pdfBuffer.slice(0));
+    const { frontCanvas, backCanvas } = await buildCardCanvases(pdfDoc);
+    slots[i] = {
+      ...s,
+      frontCanvas, backCanvas,
+      frontUrl: frontCanvas.toDataURL('image/jpeg', 0.92),
+      backUrl: backCanvas.toDataURL('image/jpeg', 0.92),
+      loading: false,
+    };
+    renderSlots();
+  }
+  setStatus('Crop settings applied to all loaded cards.');
+  renderSheet();
+}
+
+/* ============ SHEET COMPOSITION ============ */
+function drawCutGuides(ctx) {
+  ctx.save();
+  ctx.strokeStyle = '#b9b9b9';
+  ctx.lineWidth = 1.4; // ~0.5pt at 300dpi scale approximation
+  ctx.setLineDash([10, 8]);
+
+  for (let r = 0; r < ROWS; r++) {
+    const y = MARGIN_Y + r * (CARD_H + GAP_Y);
+    [ [MARGIN_X, CARD_W], [MARGIN_X + CARD_W + GAP_X, CARD_W] ].forEach(([x, w]) => {
+      ctx.strokeRect(x, y, w, CARD_H);
+      // corner cross marks
+      const crossLen = 14;
+      ctx.setLineDash([]);
+      ctx.strokeStyle = '#8a8a8a';
+      [[x, y], [x + w, y], [x, y + CARD_H], [x + w, y + CARD_H]].forEach(([cx, cy]) => {
+        ctx.beginPath();
+        ctx.moveTo(cx - crossLen, cy); ctx.lineTo(cx + crossLen, cy);
+        ctx.moveTo(cx, cy - crossLen); ctx.lineTo(cx, cy + crossLen);
+        ctx.stroke();
+      });
+      ctx.strokeStyle = '#b9b9b9';
+      ctx.setLineDash([10, 8]);
+    });
+  }
+  ctx.restore();
+}
+
+function renderSheet() {
+  const ctx = sheetCanvas.getContext('2d');
+  ctx.clearRect(0, 0, PAGE_W, PAGE_H);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+
+  const mirror = mirrorRadio.checked;
+  const bVal = brightness.value, cVal = contrast.value;
+  ctx.filter = `brightness(${bVal}%) contrast(${cVal}%)`;
+
+  slots.forEach((s, i) => {
+    if (!s || s.loading) return;
+    const y = MARGIN_Y + i * (CARD_H + GAP_Y);
+    const cols = [
+      { x: MARGIN_X, canvas: s.frontCanvas, label: 'FRONT' },
+      { x: MARGIN_X + CARD_W + GAP_X, canvas: s.backCanvas, label: 'BACK' },
+    ];
+    cols.forEach(col => {
+      ctx.save();
+      if (mirror) {
+        ctx.translate(col.x + CARD_W, y);
+        ctx.scale(-1, 1);
+        ctx.drawImage(col.canvas, 0, 0, CARD_W, CARD_H);
+      } else {
+        ctx.drawImage(col.canvas, col.x, y, CARD_W, CARD_H);
+      }
+      ctx.restore();
+    });
+  });
+
+  ctx.filter = 'none';
+  drawCutGuides(ctx);
+
+  // slot number + F/B labels (non-printing helper, subtle)
+  ctx.save();
+  ctx.fillStyle = '#a8a8a8';
+  ctx.font = '28px monospace';
+  slots.forEach((s, i) => {
+    if (!s) return;
+    const y = MARGIN_Y + i * (CARD_H + GAP_Y);
+    ctx.fillText(`${i + 1}F`, MARGIN_X + 6, y + 30);
+    ctx.fillText(`${i + 1}B`, MARGIN_X + CARD_W + GAP_X + 6, y + 30);
+  });
+  ctx.restore();
+}
+
+/* ============ EXPORT ============ */
+function setStatus(msg) { statusMsg.textContent = msg; }
+
+downloadBtn.addEventListener('click', () => {
+  setStatus('Generating high-res PDF…');
+  setTimeout(() => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: false });
+    const imgData = sheetCanvas.toDataURL('image/jpeg', 1.0);
+    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'NONE');
+    pdf.save('ayushman-dragon-sheet-A4.pdf');
+    setStatus('Downloaded ayushman-dragon-sheet-A4.pdf');
+  }, 30);
+});
+
+printBtn.addEventListener('click', () => {
+  const printArea = document.getElementById('printArea');
+  printArea.innerHTML = `<img src="${sheetCanvas.toDataURL('image/jpeg', 1.0)}" alt="A4 print sheet" />`;
+  printArea.classList.remove('hidden');
+
+  const cleanup = () => {
+    printArea.classList.add('hidden');
+    printArea.innerHTML = '';
+    window.removeEventListener('afterprint', cleanup);
+  };
+
+  window.addEventListener('afterprint', cleanup);
+  window.print();
+});
+
+/* ============ EVENTS ============ */
+browseBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => { handleFiles(e.target.files); fileInput.value = ''; });
+
+['dragenter', 'dragover'].forEach(evt =>
+  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dropzone-active'); })
+);
+['dragleave', 'drop'].forEach(evt =>
+  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dropzone-active'); })
+);
+dropzone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+
+[mirrorRadio, normalRadio].forEach(r => r.addEventListener('change', renderSheet));
+brightness.addEventListener('input', () => { brightnessVal.textContent = brightness.value + '%'; renderSheet(); });
+contrast.addEventListener('input', () => { contrastVal.textContent = contrast.value + '%'; renderSheet(); });
+splitPoint.addEventListener('input', () => { splitVal.textContent = splitPoint.value + '%'; });
+applyCropBtn.addEventListener('click', reapplyCropToAll);
+
+/* ============ INITIAL PAINT ============ */
+renderSlots();
+updateBadge();
+renderSheet();
+updateExportButtons();
+</script>
+</body>
+</html>
