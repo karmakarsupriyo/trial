@@ -1,999 +1,583 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Freshers' Welcome 2026 · B.Sc. Computer Science · Sammilani Mahavidyalaya</title>
-<meta name="description" content="An official invitation to the Freshers' Welcome 2026, Department of B.Sc. Computer Science, Sammilani Mahavidyalaya.">
-
-<!--
-  =====================================================================
-  FRESHERS' WELCOME 2026 — SAMMILANI MAHAVIDYALAYA
-  Single-file production build. All CSS + JS embedded. No dependencies.
-  Design language: "Ceremonial Circuit" — a university seal reimagined
-  as a dual-tone (blue/red) rotating crest, laid over a dark academic
-  night-sky, with binary/code motifs standing in for falling confetti.
-  =====================================================================
--->
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ayushman Card PVC Printer — Dragon Sheet Layout Tool</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:   { 950: '#0b1220', 900: '#101a2c', 800: '#182338', 700: '#22304a' },
+          brass: { 500: '#c08a3e', 400: '#d6a75c', 300: '#e6c68a' },
+          teal:  { 600: '#0e6e63', 500: '#12897a', 400: '#3aa89b' },
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* =====================================================================
-   0. DESIGN TOKENS
-   ===================================================================== */
-:root{
-  --void:        #060911;
-  --void-2:      #0a0f1c;
-  --panel:       rgba(18, 26, 46, 0.55);
-  --panel-solid: #101728;
-  --border:      rgba(255,255,255,0.10);
-  --border-hi:   rgba(255,255,255,0.22);
+  body { font-family: 'Inter', sans-serif; }
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
 
-  --blue-900:    #0d1e4a;
-  --blue-600:    #2451d6;
-  --blue-500:    #3b6bf0;
-  --blue-300:    #8fb1ff;
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #22304a; border-radius: 4px; }
 
-  --red-900:     #4a0d16;
-  --red-600:     #c21f34;
-  --red-500:     #e0273d;
-  --red-300:     #ff8b96;
+  .dropzone-active { border-color: #d6a75c !important; background-color: rgba(214,167,92,0.08) !important; }
 
-  --gold:        #d9b968;
-  --gold-soft:   #f0dca3;
+  .card-slot { transition: transform .15s ease, box-shadow .15s ease; }
+  .card-slot.dragging { opacity: .4; }
+  .card-slot.drag-over { box-shadow: 0 0 0 2px #d6a75c inset; }
 
-  --ink:         #f4f6fb;
-  --ink-dim:     #aab3c9;
-  --ink-faint:   #6c7690;
+  input[type=range] { -webkit-appearance: none; height: 4px; border-radius: 999px; background: #22304a; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #d6a75c; cursor: pointer; margin-top: -5px; }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #d6a75c; border: none; cursor: pointer; }
 
-  --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
-  --sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --mono:  ui-monospace, SFMono-Regular, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  #sheetPreviewWrap { background-image: linear-gradient(45deg, #182338 25%, transparent 25%), linear-gradient(-45deg, #182338 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #182338 75%), linear-gradient(-45deg, transparent 75%, #182338 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
 
-  --ease-out: cubic-bezier(.16,1,.3,1);
-  --ease-inout: cubic-bezier(.65,0,.35,1);
-}
+  .spinner { border: 2px solid rgba(255,255,255,.15); border-top-color: #d6a75c; border-radius: 50%; width: 16px; height: 16px; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (prefers-reduced-motion: reduce){
-  *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
-}
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .chev { transform: rotate(90deg); }
 
-*,*::before,*::after{ box-sizing: border-box; margin:0; padding:0; }
-html{ scroll-behavior: smooth; }
-::selection{ background: var(--red-500); color:#fff; }
-
-body{
-  background: var(--void);
-  color: var(--ink);
-  font-family: var(--sans);
-  line-height: 1.55;
-  overflow-x: hidden;
-  cursor: none;
-}
-@media (hover: none), (pointer: coarse){
-  body{ cursor: auto; }
-}
-
-a{ color: inherit; text-decoration: none; }
-button{ font-family: inherit; }
-img{ max-width: 100%; display:block; }
-
-:focus-visible{
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-.container{ width:100%; max-width: 1180px; margin:0 auto; padding: 0 24px; }
-.eyebrow{
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold-soft);
-  display:flex; align-items:center; gap:10px;
-  justify-content:center;
-}
-.eyebrow::before,.eyebrow::after{ content:''; width:28px; height:1px; background: linear-gradient(90deg, transparent, var(--gold-soft)); }
-.eyebrow::after{ background: linear-gradient(90deg, var(--gold-soft), transparent); }
-
-/* =====================================================================
-   1. BACKGROUND LAYERS — ambient sky, particles canvas, mouse glow
-   ===================================================================== */
-.bg-sky{
-  position: fixed; inset:0; z-index:-3;
-  background:
-    radial-gradient(ellipse 60% 45% at 18% 10%, rgba(59,107,240,0.22), transparent 60%),
-    radial-gradient(ellipse 55% 40% at 85% 85%, rgba(224,39,61,0.18), transparent 60%),
-    linear-gradient(180deg, var(--void-2), var(--void) 60%);
-}
-#particle-canvas{ position: fixed; inset:0; z-index:-2; pointer-events:none; }
-
-.mouse-glow{
-  position: fixed; top:0; left:0; width: 480px; height:480px;
-  border-radius:50%; pointer-events:none; z-index:0;
-  background: radial-gradient(circle, rgba(59,107,240,0.16), rgba(224,39,61,0.08) 45%, transparent 70%);
-  transform: translate(-50%,-50%);
-  transition: opacity .4s ease;
-  will-change: transform;
-}
-@media (hover:none){ .mouse-glow{ display:none; } }
-
-.cursor-dot, .cursor-ring{
-  position: fixed; top:0; left:0; pointer-events:none; z-index: 9999;
-  border-radius: 50%;
-  transform: translate(-50%,-50%);
-}
-.cursor-dot{ width:6px; height:6px; background: var(--gold); }
-.cursor-ring{ width:34px; height:34px; border:1px solid var(--border-hi); transition: transform .15s var(--ease-out), border-color .2s; }
-.cursor-ring.is-active{ transform: translate(-50%,-50%) scale(1.6); border-color: var(--gold); }
-@media (hover:none), (pointer:coarse){ .cursor-dot,.cursor-ring{ display:none; } }
-
-/* =====================================================================
-   2. LOADING SCREEN
-   ===================================================================== */
-#loader{
-  position: fixed; inset:0; z-index: 10000;
-  background: var(--void);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
-  transition: opacity .7s var(--ease-inout), visibility .7s var(--ease-inout);
-}
-#loader.hide{ opacity:0; visibility:hidden; }
-.seal{
-  width:84px; height:84px; border-radius:50%;
-  background: conic-gradient(from 0deg, var(--blue-600) 0deg 180deg, var(--red-600) 180deg 360deg);
-  display:flex; align-items:center; justify-content:center;
-  position:relative;
-  animation: seal-spin 3.2s linear infinite;
-  box-shadow: 0 0 40px rgba(59,107,240,0.35), 0 0 60px rgba(224,39,61,0.2);
-}
-.seal::before{
-  content:''; position:absolute; inset:6px; border-radius:50%;
-  background: var(--void); 
-}
-.seal-mark{
-  position:relative; z-index:1; font-family: var(--serif); font-size:20px; letter-spacing:1px; color: var(--gold-soft);
-}
-@keyframes seal-spin{ to{ transform: rotate(360deg); } }
-.loader-text{ font-family: var(--mono); font-size:12px; letter-spacing:4px; color: var(--ink-dim); text-transform:uppercase; }
-.loader-bar{ width:180px; height:2px; background: rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
-.loader-bar-fill{ height:100%; width:0%; background: linear-gradient(90deg, var(--blue-500), var(--red-500)); transition: width .25s ease; }
-
-/* =====================================================================
-   3. SCROLL PROGRESS + NAV DOTS + BACK TO TOP + MUSIC TOGGLE
-   ===================================================================== */
-#scroll-progress{
-  position: fixed; top:0; left:0; height:3px; width:0%;
-  background: linear-gradient(90deg, var(--blue-500), var(--gold), var(--red-500));
-  z-index: 9998; transition: width .1s linear;
-}
-
-.side-nav{
-  position: fixed; right: 22px; top:50%; transform: translateY(-50%);
-  z-index: 500; display:flex; flex-direction:column; gap:14px;
-}
-.side-nav button{
-  width:10px; height:10px; border-radius:50%; background: transparent;
-  border: 1px solid var(--border-hi); cursor: pointer; padding:0;
-  transition: all .3s var(--ease-out);
-}
-.side-nav button.active{ background: var(--gold); border-color: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(1.3); }
-@media (max-width: 720px){ .side-nav{ display:none; } }
-
-.floating-controls{
-  position: fixed; left: 22px; bottom: 22px; z-index: 500;
-  display:flex; flex-direction: column; gap: 12px;
-}
-.fab{
-  width:46px; height:46px; border-radius:50%; border:1px solid var(--border-hi);
-  background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  color: var(--ink); display:flex; align-items:center; justify-content:center;
-  cursor:pointer; font-size:18px; transition: all .3s var(--ease-out);
-  opacity:0; transform: translateY(10px); pointer-events:none;
-}
-.fab.show{ opacity:1; transform:none; pointer-events:auto; }
-.fab:hover{ border-color: var(--gold); box-shadow: 0 0 18px rgba(217,185,104,0.3); transform: translateY(-3px); }
-.fab#music-toggle.playing{ color: var(--gold); border-color: var(--gold); }
-
-/* =====================================================================
-   4. SECTIONS — full-viewport, snap
-   ===================================================================== */
-main{ scroll-snap-type: y proximity; }
-section.screen{
-  min-height: 100svh; width:100%;
-  display:flex; align-items:center; justify-content:center;
-  position: relative; padding: 90px 0;
-  scroll-snap-align: start;
-}
-
-.reveal{ opacity:0; transform: translateY(28px); transition: opacity .9s var(--ease-out), transform .9s var(--ease-out); }
-.reveal.in{ opacity:1; transform:none; }
-.reveal-delay-1{ transition-delay: .1s; } .reveal-delay-2{ transition-delay: .22s; }
-.reveal-delay-3{ transition-delay: .34s; } .reveal-delay-4{ transition-delay: .46s; }
-
-/* ---- SECTION 1: HERO ---- */
-#hero{ text-align:center; flex-direction:column; }
-.hero-inner{ display:flex; flex-direction:column; align-items:center; gap:28px; position:relative; z-index:2; }
-.hero-crest{
-  width:64px; height:64px; border-radius:50%;
-  background: conic-gradient(from 45deg, var(--blue-500), var(--red-500), var(--blue-500));
-  padding:2px; animation: seal-spin 10s linear infinite;
-}
-.hero-crest-inner{ width:100%; height:100%; border-radius:50%; background: var(--void-2); display:flex; align-items:center; justify-content:center; font-family: var(--serif); color: var(--gold-soft); font-size:18px; }
-
-.hero-title{
-  font-family: var(--serif);
-  font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: 1px;
-}
-.hero-title .line{
-  display:block;
-  font-size: clamp(3.2rem, 11vw, 8.2rem);
-  background: linear-gradient(100deg, var(--ink) 20%, var(--blue-300) 45%, var(--gold-soft) 55%, var(--red-300) 80%);
-  background-size: 220% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: shimmer 7s ease-in-out infinite;
-}
-.hero-title .line:nth-child(2){ animation-delay: .4s; }
-@keyframes shimmer{ 0%,100%{ background-position: 0% 50%; } 50%{ background-position: 100% 50%; } }
-
-.hero-dept{ font-family: var(--sans); font-size: clamp(1rem,2.4vw,1.3rem); color: var(--ink-dim); font-weight:300; }
-.hero-dept strong{ color: var(--ink); font-weight:600; }
-.hero-college{ font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem,2.8vw,1.6rem); color: var(--gold-soft); }
-
-.hero-subtitle{
-  font-family: var(--mono); font-size: 13px; letter-spacing: 4px; text-transform:uppercase;
-  color: var(--ink-dim); min-height: 20px;
-}
-.hero-subtitle .cursor-blink{ display:inline-block; width:2px; background: var(--gold); margin-left:2px; animation: blink 1s step-end infinite; }
-@keyframes blink{ 50%{ opacity:0; } }
-
-.btn{
-  position: relative; overflow:hidden; isolation:isolate;
-  display:inline-flex; align-items:center; gap:10px;
-  padding: 16px 38px; border-radius: 100px;
-  font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase; font-weight:600;
-  border: 1px solid var(--border-hi);
-  background: var(--panel); color: var(--ink);
-  cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .35s;
-}
-.btn:hover{ transform: translateY(-3px); box-shadow: 0 14px 40px rgba(59,107,240,0.25), 0 14px 40px rgba(224,39,61,0.12); border-color: var(--gold); }
-.btn:active{ transform: translateY(-1px) scale(.98); }
-.btn-primary{ background: linear-gradient(120deg, var(--blue-600), var(--red-600)); border-color: transparent; }
-.btn-primary:hover{ box-shadow: 0 16px 46px rgba(59,107,240,0.4), 0 10px 30px rgba(224,39,61,0.3); }
-.ripple{ position:absolute; border-radius:50%; background: rgba(255,255,255,0.5); transform: scale(0); animation: ripple-anim .7s ease-out; pointer-events:none; }
-@keyframes ripple-anim{ to{ transform: scale(3.2); opacity:0; } }
-
-.scroll-cue{ position:absolute; bottom: 34px; left:50%; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; color: var(--ink-faint); z-index:2; }
-.scroll-cue .wheel{ width:22px; height:36px; border:1px solid var(--border-hi); border-radius:12px; position:relative; }
-.scroll-cue .wheel::after{ content:''; position:absolute; top:6px; left:50%; width:3px; height:7px; background: var(--gold); border-radius:2px; transform:translateX(-50%); animation: cue-drop 1.8s ease-in-out infinite; }
-@keyframes cue-drop{ 0%{ opacity:1; top:6px; } 70%{ opacity:0; top:20px; } 100%{ opacity:0; top:6px; } }
-.scroll-cue span{ font-family: var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; }
-
-/* ---- shared section heading ---- */
-.section-head{ text-align:center; max-width: 640px; margin: 0 auto 48px; display:flex; flex-direction:column; gap:14px; }
-.section-title{ font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight:400; }
-.section-sub{ color: var(--ink-dim); font-size: 15px; font-weight:300; }
-
-/* ---- SECTION 2: INVITATION GENERATOR ---- */
-#invite{ flex-direction:column; }
-.glass-card{
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
-}
-.gen-card{ width: min(560px, 92vw); padding: clamp(28px,5vw,52px); text-align:center; margin: 0 auto; position:relative; }
-.gen-card h3{ font-family: var(--serif); font-size: clamp(1.5rem,3.6vw,2rem); font-weight:400; margin-bottom: 8px; }
-.gen-card p.hint{ color: var(--ink-faint); font-size: 13px; margin-bottom: 28px; }
-
-.field{ position: relative; margin-bottom: 22px; }
-.field input{
-  width:100%; padding: 17px 20px; border-radius: 14px;
-  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-  color: var(--ink); font-size: 16px; font-family: var(--sans);
-  transition: border-color .3s, box-shadow .3s, background .3s;
-}
-.field input::placeholder{ color: var(--ink-faint); }
-.field input:focus{ border-color: var(--gold); background: rgba(255,255,255,0.06); box-shadow: 0 0 0 4px rgba(217,185,104,0.12); outline:none; }
-
-#invite-error{ color: var(--red-300); font-size: 12px; min-height: 16px; margin-bottom: 8px; }
-
-/* invitation output card */
-#invite-output{ margin-top: 30px; text-align:left; display:none; }
-#invite-output.show{ display:block; animation: card-in .7s var(--ease-out); }
-@keyframes card-in{ from{ opacity:0; transform: translateY(18px) scale(.97); } to{ opacity:1; transform:none; } }
-
-.invitation{
-  position:relative; border-radius: 20px; padding: 34px 30px 30px;
-  background: linear-gradient(165deg, rgba(13,30,74,0.5), rgba(74,13,22,0.4)), var(--panel-solid);
-  border: 1px solid var(--border-hi);
-  overflow:hidden;
-}
-.invitation::before{
-  content:''; position:absolute; inset:8px; border: 1px solid rgba(217,185,104,0.35); border-radius: 13px; pointer-events:none;
-}
-.invitation-seal{
-  width:48px; height:48px; margin: 0 auto 16px;
-  border-radius:50%; background: conic-gradient(from 20deg, var(--blue-500), var(--red-500));
-  display:flex; align-items:center; justify-content:center; position:relative;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-.invitation-seal::before{ content:''; position:absolute; inset:4px; border-radius:50%; background: var(--panel-solid); }
-.invitation-seal span{ position:relative; font-family: var(--serif); font-size:13px; color: var(--gold-soft); }
-.invitation-heading{ text-align:center; font-family: var(--mono); letter-spacing:5px; font-size:11px; color: var(--gold-soft); text-transform:uppercase; margin-bottom: 6px; }
-.invitation-name{ text-align:center; font-family: var(--serif); font-size: clamp(1.5rem,4vw,2.1rem); margin-bottom: 20px; color: var(--ink); }
-.invitation-body{ font-size: 14.5px; color: var(--ink-dim); line-height: 1.85; margin-bottom: 18px; }
-.invitation-body .lead{ color: var(--ink); }
-.invitation-sign{ font-family: var(--serif); font-style: italic; color: var(--gold-soft); font-size: 14px; text-align:right; }
-.invitation-sign small{ display:block; font-style: normal; font-family: var(--mono); color: var(--ink-faint); font-size: 11px; margin-top:4px; letter-spacing:1px; }
-.invitation-id{ position:absolute; top:14px; right:18px; font-family: var(--mono); font-size:9px; color: var(--ink-faint); letter-spacing:1px; }
-
-.invite-actions{ display:flex; gap:12px; margin-top: 22px; justify-content:center; flex-wrap:wrap; }
-.btn-ghost{ background: transparent; padding: 12px 24px; font-size:12px; }
-
-/* ---- SECTION 3: DETAILS + TIMELINE ---- */
-#details{ flex-direction: column; }
-.detail-grid{
-  display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
-  max-width: 980px; margin: 0 auto 60px; width:100%;
-}
-@media (max-width: 820px){ .detail-grid{ grid-template-columns: 1fr; } }
-.detail-card{
-  padding: 30px 26px; text-align:center; transition: transform .4s var(--ease-out), border-color .4s;
-}
-.detail-card:hover{ transform: translateY(-8px); border-color: var(--gold); }
-.detail-icon{ width:52px; height:52px; margin:0 auto 18px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:22px; background: linear-gradient(135deg, rgba(59,107,240,0.25), rgba(224,39,61,0.2)); border:1px solid var(--border); }
-.detail-card h4{ font-family: var(--serif); font-size: 1.2rem; font-weight:400; margin-bottom: 8px; }
-.detail-card p{ color: var(--ink-dim); font-size: 13.5px; }
-.detail-card .tag{ display:inline-block; margin-top:10px; font-family: var(--mono); font-size:10px; letter-spacing:2px; color: var(--gold-soft); text-transform:uppercase; border:1px solid var(--border); padding:4px 10px; border-radius:20px; }
-
-.timeline{ max-width: 720px; margin: 0 auto; width:100%; position:relative; padding-left: 30px; }
-.timeline::before{ content:''; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background: linear-gradient(180deg, var(--blue-500), var(--gold), var(--red-500)); }
-.tl-item{ position:relative; padding-bottom: 30px; }
-.tl-item:last-child{ padding-bottom:0; }
-.tl-item::before{ content:''; position:absolute; left:-30px; top:4px; width:11px; height:11px; border-radius:50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(217,185,104,0.15); }
-.tl-time{ font-family: var(--mono); font-size:11px; letter-spacing:2px; color: var(--gold-soft); text-transform:uppercase; }
-.tl-title{ font-family: var(--serif); font-size: 1.15rem; margin: 4px 0 4px; }
-.tl-desc{ color: var(--ink-dim); font-size: 13.5px; }
-
-/* ---- SECTION 4: COUNTDOWN + FOOTER ---- */
-#countdown-section{ flex-direction: column; text-align:center; }
-.countdown-grid{ display:flex; gap: 18px; justify-content:center; flex-wrap:wrap; margin: 10px 0 26px; }
-.cd-unit{ width: 108px; padding: 22px 0; text-align:center; }
-.cd-num{ font-family: var(--serif); font-size: clamp(2.2rem,6vw,3.2rem); background: linear-gradient(160deg, var(--blue-300), var(--gold-soft), var(--red-300)); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }
-.cd-label{ font-family: var(--mono); font-size:10px; letter-spacing:3px; color: var(--ink-faint); text-transform:uppercase; margin-top: 10px; display:block; }
-.cd-tagline{ font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem,3vw,1.5rem); color: var(--gold-soft); margin: 10px 0 60px; }
-
-footer{ text-align:center; padding: 30px 20px 10px; color: var(--ink-faint); font-size: 12px; border-top: 1px solid var(--border); width:100%; max-width: 720px; }
-footer .foot-brand{ font-family: var(--serif); color: var(--ink-dim); font-size: 15px; margin-bottom: 4px; }
-footer .foot-college{ font-style: italic; color: var(--gold-soft); margin-bottom: 10px; }
-
-/* =====================================================================
-   5. PRINT STYLES — invitation only
-   ===================================================================== */
-@media print{
-  body *{ visibility: hidden; }
-  #invite-output, #invite-output *{ visibility: visible; }
-  #invite-output{ position: absolute; top:0; left:0; width:100%; margin:0; padding: 40px; background: #fff !important; }
-  .invitation{ background:#fff !important; border: 2px solid #333 !important; color:#111 !important; box-shadow:none !important; }
-  .invitation-body, .tl-desc, footer{ color:#333 !important; }
-  .invite-actions{ display:none !important; }
-}
-
-/* =====================================================================
-   6. RESPONSIVE TUNING
-   ===================================================================== */
-@media (max-width: 480px){
-  .cd-unit{ width: 78px; padding: 14px 0; }
-  .gen-card{ padding: 26px 18px; }
-  section.screen{ padding: 70px 0; }
-}
+  @media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea { position: fixed; top: 0; left: 0; margin: 0; padding: 0; }
+    #printArea img { width: 210mm; height: 297mm; display: block; }
+    @page { size: A4 portrait; margin: 0; }
+  }
 </style>
 </head>
-<body>
+<body class="bg-ink-950 text-slate-200 min-h-screen">
 
-<!-- ===================== LOADER ===================== -->
-<div id="loader" aria-hidden="true">
-  <div class="seal"><span class="seal-mark">SM</span></div>
-  <div class="loader-text">Preparing your invitation</div>
-  <div class="loader-bar"><div class="loader-bar-fill" id="loader-fill"></div></div>
-</div>
+<!-- ============ HEADER ============ -->
+<header class="border-b border-ink-700 sticky top-0 z-30 bg-ink-950/95 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-md bg-brass-500/15 border border-brass-400/40 flex items-center justify-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d6a75c" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20"/><circle cx="7" cy="14.5" r="1.4" fill="#d6a75c" stroke="none"/><path d="M11 14.5h7"/></svg>
+      </div>
+      <div>
+        <h1 class="font-display font-semibold text-base sm:text-lg text-slate-50 leading-none">Ayushman PVC Card Layout</h1>
+        <p class="text-[11px] text-slate-400 font-mono mt-0.5">Dragon Sheet · 5-up A4 · client-side only</p>
+      </div>
+    </div>
+    <span id="loadedBadge" class="font-mono text-xs sm:text-sm px-3 py-1.5 rounded-full border border-ink-700 bg-ink-900 text-brass-300 whitespace-nowrap">0 / 5 cards loaded</span>
+  </div>
+</header>
 
-<!-- ===================== BACKGROUND ===================== -->
-<div class="bg-sky" aria-hidden="true"></div>
-<canvas id="particle-canvas" aria-hidden="true"></canvas>
-<div class="mouse-glow" id="mouse-glow" aria-hidden="true"></div>
-<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
-<div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
 
-<!-- ===================== PROGRESS + NAV ===================== -->
-<div id="scroll-progress" role="progressbar" aria-label="Scroll progress"></div>
-<nav class="side-nav" aria-label="Section navigation">
-  <button data-target="hero" class="active" aria-label="Go to Welcome section"></button>
-  <button data-target="invite" aria-label="Go to Invitation section"></button>
-  <button data-target="details" aria-label="Go to Details section"></button>
-  <button data-target="countdown-section" aria-label="Go to Countdown section"></button>
-</nav>
+  <!-- ============ LEFT: uploader + slots + preview ============ -->
+  <section class="space-y-6 min-w-0">
 
-<div class="floating-controls">
-  <button class="fab" id="music-toggle" aria-pressed="false" title="Toggle ambient sound">♪</button>
-  <button class="fab" id="back-to-top" title="Back to top" aria-label="Back to top">↑</button>
-</div>
-
-<main>
-
-  <!-- ===================== SECTION 1 — HERO ===================== -->
-  <section class="screen" id="hero">
-    <div class="hero-inner container">
-      <div class="hero-crest reveal in" aria-hidden="true"><div class="hero-crest-inner">SM</div></div>
-
-      <p class="eyebrow reveal in">Sammilani Mahavidyalaya · Since Est.</p>
-
-      <h1 class="hero-title reveal in">
-        <span class="line">WELCOME</span>
-        <span class="line">FRESHERS</span>
-        <span class="line">2026</span>
-      </h1>
-
-      <p class="hero-dept reveal in">Department of <strong>B.Sc. Computer Science</strong></p>
-      <p class="hero-college reveal in">Sammilani Mahavidyalaya</p>
-
-      <p class="hero-subtitle reveal in" id="typing-target" aria-live="polite"></p>
-
-      <a href="#invite" class="btn btn-primary reveal in" id="open-invitation-btn">
-        <span>Open Your Invitation</span>
-      </a>
+    <!-- Dropzone -->
+    <div id="dropzone" class="border-2 border-dashed border-ink-700 rounded-xl p-6 sm:p-8 text-center transition-colors">
+      <input id="fileInput" type="file" accept="application/pdf" multiple class="hidden" />
+      <svg class="mx-auto mb-3" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3aa89b" stroke-width="1.6"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <p class="text-slate-200 font-medium">Drag &amp; drop up to 5 Ayushman Bharat PDF files</p>
+      <p class="text-slate-500 text-sm mt-1">or a single multi-page PDF containing multiple cards</p>
+      <button id="browseBtn" class="mt-4 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium transition-colors">Choose files</button>
+      <p class="text-[11px] text-slate-500 mt-3 font-mono">100% local · nothing leaves your browser</p>
     </div>
 
-    <div class="scroll-cue" aria-hidden="true">
-      <div class="wheel"></div>
-      <span>Scroll</span>
+    <!-- 5 card slots -->
+    <div>
+      <h2 class="font-display text-sm uppercase tracking-wider text-slate-400 mb-3">Card Slots <span class="text-slate-600">(drag to reorder)</span></h2>
+      <div id="slotsGrid" class="grid grid-cols-1 sm:grid-cols-5 gap-3"></div>
     </div>
+
+    <!-- Live preview -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-display text-sm uppercase tracking-wider text-slate-400">Live A4 Preview</h2>
+        <span class="text-[11px] font-mono text-slate-500">210 × 297 mm · 300 DPI · 2480 × 3508 px</span>
+      </div>
+      <div id="sheetPreviewWrap" class="rounded-xl border border-ink-700 p-3 sm:p-6 flex justify-center overflow-x-auto">
+        <canvas id="sheetCanvas" width="2480" height="3508" class="bg-white shadow-2xl" style="width:100%; max-width:360px; height:auto;"></canvas>
+      </div>
+    </div>
+
+    <!-- Instructions drawer -->
+    <details class="rounded-xl border border-ink-700 bg-ink-900/60 open:pb-4">
+      <summary class="flex items-center justify-between px-4 py-3">
+        <span class="font-display text-sm text-slate-200">Dragon Sheet printing steps</span>
+        <svg class="chev transition-transform text-slate-500" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <ol class="px-4 pt-1 space-y-2.5 text-sm text-slate-400 font-mono">
+        <li><span class="text-brass-400">01</span> — Keep <b class="text-slate-200">Mirror Mode</b> ON. Print onto the non-peelable film side of the Dragon Sheet.</li>
+        <li><span class="text-brass-400">02</span> — Load the Dragon Sheet in the inkjet tray so the printed image lands on the film, not the paper backing.</li>
+        <li><span class="text-brass-400">03</span> — After printing, let the ink dry, then carefully peel away the PVC core protection layer.</li>
+        <li><span class="text-brass-400">04</span> — Sandwich with the blank PVC core + overlay film, then laminate at <b class="text-slate-200">110–130°C</b> using a hot laminator.</li>
+        <li><span class="text-brass-400">05</span> — Let the sheet cool flat, then die-cut each card to standard CR-80 size (85.6 × 54 mm).</li>
+      </ol>
+    </details>
   </section>
 
-  <!-- ===================== SECTION 2 — INVITATION GENERATOR ===================== -->
-  <section class="screen" id="invite">
-    <div class="container">
-      <div class="section-head reveal">
-        <p class="eyebrow">A Personal Invitation</p>
-        <h2 class="section-title">Enter Your Full Name</h2>
-        <p class="section-sub">Every invitation generated here is one of thousands of unique compositions — written, sealed, and addressed only to you.</p>
+  <!-- ============ RIGHT: controls ============ -->
+  <aside class="space-y-5 lg:sticky lg:top-20 self-start">
+
+    <!-- Print mode -->
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 p-4">
+      <h3 class="font-display text-sm uppercase tracking-wider text-slate-400 mb-3">Print Mode</h3>
+      <label class="flex items-start gap-3 p-3 rounded-lg border border-ink-700 mb-2 cursor-pointer has-[:checked]:border-brass-400 has-[:checked]:bg-brass-400/5">
+        <input type="radio" name="mode" id="mirrorMode" checked class="mt-1 accent-brass-400">
+        <span>
+          <span class="block text-sm font-medium text-slate-100">Mirror Mode</span>
+          <span class="block text-xs text-slate-500 mt-0.5">For Dragon Sheet (image flips horizontally per card)</span>
+        </span>
+      </label>
+      <label class="flex items-start gap-3 p-3 rounded-lg border border-ink-700 cursor-pointer has-[:checked]:border-brass-400 has-[:checked]:bg-brass-400/5">
+        <input type="radio" name="mode" id="normalMode" class="mt-1 accent-brass-400">
+        <span>
+          <span class="block text-sm font-medium text-slate-100">Normal Mode</span>
+          <span class="block text-xs text-slate-500 mt-0.5">Direct PVC / glossy paper printing</span>
+        </span>
+      </label>
+    </div>
+
+    <!-- Enhance -->
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 p-4 space-y-4">
+      <h3 class="font-display text-sm uppercase tracking-wider text-slate-400">Print Enhancement</h3>
+      <div>
+        <div class="flex justify-between text-xs text-slate-400 mb-1"><span>Brightness</span><span id="brightnessVal" class="font-mono text-brass-300">100%</span></div>
+        <input type="range" id="brightness" min="70" max="140" value="100" class="w-full">
       </div>
+      <div>
+        <div class="flex justify-between text-xs text-slate-400 mb-1"><span>Contrast</span><span id="contrastVal" class="font-mono text-brass-300">100%</span></div>
+        <input type="range" id="contrast" min="70" max="140" value="100" class="w-full">
+      </div>
+    </div>
 
-      <div class="glass-card gen-card reveal reveal-delay-1">
-        <h3>Receive Your Invitation</h3>
-        <p class="hint">Type your name exactly as you'd like it to appear on your invitation card.</p>
+    <!-- Advanced settings -->
+    <details class="rounded-xl border border-ink-700 bg-ink-900/60">
+      <summary class="flex items-center justify-between px-4 py-3">
+        <span class="font-display text-sm uppercase tracking-wider text-slate-400">Advanced: Crop &amp; Split</span>
+        <svg class="chev transition-transform text-slate-500" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <div class="px-4 pb-4 pt-1 space-y-4 text-sm">
+        <p class="text-xs text-slate-500 leading-relaxed">Used when a PDF has only 1 page (front &amp; back on the same page), and to fine-tune the crop box for each side. Values are % of the source image.</p>
 
-        <form id="invite-form" novalidate>
-          <div class="field">
-            <input type="text" id="name-input" placeholder="Enter Your Full Name" autocomplete="name" maxlength="60" aria-label="Your full name">
+        <div>
+          <div class="flex justify-between text-xs text-slate-400 mb-1"><span>Single-page split point</span><span id="splitVal" class="font-mono text-brass-300">50%</span></div>
+          <input type="range" id="splitPoint" min="10" max="90" value="50" class="w-full">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-2">
+            <p class="text-xs font-semibold text-slate-300">Front crop</p>
+            <label class="block text-[11px] text-slate-500">X <input type="number" id="frontX" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">Y <input type="number" id="frontY" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">W <input type="number" id="frontW" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">H <input type="number" id="frontH" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
           </div>
-          <p id="invite-error" role="alert"></p>
-          <button type="submit" class="btn btn-primary" id="generate-btn">
-            <span>Receive Your Invitation</span>
-          </button>
-        </form>
-
-        <div id="invite-output">
-          <div class="invitation" id="invitation-card">
-            <span class="invitation-id" id="invitation-id">№ 0000</span>
-            <div class="invitation-seal" aria-hidden="true"><span>SM</span></div>
-            <p class="invitation-heading" id="invitation-heading">Welcome</p>
-            <p class="invitation-name" id="invitation-name"></p>
-            <div class="invitation-body" id="invitation-body"></div>
-            <p class="invitation-sign">
-              Department of B.Sc. Computer Science
-              <small>Sammilani Mahavidyalaya · Freshers' Welcome 2026</small>
-            </p>
-          </div>
-          <div class="invite-actions">
-            <button class="btn btn-ghost" id="regenerate-btn" type="button">↻ New Invitation</button>
-            <button class="btn btn-ghost" id="print-btn" type="button">⬇ Download as PDF</button>
+          <div class="space-y-2">
+            <p class="text-xs font-semibold text-slate-300">Back crop</p>
+            <label class="block text-[11px] text-slate-500">X <input type="number" id="backX" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">Y <input type="number" id="backY" value="0" min="0" max="90" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">W <input type="number" id="backW" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
+            <label class="block text-[11px] text-slate-500">H <input type="number" id="backH" value="100" min="10" max="100" class="w-full mt-0.5 bg-ink-800 border border-ink-700 rounded px-2 py-1 text-slate-200 font-mono text-xs"></label>
           </div>
         </div>
+        <button id="applyCropBtn" class="w-full py-2 rounded-lg bg-ink-800 hover:bg-ink-700 border border-ink-700 text-sm text-slate-200 transition-colors">Re-apply to loaded cards</button>
       </div>
+    </details>
+
+    <!-- Export -->
+    <div class="rounded-xl border border-ink-700 bg-ink-900/60 p-4 space-y-2.5">
+      <h3 class="font-display text-sm uppercase tracking-wider text-slate-400 mb-1">Export</h3>
+      <button id="downloadBtn" disabled class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brass-500 hover:bg-brass-400 disabled:opacity-40 disabled:cursor-not-allowed text-ink-950 text-sm font-semibold transition-colors">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>
+        Download High-Res PDF
+      </button>
+      <button id="printBtn" disabled class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V3h12v6"/><rect x="6" y="13" width="12" height="8"/><path d="M4 13h16"/></svg>
+        Print Directly
+      </button>
+      <p id="statusMsg" class="text-[11px] font-mono text-slate-500 pt-1 min-h-[14px]"></p>
     </div>
-  </section>
-
-  <!-- ===================== SECTION 3 — DETAILS ===================== -->
-  <section class="screen" id="details">
-    <div class="container">
-      <div class="section-head reveal">
-        <p class="eyebrow">Invitation Details</p>
-        <h2 class="section-title">Everything You Need To Know</h2>
-      </div>
-
-      <div class="detail-grid">
-        <div class="glass-card detail-card reveal reveal-delay-1">
-          <div class="detail-icon">🎉</div>
-          <h4>Event</h4>
-          <p>Freshers' Welcome 2026 — an evening of celebration for the newest members of our department.</p>
-          <span class="tag">Ceremony</span>
-        </div>
-        <div class="glass-card detail-card reveal reveal-delay-2">
-          <div class="detail-icon">📅</div>
-          <h4>Date</h4>
-          <p>Tuesday, 28th July 2026 — mark your calendar for a day you'll remember.</p>
-          <span class="tag">28 · 07 · 2026</span>
-        </div>
-        <div class="glass-card detail-card reveal reveal-delay-3">
-          <div class="detail-icon">👗</div>
-          <h4>Dress Code</h4>
-          <p>Girls — Saree &nbsp;·&nbsp; Boys — Punjabi. Come dressed in the spirit of tradition.</p>
-          <span class="tag">Traditional</span>
-        </div>
-      </div>
-
-      <div class="timeline">
-        <div class="tl-item reveal reveal-delay-1">
-          <p class="tl-time">Morning</p>
-          <p class="tl-title">Registration & Welcome Desk</p>
-          <p class="tl-desc">Freshers check in, receive their badge, and meet their department seniors.</p>
-        </div>
-        <div class="tl-item reveal reveal-delay-2">
-          <p class="tl-time">Midday</p>
-          <p class="tl-title">Ceremonial Welcome</p>
-          <p class="tl-desc">A formal address from faculty, followed by department introductions.</p>
-        </div>
-        <div class="tl-item reveal reveal-delay-3">
-          <p class="tl-time">Afternoon</p>
-          <p class="tl-title">Cultural Performances</p>
-          <p class="tl-desc">Music, dance, and performances led by second and third-year students.</p>
-        </div>
-        <div class="tl-item reveal reveal-delay-4">
-          <p class="tl-time">Evening</p>
-          <p class="tl-title">Freshers' Felicitation</p>
-          <p class="tl-desc">Titles, prizes, and a group photograph to close the celebration.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== SECTION 4 — COUNTDOWN + FOOTER ===================== -->
-  <section class="screen" id="countdown-section">
-    <div class="container">
-      <div class="section-head reveal">
-        <p class="eyebrow">The Countdown Begins</p>
-        <h2 class="section-title">28th July 2026</h2>
-      </div>
-
-      <div class="countdown-grid reveal reveal-delay-1" id="countdown" aria-live="polite">
-        <div class="glass-card cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-label">Days</span></div>
-        <div class="glass-card cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Hours</span></div>
-        <div class="glass-card cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Minutes</span></div>
-        <div class="glass-card cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Seconds</span></div>
-      </div>
-
-      <p class="cd-tagline reveal reveal-delay-2">"We can't wait to welcome you."</p>
-
-      <footer class="reveal reveal-delay-3">
-        <p class="foot-brand">Department of B.Sc. Computer Science</p>
-        <p class="foot-college">Sammilani Mahavidyalaya</p>
-        <p>Freshers' Welcome 2026 · All rights reserved</p>
-      </footer>
-    </div>
-  </section>
-
+  </aside>
 </main>
 
+<div id="printArea" class="hidden"></div>
+
 <script>
-/* =====================================================================
-   APP SCRIPT
-   Sections:
-   1. Loader
-   2. Custom cursor + mouse glow
-   3. Particle / floating code-symbol canvas
-   4. Scroll progress + side-nav + scroll-reveal
-   5. Hero typing animation
-   6. Ripple button effect
-   7. Invitation generator (100+ unique combinatorial templates)
-   8. Countdown timer
-   9. Back-to-top, print, ambient music (Web Audio, no external file)
-   ===================================================================== */
-(function(){
-  'use strict';
-  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  /* ---------------- 1. LOADER ---------------- */
-  var loaderFill = document.getElementById('loader-fill');
-  var loader = document.getElementById('loader');
-  var pct = 0;
-  var loadTimer = setInterval(function(){
-    pct += Math.random() * 18 + 6;
-    if (pct >= 100){ pct = 100; clearInterval(loadTimer); }
-    loaderFill.style.width = pct + '%';
-  }, 140);
+/* ============ CONSTANTS ============ */
+const DPI = 300;
+const mmToPx = mm => Math.round(mm * DPI / 25.4);
+const PAGE_W = 2480, PAGE_H = 3508;          // A4 @ 300dpi
+const CARD_W = mmToPx(85.6), CARD_H = mmToPx(54); // CR-80 @ 300dpi
+const ROWS = 5;
+const MARGIN_X = Math.round((PAGE_W - CARD_W * 2 - 180) / 2); // leaves a gutter of 180px between columns
+const GAP_X = PAGE_W - MARGIN_X * 2 - CARD_W * 2;
+const MARGIN_Y = 90;
+const GAP_Y = (PAGE_H - MARGIN_Y * 2 - CARD_H * ROWS) / (ROWS - 1);
 
-  window.addEventListener('load', function(){
-    setTimeout(function(){
-      loaderFill.style.width = '100%';
-      setTimeout(function(){ loader.classList.add('hide'); }, 350);
-    }, 500);
-  });
-  // Safety fallback in case 'load' is delayed
-  setTimeout(function(){ loader.classList.add('hide'); }, 4000);
+/* ============ STATE ============ */
+const slots = new Array(5).fill(null); // each: {id, name, frontCanvas, backCanvas, loading}
+let dragSrcIndex = null;
 
-  /* ---------------- 2. CUSTOM CURSOR + MOUSE GLOW ---------------- */
-  var glow = document.getElementById('mouse-glow');
-  var dot = document.getElementById('cursor-dot');
-  var ring = document.getElementById('cursor-ring');
-  var isCoarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+/* ============ DOM ============ */
+const dropzone   = document.getElementById('dropzone');
+const fileInput  = document.getElementById('fileInput');
+const browseBtn  = document.getElementById('browseBtn');
+const slotsGrid  = document.getElementById('slotsGrid');
+const badge      = document.getElementById('loadedBadge');
+const sheetCanvas= document.getElementById('sheetCanvas');
+const downloadBtn= document.getElementById('downloadBtn');
+const printBtn   = document.getElementById('printBtn');
+const statusMsg  = document.getElementById('statusMsg');
 
-  if (!isCoarse){
-    var ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
-    window.addEventListener('mousemove', function(e){
-      mouseX = e.clientX; mouseY = e.clientY;
-      glow.style.transform = 'translate(' + mouseX + 'px,' + mouseY + 'px) translate(-50%,-50%)';
-      dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
-    });
-    (function animateRing(){
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    })();
-    document.querySelectorAll('a, button, input').forEach(function(el){
-      el.addEventListener('mouseenter', function(){ ring.classList.add('is-active'); });
-      el.addEventListener('mouseleave', function(){ ring.classList.remove('is-active'); });
-    });
-  } else {
-    glow.style.display = 'none';
-  }
+const mirrorRadio = document.getElementById('mirrorMode');
+const normalRadio = document.getElementById('normalMode');
+const brightness = document.getElementById('brightness');
+const contrast   = document.getElementById('contrast');
+const brightnessVal = document.getElementById('brightnessVal');
+const contrastVal   = document.getElementById('contrastVal');
+const splitPoint = document.getElementById('splitPoint');
+const splitVal   = document.getElementById('splitVal');
+const applyCropBtn = document.getElementById('applyCropBtn');
 
-  /* ---------------- 3. PARTICLE / CODE-SYMBOL CANVAS ---------------- */
-  var canvas = document.getElementById('particle-canvas');
-  var ctx = canvas.getContext('2d');
-  var W, H, particles = [];
-  var SYMBOLS = ['{','}','<','>','/','01','10',';','=>','#','&&','[]','()','::'];
+const cropFields = ['frontX','frontY','frontW','frontH','backX','backY','backW','backH'];
 
-  function resizeCanvas(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  function initParticles(){
-    var count = window.innerWidth < 720 ? 26 : 50;
-    particles = [];
-    for (var i=0;i<count;i++){
-      particles.push({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        speed: 0.15 + Math.random()*0.35,
-        drift: (Math.random()-0.5) * 0.3,
-        size: 11 + Math.random()*13,
-        symbol: SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)],
-        hue: Math.random() > 0.5 ? 'rgba(139,177,255,' : 'rgba(255,139,150,',
-        alpha: 0.08 + Math.random()*0.16,
-        rot: Math.random()*Math.PI,
-        rotSpeed: (Math.random()-0.5) * 0.002
-      });
+/* ============ INIT SLOTS UI ============ */
+function renderSlots() {
+  slotsGrid.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const s = slots[i];
+    const el = document.createElement('div');
+    el.className = 'card-slot rounded-xl border border-dashed border-ink-700 bg-ink-900/50 p-2 min-h-[150px] flex flex-col';
+    el.draggable = !!s;
+    el.dataset.index = i;
+
+    if (!s) {
+      el.innerHTML = `
+        <div class="flex-1 flex flex-col items-center justify-center text-slate-600 gap-1">
+          <span class="font-mono text-lg">${i + 1}</span>
+          <span class="text-[10px]">empty slot</span>
+        </div>`;
+    } else {
+      el.classList.remove('border-dashed');
+      el.classList.add('border-solid', 'border-ink-600');
+      el.innerHTML = `
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-mono text-[10px] text-brass-300">SLOT ${i + 1}</span>
+          <button data-remove="${i}" class="text-slate-500 hover:text-red-400 text-xs leading-none">✕</button>
+        </div>
+        <div class="grid grid-cols-2 gap-1 flex-1">
+          <div class="rounded overflow-hidden border border-ink-700 bg-white flex items-center justify-center">${s.loading ? '<div class="spinner"></div>' : `<img src="${s.frontUrl}" class="w-full h-full object-cover" alt="front">`}</div>
+          <div class="rounded overflow-hidden border border-ink-700 bg-white flex items-center justify-center">${s.loading ? '<div class="spinner"></div>' : `<img src="${s.backUrl}" class="w-full h-full object-cover" alt="back">`}</div>
+        </div>
+        <p class="text-[10px] text-slate-500 truncate mt-1.5" title="${s.name}">${s.name}</p>`;
     }
+    slotsGrid.appendChild(el);
   }
-  function drawParticles(){
-    ctx.clearRect(0,0,W,H);
-    particles.forEach(function(p){
-      p.y -= p.speed;
-      p.x += p.drift;
-      p.rot += p.rotSpeed;
-      if (p.y < -30){ p.y = H + 30; p.x = Math.random()*W; }
-      if (p.x < -30) p.x = W + 30;
-      if (p.x > W + 30) p.x = -30;
 
+  slotsGrid.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = +btn.dataset.remove;
+      slots[idx] = null;
+      renderSlots();
+      updateBadge();
+      renderSheet();
+      updateExportButtons();
+    });
+  });
+
+  // drag reorder
+  slotsGrid.querySelectorAll('.card-slot').forEach(el => {
+    el.addEventListener('dragstart', () => { dragSrcIndex = +el.dataset.index; el.classList.add('dragging'); });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const targetIdx = +el.dataset.index;
+      if (dragSrcIndex === null || dragSrcIndex === targetIdx) return;
+      const tmp = slots[targetIdx];
+      slots[targetIdx] = slots[dragSrcIndex];
+      slots[dragSrcIndex] = tmp;
+      dragSrcIndex = null;
+      renderSlots();
+      renderSheet();
+    });
+  });
+}
+
+function updateBadge() {
+  const n = slots.filter(Boolean).length;
+  badge.textContent = `${n} / 5 cards loaded`;
+  badge.classList.toggle('text-teal-400', n === 5);
+}
+
+function updateExportButtons() {
+  const has = slots.some(Boolean);
+  downloadBtn.disabled = !has;
+  printBtn.disabled = !has;
+}
+
+function firstEmptySlot() {
+  return slots.findIndex(s => s === null);
+}
+
+/* ============ PDF RENDER / CROP HELPERS ============ */
+async function loadPdf(arrayBuffer) {
+  return pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+}
+
+async function renderPageToCanvas(pdfDoc, pageNum, targetScale = 3) {
+  const page = await pdfDoc.getPage(pageNum);
+  const viewport = page.getViewport({ scale: targetScale });
+  const canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  return canvas;
+}
+
+// crop a % rectangle out of a source canvas -> new canvas
+function cropPct(sourceCanvas, xPct, yPct, wPct, hPct) {
+  const sx = Math.round(sourceCanvas.width * xPct / 100);
+  const sy = Math.round(sourceCanvas.height * yPct / 100);
+  const sw = Math.round(sourceCanvas.width * wPct / 100);
+  const sh = Math.round(sourceCanvas.height * hPct / 100);
+  const out = document.createElement('canvas');
+  out.width = sw; out.height = sh;
+  out.getContext('2d').drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
+  return out;
+}
+
+// stretch-fit a source canvas into fixed target pixel dimensions
+function fitToSize(sourceCanvas, w, h) {
+  const out = document.createElement('canvas');
+  out.width = w; out.height = h;
+  out.getContext('2d').drawImage(sourceCanvas, 0, 0, w, h);
+  return out;
+}
+
+function getCropSettings() {
+  const v = id => Number(document.getElementById(id).value) || 0;
+  return {
+    split: Number(splitPoint.value),
+    front: { x: v('frontX'), y: v('frontY'), w: v('frontW') || 100, h: v('frontH') || 100 },
+    back:  { x: v('backX'),  y: v('backY'),  w: v('backW')  || 100, h: v('backH')  || 100 },
+  };
+}
+
+async function buildCardCanvases(pdfDoc) {
+  const cfg = getCropSettings();
+  let frontSource, backSource;
+
+  if (pdfDoc.numPages >= 2) {
+    frontSource = await renderPageToCanvas(pdfDoc, 1);
+    backSource  = await renderPageToCanvas(pdfDoc, 2);
+  } else {
+    const single = await renderPageToCanvas(pdfDoc, 1);
+    frontSource = cropPct(single, 0, 0, 100, cfg.split);
+    backSource  = cropPct(single, 0, cfg.split, 100, 100 - cfg.split);
+  }
+
+  const frontCropped = cropPct(frontSource, cfg.front.x, cfg.front.y, cfg.front.w, cfg.front.h);
+  const backCropped  = cropPct(backSource,  cfg.back.x,  cfg.back.y,  cfg.back.w,  cfg.back.h);
+
+  return {
+    frontCanvas: fitToSize(frontCropped, CARD_W, CARD_H),
+    backCanvas:  fitToSize(backCropped, CARD_W, CARD_H),
+  };
+}
+
+/* ============ FILE HANDLING ============ */
+async function handleFiles(fileList) {
+  const files = Array.from(fileList).filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+  for (const file of files) {
+    const idx = firstEmptySlot();
+    if (idx === -1) { setStatus('All 5 slots are full — remove a card first.'); break; }
+
+    slots[idx] = { id: crypto.randomUUID(), name: file.name, loading: true };
+    renderSlots(); updateBadge();
+
+    try {
+      const buf = await file.arrayBuffer();
+      const pdfDoc = await loadPdf(buf.slice(0)); // slice to keep a safe copy
+      const { frontCanvas, backCanvas } = await buildCardCanvases(pdfDoc);
+
+      slots[idx] = {
+        id: slots[idx].id,
+        name: file.name,
+        pdfBuffer: buf,
+        frontCanvas, backCanvas,
+        frontUrl: frontCanvas.toDataURL('image/jpeg', 0.92),
+        backUrl: backCanvas.toDataURL('image/jpeg', 0.92),
+        loading: false,
+      };
+    } catch (err) {
+      console.error(err);
+      setStatus(`Could not read "${file.name}" — is it a valid PDF?`);
+      slots[idx] = null;
+    }
+    renderSlots(); updateBadge(); renderSheet(); updateExportButtons();
+  }
+}
+
+async function reapplyCropToAll() {
+  setStatus('Re-applying crop settings…');
+  for (let i = 0; i < slots.length; i++) {
+    const s = slots[i];
+    if (!s || !s.pdfBuffer) continue;
+    slots[i] = { ...s, loading: true };
+    renderSlots();
+    const pdfDoc = await loadPdf(s.pdfBuffer.slice(0));
+    const { frontCanvas, backCanvas } = await buildCardCanvases(pdfDoc);
+    slots[i] = {
+      ...s,
+      frontCanvas, backCanvas,
+      frontUrl: frontCanvas.toDataURL('image/jpeg', 0.92),
+      backUrl: backCanvas.toDataURL('image/jpeg', 0.92),
+      loading: false,
+    };
+    renderSlots();
+  }
+  setStatus('Crop settings applied to all loaded cards.');
+  renderSheet();
+}
+
+/* ============ SHEET COMPOSITION ============ */
+function drawCutGuides(ctx) {
+  ctx.save();
+  ctx.strokeStyle = '#b9b9b9';
+  ctx.lineWidth = 1.4; // ~0.5pt at 300dpi scale approximation
+  ctx.setLineDash([10, 8]);
+
+  for (let r = 0; r < ROWS; r++) {
+    const y = MARGIN_Y + r * (CARD_H + GAP_Y);
+    [ [MARGIN_X, CARD_W], [MARGIN_X + CARD_W + GAP_X, CARD_W] ].forEach(([x, w]) => {
+      ctx.strokeRect(x, y, w, CARD_H);
+      // corner cross marks
+      const crossLen = 14;
+      ctx.setLineDash([]);
+      ctx.strokeStyle = '#8a8a8a';
+      [[x, y], [x + w, y], [x, y + CARD_H], [x + w, y + CARD_H]].forEach(([cx, cy]) => {
+        ctx.beginPath();
+        ctx.moveTo(cx - crossLen, cy); ctx.lineTo(cx + crossLen, cy);
+        ctx.moveTo(cx, cy - crossLen); ctx.lineTo(cx, cy + crossLen);
+        ctx.stroke();
+      });
+      ctx.strokeStyle = '#b9b9b9';
+      ctx.setLineDash([10, 8]);
+    });
+  }
+  ctx.restore();
+}
+
+function renderSheet() {
+  const ctx = sheetCanvas.getContext('2d');
+  ctx.clearRect(0, 0, PAGE_W, PAGE_H);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+
+  const mirror = mirrorRadio.checked;
+  const bVal = brightness.value, cVal = contrast.value;
+  ctx.filter = `brightness(${bVal}%) contrast(${cVal}%)`;
+
+  slots.forEach((s, i) => {
+    if (!s || s.loading) return;
+    const y = MARGIN_Y + i * (CARD_H + GAP_Y);
+    const cols = [
+      { x: MARGIN_X, canvas: s.frontCanvas, label: 'FRONT' },
+      { x: MARGIN_X + CARD_W + GAP_X, canvas: s.backCanvas, label: 'BACK' },
+    ];
+    cols.forEach(col => {
       ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.font = p.size + 'px ui-monospace, monospace';
-      ctx.fillStyle = p.hue + p.alpha + ')';
-      ctx.textAlign = 'center';
-      ctx.fillText(p.symbol, 0, 0);
+      if (mirror) {
+        ctx.translate(col.x + CARD_W, y);
+        ctx.scale(-1, 1);
+        ctx.drawImage(col.canvas, 0, 0, CARD_W, CARD_H);
+      } else {
+        ctx.drawImage(col.canvas, col.x, y, CARD_W, CARD_H);
+      }
       ctx.restore();
     });
-    if (!prefersReducedMotion) requestAnimationFrame(drawParticles);
-  }
-  resizeCanvas();
-  initParticles();
-  drawParticles();
-  if (prefersReducedMotion){ ctx.clearRect(0,0,W,H); }
-  window.addEventListener('resize', function(){ resizeCanvas(); initParticles(); });
-
-  /* ---------------- 4. SCROLL PROGRESS + SIDE NAV + REVEAL ---------------- */
-  var progressBar = document.getElementById('scroll-progress');
-  var sections = ['hero','invite','details','countdown-section'].map(function(id){ return document.getElementById(id); });
-  var navButtons = document.querySelectorAll('.side-nav button');
-  var backToTop = document.getElementById('back-to-top');
-  var musicToggle = document.getElementById('music-toggle');
-
-  function onScroll(){
-    var doc = document.documentElement;
-    var scrolled = (doc.scrollTop) / (doc.scrollHeight - doc.clientHeight) * 100;
-    progressBar.style.width = scrolled + '%';
-
-    backToTop.classList.toggle('show', doc.scrollTop > 400);
-    musicToggle.classList.add('show');
-
-    // Determine active section for side nav
-    var mid = window.scrollY + window.innerHeight/2;
-    var activeIndex = 0;
-    sections.forEach(function(sec, i){
-      if (sec && sec.offsetTop <= mid) activeIndex = i;
-    });
-    navButtons.forEach(function(btn, i){ btn.classList.toggle('active', i === activeIndex); });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  navButtons.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var target = document.getElementById(btn.dataset.target);
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-  });
-  backToTop.addEventListener('click', function(){
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Scroll-reveal via IntersectionObserver
-  var revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting){
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    revealEls.forEach(function(el){ io.observe(el); });
-  } else {
-    revealEls.forEach(function(el){ el.classList.add('in'); });
-  }
+  ctx.filter = 'none';
+  drawCutGuides(ctx);
 
-  /* ---------------- 5. HERO TYPING ANIMATION ---------------- */
-  var typingTarget = document.getElementById('typing-target');
-  var phrase = 'Code • Learn • Build • Innovate';
-  var ti = 0;
-
-  function typeLoop(){
-    if (prefersReducedMotion){ typingTarget.textContent = phrase; return; }
-    typingTarget.innerHTML = phrase.slice(0, ti) + '<span class="cursor-blink">&nbsp;</span>';
-    ti++;
-    if (ti <= phrase.length){
-      setTimeout(typeLoop, 55);
-    } else {
-      setTimeout(function(){ ti = 0; setTimeout(typeLoop, 900); }, 1800);
-    }
-  }
-  typeLoop();
-
-  /* ---------------- 6. RIPPLE BUTTON EFFECT ---------------- */
-  document.querySelectorAll('.btn').forEach(function(btn){
-    btn.addEventListener('click', function(e){
-      var rect = btn.getBoundingClientRect();
-      var ripple = document.createElement('span');
-      var size = Math.max(rect.width, rect.height);
-      ripple.className = 'ripple';
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
-      ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
-      btn.appendChild(ripple);
-      setTimeout(function(){ ripple.remove(); }, 700);
-    });
+  // slot number + F/B labels (non-printing helper, subtle)
+  ctx.save();
+  ctx.fillStyle = '#a8a8a8';
+  ctx.font = '28px monospace';
+  slots.forEach((s, i) => {
+    if (!s) return;
+    const y = MARGIN_Y + i * (CARD_H + GAP_Y);
+    ctx.fillText(`${i + 1}F`, MARGIN_X + 6, y + 30);
+    ctx.fillText(`${i + 1}B`, MARGIN_X + CARD_W + GAP_X + 6, y + 30);
   });
+  ctx.restore();
+}
 
-  /* ---------------- 7. INVITATION GENERATOR ---------------- */
-  /*
-    We compose each invitation from independent word-banks: an OPENING,
-    a BODY, a WISH and a HEADING. Combined together with the visitor's
-    name, this yields far more than 100 distinct, differently-worded
-    invitations (12 x 10 x 10 x 6 = 7,200+ unique combinations), so no
-    two visitors are likely to see identical wording, while every single
-    combination still reads as one coherent, complete invitation
-    paragraph — never a stitched-together sentence.
-  */
-  var HEADINGS = ['Welcome', 'You Are Invited', 'A Warm Welcome', 'With Great Pleasure', 'Cordially Invited', 'To Our Newest Family'];
+/* ============ EXPORT ============ */
+function setStatus(msg) { statusMsg.textContent = msg; }
 
-  var OPENINGS = [
-    'Dear {name},',
-    'Dearest {name},',
-    'To {name}, with warmth,',
-    'Dear {name}, welcome home,',
-    'Greetings, {name},',
-    'To our newest scholar, {name},',
-    'Dear {name}, it is our honour,',
-    'To {name}, from your new family,',
-    'Dear {name}, the wait is over,',
-    'Warmest greetings, {name},',
-    'Dear {name}, welcome aboard,',
-    'To {name}, on this special occasion,'
-  ];
+downloadBtn.addEventListener('click', () => {
+  setStatus('Generating high-res PDF…');
+  setTimeout(() => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: false });
+    const imgData = sheetCanvas.toDataURL('image/jpeg', 1.0);
+    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'NONE');
+    pdf.save('ayushman-dragon-sheet-A4.pdf');
+    setStatus('Downloaded ayushman-dragon-sheet-A4.pdf');
+  }, 30);
+});
 
-  var BODIES = [
-    'The Department of B.Sc. Computer Science warmly welcomes you to the Sammilani Mahavidyalaya family. You are cordially invited to attend the Freshers\' Welcome Ceremony on 28th July 2026.',
-    'It gives the Department of B.Sc. Computer Science immense joy to welcome you into our fold. Please join us for the Freshers\' Welcome Ceremony on 28th July 2026, a day made for you.',
-    'On behalf of the entire Department of B.Sc. Computer Science, we extend our heartfelt welcome. We eagerly await your presence at the Freshers\' Welcome Ceremony on 28th July 2026.',
-    'You have officially joined a community of thinkers, coders and dreamers. The Department of B.Sc. Computer Science invites you to our Freshers\' Welcome Ceremony on 28th July 2026.',
-    'A new chapter begins today, and we could not be more delighted to share it with you. Join the Department of B.Sc. Computer Science on 28th July 2026 for your Freshers\' Welcome.',
-    'From this moment, you are part of something larger — a family of learners at Sammilani Mahavidyalaya. We invite you to celebrate with us on 28th July 2026.',
-    'The corridors of our department have been waiting for a new batch of curious minds. We are proud to welcome you and invite you to our ceremony on 28th July 2026.',
-    'Every great journey begins with a single welcome, and this one is yours. The Department of B.Sc. Computer Science invites you to the Freshers\' Welcome on 28th July 2026.',
-    'You bring new energy, new ideas and new promise to our department. Please join us for the Freshers\' Welcome Ceremony on 28th July 2026, held in your honour.',
-    'Today, you step into a family built on curiosity and code. The Department of B.Sc. Computer Science requests the pleasure of your company on 28th July 2026.'
-  ];
+printBtn.addEventListener('click', () => {
+  const printArea = document.getElementById('printArea');
+  printArea.innerHTML = `<img src="${sheetCanvas.toDataURL('image/jpeg', 1.0)}" />`;
+  window.print();
+});
 
-  var WISHES = [
-    'May this journey be filled with learning, friendship, innovation and unforgettable memories.',
-    'May your years here be marked by discovery, bold ideas and lasting friendships.',
-    'We hope this chapter brings you knowledge, camaraderie and moments you will cherish forever.',
-    'May every lecture, lab and late night of learning bring you closer to who you are meant to be.',
-    'Here\'s to new friendships, new skills and a future you will be proud to have built here.',
-    'We wish you a college life rich with learning, laughter and lifelong bonds.',
-    'May curiosity be your compass and this department be your second home.',
-    'We hope you find not just an education here, but a community that feels like family.',
-    'May your time in B.Sc. Computer Science be the beginning of something extraordinary.',
-    'We look forward to watching you grow, learn and thrive among us.'
-  ];
+/* ============ EVENTS ============ */
+browseBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => { handleFiles(e.target.files); fileInput.value = ''; });
 
-  var CLOSERS = [
-    'We look forward to celebrating this special occasion with you.',
-    'We cannot wait to see you take your place among us.',
-    'Until then, we count the days with excitement.',
-    'Come as you are — you already belong here.',
-    'The whole department is looking forward to meeting you.',
-    'This is only the beginning of a truly special story.'
-  ];
+['dragenter', 'dragover'].forEach(evt =>
+  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dropzone-active'); })
+);
+['dragleave', 'drop'].forEach(evt =>
+  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dropzone-active'); })
+);
+dropzone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
 
-  function pick(arr, seed){ return arr[seed % arr.length]; }
+[mirrorRadio, normalRadio].forEach(r => r.addEventListener('change', renderSheet));
+brightness.addEventListener('input', () => { brightnessVal.textContent = brightness.value + '%'; renderSheet(); });
+contrast.addEventListener('input', () => { contrastVal.textContent = contrast.value + '%'; renderSheet(); });
+splitPoint.addEventListener('input', () => { splitVal.textContent = splitPoint.value + '%'; });
+applyCropBtn.addEventListener('click', reapplyCropToAll);
 
-  function generateInvitation(name){
-    // Combine several independent random draws to maximise uniqueness.
-    var r1 = Math.floor(Math.random() * HEADINGS.length);
-    var r2 = Math.floor(Math.random() * OPENINGS.length);
-    var r3 = Math.floor(Math.random() * BODIES.length);
-    var r4 = Math.floor(Math.random() * WISHES.length);
-    var r5 = Math.floor(Math.random() * CLOSERS.length);
-
-    var heading = pick(HEADINGS, r1);
-    var opening = pick(OPENINGS, r2).replace('{name}', name);
-    var body = pick(BODIES, r3);
-    var wish = pick(WISHES, r4);
-    var closer = pick(CLOSERS, r5);
-
-    var serial = (r1*10000 + r2*1000 + r3*100 + r4*10 + r5) % 10000;
-
-    return {
-      heading: heading,
-      bodyHtml: '<p class="lead">' + opening + '</p><p style="margin-top:12px;">' + body + '</p><p style="margin-top:12px;">' + wish + '</p><p style="margin-top:12px;">' + closer + '</p>',
-      serial: serial
-    };
-  }
-
-  var form = document.getElementById('invite-form');
-  var nameInput = document.getElementById('name-input');
-  var errorEl = document.getElementById('invite-error');
-  var outputEl = document.getElementById('invite-output');
-  var invName = document.getElementById('invitation-name');
-  var invBody = document.getElementById('invitation-body');
-  var invHeading = document.getElementById('invitation-heading');
-  var invId = document.getElementById('invitation-id');
-  var regenerateBtn = document.getElementById('regenerate-btn');
-  var printBtn = document.getElementById('print-btn');
-  var lastName = '';
-
-  function renderInvitation(name){
-    var data = generateInvitation(name);
-    invHeading.textContent = data.heading;
-    invName.textContent = name;
-    invBody.innerHTML = data.bodyHtml;
-    invId.textContent = '№ ' + String(data.serial).padStart(4, '0');
-    outputEl.classList.add('show');
-    outputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  function titleCase(str){
-    return str.trim().replace(/\s+/g, ' ').split(' ').map(function(w){
-      return w.charAt(0).toUpperCase() + w.slice(1);
-    }).join(' ');
-  }
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var raw = nameInput.value;
-    if (!raw || !raw.trim()){
-      errorEl.textContent = 'Please enter your full name to receive your invitation.';
-      nameInput.focus();
-      return;
-    }
-    if (raw.trim().length < 2){
-      errorEl.textContent = 'Please enter a valid full name.';
-      return;
-    }
-    errorEl.textContent = '';
-    lastName = titleCase(raw);
-    renderInvitation(lastName);
-  });
-
-  regenerateBtn.addEventListener('click', function(){
-    if (lastName) renderInvitation(lastName);
-  });
-
-  printBtn.addEventListener('click', function(){
-    window.print();
-  });
-
-  /* Open Your Invitation button focuses the name field after scroll */
-  document.getElementById('open-invitation-btn').addEventListener('click', function(){
-    setTimeout(function(){ nameInput.focus(); }, 700);
-  });
-
-  /* ---------------- 8. COUNTDOWN TIMER ---------------- */
-  var EVENT_DATE = new Date('2026-07-28T09:00:00');
-  var elDays = document.getElementById('cd-days');
-  var elHours = document.getElementById('cd-hours');
-  var elMins = document.getElementById('cd-mins');
-  var elSecs = document.getElementById('cd-secs');
-
-  function pad(n){ return String(n).padStart(2, '0'); }
-
-  function updateCountdown(){
-    var now = new Date();
-    var diff = EVENT_DATE - now;
-    if (diff <= 0){
-      elDays.textContent = elHours.textContent = elMins.textContent = elSecs.textContent = '00';
-      return;
-    }
-    var days = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    var mins = Math.floor((diff % 3600000) / 60000);
-    var secs = Math.floor((diff % 60000) / 1000);
-    elDays.textContent = pad(days);
-    elHours.textContent = pad(hours);
-    elMins.textContent = pad(mins);
-    elSecs.textContent = pad(secs);
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-
-  /* ---------------- 9. AMBIENT MUSIC (Web Audio, no external file) ---------------- */
-  var audioCtx = null, gainNode = null, oscillators = [], isPlaying = false;
-
-  function buildAmbientPad(){
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = audioCtx.createGain();
-    gainNode.gain.value = 0;
-    gainNode.connect(audioCtx.destination);
-
-    var freqs = [220, 277.18, 329.63]; // soft A-minor-ish triad
-    freqs.forEach(function(f, i){
-      var osc = audioCtx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = f;
-      var lfo = audioCtx.createGain();
-      lfo.gain.value = 0.15 / (i+1);
-      osc.connect(lfo);
-      lfo.connect(gainNode);
-      osc.start();
-      oscillators.push(osc);
-    });
-  }
-
-  musicToggle.addEventListener('click', function(){
-    if (!audioCtx) buildAmbientPad();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-
-    isPlaying = !isPlaying;
-    var now = audioCtx.currentTime;
-    gainNode.gain.cancelScheduledValues(now);
-    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-    gainNode.gain.linearRampToValueAtTime(isPlaying ? 0.05 : 0, now + 0.8);
-
-    musicToggle.classList.toggle('playing', isPlaying);
-    musicToggle.setAttribute('aria-pressed', String(isPlaying));
-    musicToggle.textContent = isPlaying ? '♫' : '♪';
-  });
-
-})();
+/* ============ INITIAL PAINT ============ */
+renderSlots();
+updateBadge();
+renderSheet();
+updateExportButtons();
 </script>
 </body>
 </html>
